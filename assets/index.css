@@ -1,0 +1,76 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background-image: linear-gradient(to bottom, #4e54c8, #000000);
+}
+
+.RTF_primary {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.RTF_primary h1,
+.RTF_primary svg {
+    color: #ffffff;
+    margin-top: 2em;
+}
+
+/* .RTF_primary .img1 {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+} */
+
+/* .RTF_primary ::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(to bottom, #4e54c8, #000000);
+    z-index: -1;
+} */
+
+/* Définition de l'animation pour le SVG */
+@keyframes moveUpDown {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(20px); /* Déplace vers le bas */
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Appliquer l'animation au SVG */
+.up_fleche {
+    animation: moveUpDown 3s ease infinite; /* Animation pendant 3 secondes, répétée indéfiniment */
+    z-index: 1; /* Assure que le SVG est au-dessus de l'image de fond */
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: #ffffff;
+}
+
+.RTF_primary svg {
+    margin-top: 20%;
+    cursor: pointer;
+}
+
+.RTF_primary h1 {
+    font-size: 500%;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    text-align: center;
+}

@@ -1,0 +1,3 @@
+const comp_register = `
+
+`
