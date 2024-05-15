@@ -1,3 +1,0 @@
-const comp_register = `
-
-`
