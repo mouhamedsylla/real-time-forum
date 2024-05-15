@@ -4,6 +4,13 @@ body, html {
     height: 100%;
     overflow: hidden;
     background-image: linear-gradient(to bottom, #4e54c8, #000000);
+
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 .RTF_primary {
@@ -19,7 +26,7 @@ body, html {
 .RTF_primary h1,
 .RTF_primary svg {
     color: #ffffff;
-    margin-top: 2em;
+    margin-top: 2.5em;
 }
 
 /* .RTF_primary .img1 {
@@ -52,7 +59,7 @@ body, html {
         transform: translateY(20px); /* Déplace vers le bas */
     }
     100% {
-        transform: translateY(0);
+        transform: translateY();
     }
 }
 
@@ -65,7 +72,7 @@ body, html {
 }
 
 .RTF_primary svg {
-    margin-top: 20%;
+    margin-top: 10em;
     cursor: pointer;
 }
 
@@ -73,4 +80,8 @@ body, html {
     font-size: 500%;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     text-align: center;
+}
+
+section {
+    height: 100vh;
 }
