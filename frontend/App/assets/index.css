@@ -13,7 +13,6 @@ body, html {
 }
 
 /* Debut de la Page d'accueil du Forum */
-
 .RTF_primary {
     position: relative;
     width: 100%;
@@ -107,6 +106,12 @@ nav a {
     text-decoration: none;
     font-weight: 500;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
 }
 
 /* Fin de la Page Register du Forum */
