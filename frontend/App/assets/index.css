@@ -2,8 +2,9 @@ body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    /* overflow: hidden; */
+    overflow-y: scroll;
     background-image: linear-gradient(to bottom, #4e54c8, #11141a);
+    scroll-behavior: smooth;
 }
 
 * {
@@ -70,7 +71,7 @@ section {
 }
 
 .section2 {
-    background-color: #ffffff;
+    background-color: #11141a
 }
 /* Fin des Sections */
 
@@ -115,3 +116,20 @@ nav {
 }
 
 /* Fin de la Page Register du Forum */
+
+/* Debut style section 2 => Register */
+
+h3 {
+    color: aliceblue;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 150%;
+}
+
+.register {
+    display: flex;
+    
+}
+
+input {
+    display: block;
+}
