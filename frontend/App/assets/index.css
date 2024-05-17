@@ -90,11 +90,23 @@ section {
 }
 
 .container {
+    position: relative;
     max-width: 850px;
     width: 100%;
     background-color: #ffffff;
     padding: 40px 30px;
     box-shadow: rgba(0, 0, 0, 0.2);
+}
+
+.container .cover {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: 100%;
+    width: 50%;
+    background: red;
+    z-index: 98;
+    /* background-color: #11141a; */
 }
 
 .container .form_content {
@@ -106,7 +118,7 @@ section {
 .container form {
     height: 100%;
     width: 100%;
-    background-color: #ffffff;
+    background-color: #ffffff; 
 }
 
 .form_content .login-form,
@@ -172,9 +184,45 @@ form .form_content .input-box {
     font-size: 17px;
 }
 
+form .form_content .text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #11141a;
+}
+
+form .form_content .text a {
+    text-decoration: none;
+}
+
+form .form_content .text a:hover {
+    text-decoration: underline;
+}
+
+form .form_content .button {
+    color: #ffffff;
+    margin-top: 40px;
+}
+
 form .form_content .button input {
     color: #ffffff;
     background: #11141a;
+    border-radius: 6px;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+
+form .form_content .button input:hover {
+    background: #4e54c8;
+}
+
+form .form_content label {
+    color: #4e54c8;
+    cursor: pointer;
+}
+
+form .form_content label:hover {
+    text-decoration: underline;
 }
 
 header {
