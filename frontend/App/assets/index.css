@@ -96,6 +96,11 @@ section {
     background-color: #ffffff;
     padding: 40px 30px;
     box-shadow: rgba(0, 0, 0, 0.2);
+    perspective: 2800;
+}
+
+.container #flip:checked ~ .cover {
+    transform: rotateY(-180deg);
 }
 
 .container .cover {
@@ -106,7 +111,10 @@ section {
     width: 50%;
     background: red;
     z-index: 98;
+    transition: all 1s ease;
     /* background-color: #11141a; */
+    transform-origin: left;
+    transform-style: preserve-3d;
 }
 
 .container .form_content {
