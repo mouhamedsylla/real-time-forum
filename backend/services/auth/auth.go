@@ -18,6 +18,7 @@ func (auth *Auth) ConfigureEndpoint() {
 func (auth *Auth) InitService() {
 	controllers := []microservices.Controller{
 		// add controller ...
+		&Register{},
 	}
 	auth.Auth = microservices.NewMicroservice("Authentication", ":8080")
 	auth.Auth.Controllers = append(auth.Auth.Controllers, controllers...)

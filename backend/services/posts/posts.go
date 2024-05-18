@@ -19,7 +19,7 @@ func (post *Posts) InitService() {
 	controllers := []microservices.Controller{
 		// add controller ...
 	}
-	post.Post = microservices.NewMicroservice("Realtime Chat", ":9090")
+	post.Post = microservices.NewMicroservice("Posts&Comments", ":8181")
 	post.Post.Controllers = append(post.Post.Controllers, controllers...)
 }
 

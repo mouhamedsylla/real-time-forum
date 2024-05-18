@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"strings"
@@ -25,6 +26,7 @@ func NewRoute(label string, mid []Middleware, methods ...string) *Route {
 		Methods:    methods,
 		Child:      make(map[string]*Route),
 		Middleware: mid,
+		Param: Param{},
 	}
 }
 
@@ -68,13 +70,14 @@ func (R *Router) SetDirectory(prefix string, dir string) {
 	R.Static.Dir = http.Dir(dir)
 }
 
+
 func (R *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	method := r.Method
 	path := r.URL.Path
 	if strings.Contains(path, R.Static.Prefix) && R.Static.Prefix != ""{
 		path = R.Static.Prefix
 	}
-	handler, middlewares, err := R.Tree.Search(method, path)
+	handler, middlewares, custom_routes, err := R.Tree.Search(method, path)
 	if err != nil {
 		status, msg := HandleError(err)
 		w.WriteHeader(status)
@@ -87,7 +90,8 @@ func (R *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			handler = middleware(handler)
 		}
 	}
-	handler.ServeHTTP(w, r)
+	ctx := context.WithValue(r.Context(), "CustomRoute", custom_routes)
+	handler.ServeHTTP(w, r.WithContext(ctx))
 }
 
 func HandleError(err error) (status int, msg string) {

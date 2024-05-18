@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h2>Private Discussion Test</h2>
+    <div class="container">
+        <div class="user">
+            <p>USER-1</p>
+            <div class="send">
+                <input type="text" name="mess-1" id="mess-1">
+                <input type="button" value="send" id="btn-1" onclick="sendMessage1()">
+                <div>
+                    <ul id="send-1">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="user">
+            <p>USER-2</p>
+            <div class="send">
+                <input type="text" name="mess-2" id="mess-2">
+                <input type="button" value="send" id="btn-2" onclick="sendMessage2()">
+                <div>
+                    <ul id="send-2">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const inputText1 = document.getElementById("mess-1")
+        const inputText2 = document.getElementById("mess-2")
+        const ul1 = document.getElementById("send-1")
+        const ul2 = document.getElementById("send-2")
+        const socket1 = new WebSocket("ws://localhost:9090/api/message/private/send/user-2?user_id=user-1")
+        const socket2 = new WebSocket("ws://localhost:9090/api/message/private/send/user-1?user_id=user-2")
+
+        socket1.onmessage = function (event) {
+            const li = document.createElement("li")
+            li.textContent = `sended: ${event.data}`
+            ul1.appendChild(li)
+        }
+
+
+        socket2.onmessage = function (event) {
+            const li = document.createElement("li")
+            li.textContent = `sended: ${event.data}`
+            ul2.appendChild(li)
+        }
+
+        function sendMessage1() {
+            const message = inputText1.value
+            socket1.send(message)
+        }
+
+        function sendMessage2() {
+            const message = inputText2.value
+            socket2.send(message)
+        }
+    </script>
+</body>
+
+</html>

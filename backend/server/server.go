@@ -16,7 +16,7 @@ func NewServer(services ...microservices.Service) *Server {
 	}
 }
 
-func (s *Server) StartServices(port string) {
+func (s *Server) StartServices() {
 	s.Services.InitServices()
 	for _, service := range s.Services.Microservices {
 		service := service.GetService()
