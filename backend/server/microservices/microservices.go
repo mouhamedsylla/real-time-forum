@@ -8,6 +8,13 @@ type AppServices struct {
 	Microservices []Service
 }
 
+type Microservice struct {
+	ServiceName string
+	Router      *router.Router
+	Controllers []Controller
+	Port        string
+}
+
 func (aps *AppServices) InitServices() {
 	for _, service := range aps.Microservices {
 		service.InitService()
@@ -21,12 +28,6 @@ func NewAppServices(services ...Service) *AppServices {
 	return aps
 }
 
-type Microservice struct {
-	ServiceName string
-	Router      *router.Router
-	Controllers []Controller
-	Port        string
-}
 
 func NewMicroservice(name, port string) *Microservice {
 	return &Microservice{
