@@ -35,4 +35,3 @@ func NewMicroservice(name, port string) *Microservice {
 		Router:      router.NewRouter(),
 	}
 }
-

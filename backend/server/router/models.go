@@ -10,9 +10,9 @@ type Tree struct {
 type Middleware func(http.Handler) http.Handler
 
 type Router struct {
-	Tree             *Tree
-	TempRoute        Route
-	Static           Directory
+	Tree      *Tree
+	TempRoute Route
+	Static    Directory
 }
 
 type Param struct {

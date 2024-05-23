@@ -11,3 +11,4 @@ func (o *ORM) Delete(table interface{}, column string, value interface{}) {
 		panic(err)
 	}
 }
+

@@ -32,7 +32,7 @@ func (o *ORM) InitDB(name string, path string) {
 	}
 
 	if _, err := os.Stat(path + "migrates"); os.IsNotExist(err) {
-		err := os.Mkdir(path + "migrates", 0755)
+		err := os.Mkdir(path+"migrates", 0755)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -50,7 +50,7 @@ func CreateTable(name string, fields ...*Field) string {
 	sqlTable := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s (\n", name)
 	var all []string
 	for _, field := range fields {
-		all = append(all, "\t" + TableField(field))
+		all = append(all, "\t"+TableField(field))
 	}
 	sqlTable += strings.Join(all, ",\n") + "\n)"
 	return sqlTable

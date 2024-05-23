@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"os"
 	"reflect"
 
 	"real-time-forum/orm"
@@ -32,6 +33,13 @@ func CreateDatabase(dbName, dbPath string, models ...interface{}) {
 	gorm := orm.NewORM()
 	gorm.InitDB(dbName, dbPath)
 	gorm.AutoMigrate(models...)
+}
+
+func InitStorage(dbname, dbpath string, models ...interface{}) *orm.ORM {
+	if _, err := os.Stat(dbpath + dbname); os.IsNotExist(err) {
+		CreateDatabase(dbname, dbpath, models...)
+	}
+	return OrmInit(dbname, dbpath)
 }
 
 // The function `DecodeJSONRequestBody` decodes the JSON request body into a specified model and

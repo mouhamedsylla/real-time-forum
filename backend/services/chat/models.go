@@ -4,12 +4,12 @@ import "real-time-forum/orm"
 
 type Message struct {
 	orm.Model
-	SenderId   int
-	ReceiverId int
+	SenderId   string `orm-go:"NOT NULL"`
+	ReceiverId string `orm-go:"NOT NULL"`
 	Content    string `orm-go:"NOT NULL"`
 }
 
-func NewMessage(sender, receiver int, content string) Message {
+func NewMessage(sender, receiver, content string) Message {
 	return Message{
 		SenderId: sender,
 		ReceiverId: receiver,

@@ -1,7 +1,6 @@
 package orm
 
 import (
-	"fmt"
 	"log"
 	"reflect"
 )
@@ -19,7 +18,6 @@ func (o *ORM) Scan(table interface{}, columns ...string) interface{} {
 	rows, err := o.Db.Query(query, param...)
 	defer __BUILDER__.Clear()
 	if err != nil {
-		fmt.Println(err)
 		return nil
 	}
 	defer rows.Close()

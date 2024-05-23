@@ -46,14 +46,14 @@
 
         socket1.onmessage = function (event) {
             const li = document.createElement("li")
-            li.textContent = `sended: ${event.data}`
+            li.textContent = `user-2: ${event.data}`
             ul1.appendChild(li)
         }
 
 
         socket2.onmessage = function (event) {
             const li = document.createElement("li")
-            li.textContent = `sended: ${event.data}`
+            li.textContent = `user-1: ${event.data}`
             ul2.appendChild(li)
         }
 

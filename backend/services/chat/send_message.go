@@ -43,8 +43,6 @@ func (sm *sendMessage) sendMessage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	clients[userID] = conn
-
-	//fmt.Println("receiver: ", CustomRoute["receiverId"], " & sender: ", userID)
 	for {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
@@ -53,9 +51,10 @@ func (sm *sendMessage) sendMessage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		client := clients[CustomRoute["receiverId"]]
+		storage.Insert(NewMessage(userID, CustomRoute["receiverId"], string(msg)))
 		if err := client.WriteMessage(websocket.TextMessage, []byte(msg)); err != nil {
 			fmt.Printf("Error writing message: %s\n", err)
 		}
+
 	}
 }
-

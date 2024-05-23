@@ -7,11 +7,11 @@ var (
 	// sorting in a query. The keys of the map are integers, where 0 represents ascending order ("ASC") and
 	// 1 represents descending order ("DESC"). This map can be used to easily specify the sorting order in
 	// a query by accessing the corresponding string value based on the desired order.
-		Order = map[int]string{
-			0: "ASC",
-			1: "DESC",
-		}
-	)
+	Order = map[int]string{
+		0: "ASC",
+		1: "DESC",
+	}
+)
 
 // The SQLBuilder type is used to construct SQL queries with parameters.
 // @property {string} query - The `query` property is a string that represents the SQL query being
@@ -156,3 +156,4 @@ func (b *SQLBuilder) Having(condition string) *SQLBuilder {
 	b.query += " HAVING " + condition
 	return b
 }
+

@@ -10,12 +10,12 @@ import (
 const (
 	METHOD_NOT_ALLOWED = "method not allowed"
 	ROUTE_NOT_FOUND    = "route not found"
-	PAGE_NOT_FOUND = "page not found"
+	PAGE_NOT_FOUND     = "page not found"
 )
 
 func NewRouter() *Router {
 	return &Router{
-		Tree:         NewTree(),
+		Tree:      NewTree(),
 		TempRoute: Route{},
 	}
 }
@@ -26,7 +26,7 @@ func NewRoute(label string, mid []Middleware, methods ...string) *Route {
 		Methods:    methods,
 		Child:      make(map[string]*Route),
 		Middleware: mid,
-		Param: Param{},
+		Param:      Param{},
 	}
 }
 
@@ -70,11 +70,10 @@ func (R *Router) SetDirectory(prefix string, dir string) {
 	R.Static.Dir = http.Dir(dir)
 }
 
-
 func (R *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	method := r.Method
 	path := r.URL.Path
-	if strings.Contains(path, R.Static.Prefix) && R.Static.Prefix != ""{
+	if strings.Contains(path, R.Static.Prefix) && R.Static.Prefix != "" {
 		path = R.Static.Prefix
 	}
 	handler, middlewares, custom_routes, err := R.Tree.Search(method, path)
