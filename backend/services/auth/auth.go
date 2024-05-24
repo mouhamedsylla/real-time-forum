@@ -11,7 +11,7 @@ type Auth struct {
 
 func (auth *Auth) ConfigureEndpoint() {
 	for _, controller := range auth.Auth.Controllers {
-		auth.Auth.Router.Method(http.MethodGet).Handler(controller.EndPoint(), controller.HTTPServe())
+		auth.Auth.Router.Method(controller.SetMethods).Handler(controller.EndPoint(), controller.HTTPServe())
 	}
 }
 
