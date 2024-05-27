@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"reflect"
-
 	"real-time-forum/orm"
 )
 
@@ -55,28 +54,4 @@ func DecodeJSONRequestBody(r *http.Request, model interface{}) (interface{}, int
 		return nil, http.StatusBadRequest, err
 	}
 	return newStruct, http.StatusOK, nil
-}
-
-// The SendData function sends JSON data to a specified endpoint asynchronously and calls a callback
-// function with the response or error.
-func SendData(data interface{}, endpoint string, callback func(*http.Response, error)) {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		callback(nil, err)
-	}
-	go func() {
-		url := URL + endpoint
-		resp, err := http.Post(url, "application/x-www-form-urlencoded", bytes.NewBuffer(jsonData))
-		callback(resp, err)
-	}()
-}
-
-// The `GetData` function asynchronously fetches data from a specified endpoint URL and invokes a
-// callback function with the response and any errors.
-func GetData(endpoint string, callback func(*http.Response, error)) {
-	go func() {
-		url := URL + endpoint
-		resp, err := http.Get(url)
-		callback(resp, err)
-	}()
 }

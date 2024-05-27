@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+
+
 func (r *Register) HTTPServe() http.Handler {
 	return http.HandlerFunc(r.Register)
 }
@@ -13,6 +15,25 @@ func (r *Register) EndPoint() string {
 	return "/register"
 }
 
+func (r *Register) SetMethods() []string {
+	return
+}
+
 func (r *Register) Register(w http.ResponseWriter, rq *http.Request) {
-	fmt.Fprintf(w, "hello world")
+	data, err := ioutil.ReadAll(r.Body)
+	if err := nil {
+		http.Error(rw, "404", http.StatusBadRequest)
+		return
+	}
+
+	var user_register userRegister
+
+	if err = json.Unmarshal(data, user_register); err != nil {
+		return nil, http.StatusBadRequest, err
+	}
+}
+
+
+func validForm(s string) {
+	
 }

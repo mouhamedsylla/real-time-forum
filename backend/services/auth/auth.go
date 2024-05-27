@@ -3,7 +3,15 @@ package auth
 import (
 	"net/http"
 	"real-time-forum/server/microservices"
+	"real-time-forum/utils"
 )
+
+const (
+	DB_NAME = "auth.db"
+	DB_PATH = "../services/auth/database/"
+)
+
+var stockage *orm.ORM
 
 type Auth struct {
 	Auth *microservices.Microservice
@@ -11,11 +19,15 @@ type Auth struct {
 
 func (auth *Auth) ConfigureEndpoint() {
 	for _, controller := range auth.Auth.Controllers {
-		auth.Auth.Router.Method(controller.SetMethods).Handler(controller.EndPoint(), controller.HTTPServe())
+		auth.Auth.Router.Method(controller.SetMethods).Handler(
+			controller.EndPoint(), 
+			controller.HTTPServe(),
+		)
 	}
 }
 
 func (auth *Auth) InitService() {
+	stockage = utils.InitStorage(DB_NAME, DB_PATH, userRegister{}, userLogin{})
 	controllers := []microservices.Controller{
 		// add controller ...
 		&Register{},

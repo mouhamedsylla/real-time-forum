@@ -30,5 +30,6 @@ type Service interface {
 // endpoint or URL path at which the controller will be accessible in the web application.
 type Controller interface {
 	HTTPServe() http.Handler
+	SetMethods() []string
 	EndPoint() string
 }
