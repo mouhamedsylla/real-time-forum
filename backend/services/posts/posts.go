@@ -3,6 +3,7 @@ package posts
 import (
 	"net/http"
 	"real-time-forum/server/microservices"
+	"real-time-forum/server/middleware"
 )
 
 type Posts struct {
@@ -11,7 +12,7 @@ type Posts struct {
 
 func (post *Posts) ConfigureEndpoint() {
 	for _, controller := range post.Post.Controllers {
-		post.Post.Router.Method(http.MethodGet).Handler(controller.EndPoint(), controller.HTTPServe())
+		post.Post.Router.Method(http.MethodGet).Middleware(middleware.LogRequest).Handler(controller.EndPoint(), controller.HTTPServe())
 	}
 }
 

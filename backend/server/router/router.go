@@ -26,7 +26,7 @@ func NewRoute(label string, mid []Middleware, methods ...string) *Route {
 		Methods:    methods,
 		Child:      make(map[string]*Route),
 		Middleware: mid,
-		Param:      Param{}
+		Param:      Param{},
 	}
 }
 

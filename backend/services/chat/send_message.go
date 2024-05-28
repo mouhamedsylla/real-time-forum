@@ -27,6 +27,10 @@ func (sm *sendMessage) EndPoint() string {
 	return "/api/message/private/send/:receiverId"
 }
 
+func (sm *sendMessage) SetMethods() []string {
+	return []string{http.MethodGet}
+}
+
 func (sm *sendMessage) sendMessage(w http.ResponseWriter, r *http.Request) {
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
 

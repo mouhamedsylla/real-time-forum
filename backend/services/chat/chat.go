@@ -4,23 +4,24 @@ import (
 	"net/http"
 	"real-time-forum/orm"
 	"real-time-forum/server/microservices"
+	"real-time-forum/server/middleware"
 	"real-time-forum/utils"
 )
 
 const (
 	DB_NAME = "chat.db"
-	DB_PATH = "../services/chat/database/"
+	DB_PATH = "../../services/chat/database/"
 )
 
 var storage *orm.ORM
 
 type Chat struct {
-	Chat    *microservices.Microservice
+	Chat *microservices.Microservice
 }
 
 func (chat *Chat) ConfigureEndpoint() {
 	for _, controller := range chat.Chat.Controllers {
-		chat.Chat.Router.Method(http.MethodGet).Handler(controller.EndPoint(), controller.HTTPServe())
+		chat.Chat.Router.Method(http.MethodGet).Middleware(middleware.LogRequest).Handler(controller.EndPoint(), controller.HTTPServe())
 	}
 }
 

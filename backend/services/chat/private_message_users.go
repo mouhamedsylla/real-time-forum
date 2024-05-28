@@ -14,6 +14,10 @@ func (pmu *getPrivateMessageUsers) EndPoint() string {
 	return "/api/message/private/users/:userId"
 }
 
+func (pmu *getPrivateMessageUsers) SetMethods() []string {
+	return []string{http.MethodGet}
+}
+
 func (pmu *getPrivateMessageUsers) getPrivateMessageUsers(w http.ResponseWriter, r *http.Request) {
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
 	fmt.Println("custom: ", CustomRoute)

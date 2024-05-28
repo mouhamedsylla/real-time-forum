@@ -13,6 +13,10 @@ func (pm *getPrivateMessage) EndPoint() string {
 	return "/api/message/private/:senderId/:receiverId"
 }
 
+func (pm *getPrivateMessage) SetMethods() []string {
+	return []string{http.MethodGet}
+}
+
 func (pm *getPrivateMessage) getPrivateMessage(w http.ResponseWriter, r *http.Request) {
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
 	storage.Custom.
