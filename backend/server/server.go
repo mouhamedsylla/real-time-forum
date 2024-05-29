@@ -1,9 +1,12 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"real-time-forum/server/microservices"
+
+	"github.com/mouhamedsylla/term-color/color"
 )
 
 type Server struct {
@@ -18,10 +21,14 @@ func NewServer(services ...microservices.Service) *Server {
 
 func (s *Server) StartServices() {
 	s.Services.InitServices()
+	clr := color.Color()
 	for _, service := range s.Services.Microservices {
 		service := service.GetService()
 		go func(svc *microservices.Microservice) {
-			log.Printf("%v service starting in: http://localhost%v", service.ServiceName, service.Port)
+			clr.SetText(fmt.Sprintf("[RUNNING SERVICE] %s", svc.ServiceName))
+			clr.ColorTextPattern("[RUNNING SERVICE]", clr.Yellow)
+			clr.ColorTextPattern(svc.ServiceName, clr.Green)
+			fmt.Println(clr.ToString())
 			server := http.Server{
 				Addr:    svc.Port,
 				Handler: svc.Router,

@@ -1,7 +1,6 @@
 package chat
 
 import (
-	"fmt"
 	"net/http"
 	"real-time-forum/utils"
 )
@@ -20,11 +19,8 @@ func (pmu *getPrivateMessageUsers) SetMethods() []string {
 
 func (pmu *getPrivateMessageUsers) getPrivateMessageUsers(w http.ResponseWriter, r *http.Request) {
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
-	fmt.Println("custom: ", CustomRoute)
 	storage.Custom.Where("senderId", CustomRoute["userId"])
 	result := storage.Scan(Message{}, "ReceiverId").([]Message)
 	storage.Custom.Clear()
 	utils.RespondWithJSON(w, result, http.StatusOK)
 }
-
-

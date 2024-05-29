@@ -11,6 +11,10 @@ import (
 
 const URL = ""
 
+type User struct {
+	message string
+}
+
 // The function `RespondWithJSON` writes JSON data to an HTTP response with the specified status code.
 func RespondWithJSON(w http.ResponseWriter, data any, statusCode int) {
 	w.Header().Add("Content-Type", "application/json")

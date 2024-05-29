@@ -4,12 +4,14 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"github.com/mouhamedsylla/term-color/color"
 )
 
 var infosLog *log.Logger
+var clr = color.Color().SetText("[INFO] ")
 
 func init() {
-	infosLog = log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+	infosLog = log.New(os.Stdout, clr.Colorize(clr.Green), log.Ldate|log.Ltime|log.Lshortfile)
 }
 
 func CORSMiddleware(next http.Handler) http.Handler {
