@@ -5,6 +5,7 @@ import (
 	"real-time-forum/utils"
 )
 
+
 func (pmu *getPrivateMessageUsers) HTTPServe() http.Handler {
 	return http.HandlerFunc(pmu.getPrivateMessageUsers)
 }
@@ -22,5 +23,5 @@ func (pmu *getPrivateMessageUsers) getPrivateMessageUsers(w http.ResponseWriter,
 	storage.Custom.Where("senderId", CustomRoute["userId"])
 	result := storage.Scan(Message{}, "ReceiverId").([]Message)
 	storage.Custom.Clear()
-	utils.RespondWithJSON(w, result, http.StatusOK)
+	utils.ResponseWithJSON(w, result, http.StatusOK)
 }

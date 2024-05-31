@@ -18,7 +18,7 @@ import (
 // correctly.
 type Service interface {
 	GetService() *Microservice
-	InitService()
+	InitService() error
 	ConfigureEndpoint()
 }
 

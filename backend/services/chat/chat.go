@@ -25,8 +25,8 @@ func (chat *Chat) ConfigureEndpoint() {
 	}
 }
 
-func (chat *Chat) InitService() {
-	storage = utils.InitStorage(DB_NAME, DB_PATH, Message{})
+func (chat *Chat) InitService() (err error) {
+	storage, err = utils.InitStorage(DB_NAME, DB_PATH, Message{})
 	controllers := []microservices.Controller{
 		// add controller ...
 		&sendMessage{},
@@ -36,11 +36,9 @@ func (chat *Chat) InitService() {
 
 	chat.Chat = microservices.NewMicroservice("Realtime Chat", ":9090")
 	chat.Chat.Controllers = append(chat.Chat.Controllers, controllers...)
+	return
 }
 
-func GetStorage() {
-
-}
 
 func (chat *Chat) GetService() *microservices.Microservice {
 	return chat.Chat

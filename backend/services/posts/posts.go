@@ -16,12 +16,13 @@ func (post *Posts) ConfigureEndpoint() {
 	}
 }
 
-func (post *Posts) InitService() {
+func (post *Posts) InitService() (err error){
 	controllers := []microservices.Controller{
 		// add controller ...
 	}
 	post.Post = microservices.NewMicroservice("Posts&Comments", ":8181")
 	post.Post.Controllers = append(post.Post.Controllers, controllers...)
+	return
 }
 
 func (post *Posts) GetService() *microservices.Microservice {

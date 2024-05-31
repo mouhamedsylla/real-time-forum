@@ -1,6 +1,7 @@
 package microservices
 
 import (
+	"log"
 	"real-time-forum/server/router"
 )
 
@@ -17,7 +18,9 @@ type Microservice struct {
 
 func (aps *AppServices) InitServices() {
 	for _, service := range aps.Microservices {
-		service.InitService()
+		if err := service.InitService(); err != nil {
+			log.Fatalf("Failed to initialize service %s: %v", service.GetService().ServiceName, err)
+		}
 		service.ConfigureEndpoint()
 	}
 }
@@ -27,7 +30,6 @@ func NewAppServices(services ...Service) *AppServices {
 	aps.Microservices = append(aps.Microservices, services...)
 	return aps
 }
-
 
 func NewMicroservice(name, port string) *Microservice {
 	return &Microservice{

@@ -25,5 +25,5 @@ func (pm *getPrivateMessage) getPrivateMessage(w http.ResponseWriter, r *http.Re
 
 	result := storage.Scan(Message{}, "SenderId", "ReceiverId", "Content").([]Message)
 	storage.Custom.Clear()
-	utils.RespondWithJSON(w, result, http.StatusOK)
+	utils.ResponseWithJSON(w, result, http.StatusOK)
 }

@@ -1,20 +1,24 @@
 package auth
 
-import "real-time-forum/orm"
+import (
+	"real-time-forum/orm"
+)
 
 type userLogin struct {
 	orm.Model
-	email    string `orm-go:"NOT NULL"`
-	password string `orm-go:"NOT NULL"`
+	Identifier string `json:"identifier"`
+	Password   string `json:"password"`
 }
 
 type userRegister struct {
 	orm.Model
-	nickname  string `orm-go:"NOT NULL"`
-	age       int    `orm-go:"NOT NULL"`
-	gender    string `orm-go:"NOT NULL"`
-	firstName string `orm-go:"NOT NULL"`
-	lastName  string `orm-go:"NOT NULL"`
-	email     string `orm-go:"NOT NULL"`
-	password  string `orm-go:"NOT NULL"`
+	Nickname  string `orm-go:"NOT NULL UNIQUE"`
+	Age       int    `orm-go:"NOT NULL"`
+	Gender    string `orm-go:"NOT NULL"`
+	FirstName string `orm-go:"NOT NULL"`
+	LastName  string `orm-go:"NOT NULL"`
+	Email     string `orm-go:"NOT NULL UNIQUE"`
+	Password  string `orm-go:"NOT NULL"`
 }
+
+
