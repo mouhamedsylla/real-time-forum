@@ -24,7 +24,7 @@ func (sm *sendMessage) HTTPServe() http.Handler {
 }
 
 func (sm *sendMessage) EndPoint() string {
-	return "/api/message/private/send/:receiverId"
+	return "/chat/message/private/send/:receiverId"
 }
 
 func (sm *sendMessage) SetMethods() []string {

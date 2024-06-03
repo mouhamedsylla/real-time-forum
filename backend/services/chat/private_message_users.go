@@ -11,7 +11,7 @@ func (pmu *getPrivateMessageUsers) HTTPServe() http.Handler {
 }
 
 func (pmu *getPrivateMessageUsers) EndPoint() string {
-	return "/api/message/private/users/:userId"
+	return "/chat/message/private/users/:userId"
 }
 
 func (pmu *getPrivateMessageUsers) SetMethods() []string {

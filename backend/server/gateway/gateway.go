@@ -1,6 +1,7 @@
 package gateway
 
 import (
+	"html/template"
 	"io"
 	"log"
 	"net/http"
@@ -9,11 +10,15 @@ import (
 
 var Gateway_EndPoint = map[string][]string{
 	"9090": {
-		"/api/message/private/:senderId/:receiverId",
-		"/api/message/private/send/:receiverId",
-		"/api/message/private/users/:userId",
+		"/chat/message/private/:senderId/:receiverId",
+		"/chat/message/private/send/:receiverId",
+		"/chat/message/private/users/:userId",
 	},
-	"8080": {},
+	"8080": {
+		"/auth/checkToken",
+		"/auth/register",
+		"/auth/login",
+	},
 	"8181": {},
 }
 
@@ -67,10 +72,23 @@ func (gtw *Gateway) Authenticate() {
 
 }
 
+func Home(w http.ResponseWriter, r *http.Request) {
+	tmp, err := template.ParseFiles("../../server/gateway/static/index.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+	tmp.Execute(w, nil)
+}
+
+
 func (gtw *Gateway) BootstrapApp() {
+	//gtw.Router.SetDirectory("/static/", "../../server/gateway/static/")
+	//gtw.Router.Handler("/static/", gtw.Router.StaticServe())
+	//gtw.Router.Method(http.MethodGet).Handler("/", http.HandlerFunc(Home))
 	for port, endpoints := range Gateway_EndPoint {
 		for _, endpoint := range endpoints {
-			gtw.Router.Method(http.MethodGet).Handler(endpoint, gtw.Proxy(endpoint, "http://localhost:"+port))
+			gtw.Router.Method(http.MethodPost, http.MethodGet).
+				Handler(endpoint, gtw.Proxy(endpoint, "http://localhost:"+port))
 		}
 	}
 	log.Fatal(http.ListenAndServe(":3000", gtw.Router))

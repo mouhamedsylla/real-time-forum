@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #030712;
+            color: #ccc;
+        }
+        .login-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #218838;
+        }
+        .message {
+            margin-top: 15px;
+            font-size: 14px;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <div class="form-group">
+            <label for="email-nickname">Email or Nickname:</label>
+            <input type="text" id="email-nickname" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" required>
+        </div>
+        <div class="form-group">
+            <button onclick="login()">Login</button>
+        </div>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        function getCookie(cookieName) {
+    const name = cookieName + "=";
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookieArray = decodedCookie.split(';');
+    for (let i = 0; i < cookieArray.length; i++) {
+        let cookie = cookieArray[i];
+        while (cookie.charAt(0) === ' ') {
+            cookie = cookie.substring(1);
+        }
+        if (cookie.indexOf(name) === 0) {
+            return cookie.substring(name.length, cookie.length);
+        }
+    }
+    return "";
+}
+        async function login() {
+            const emailNickname = document.getElementById('email-nickname').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('http://localhost:3000/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    identifier: emailNickname,
+                    password: password
+                })
+            })
+
+            const messageElement = document.getElementById('message');
+            if (response.ok) {
+                messageElement.textContent = 'Login successful!';
+                //console.log(getCookie("forum"))
+
+                const data = await fetch('http://localhost:3000/chat/message/private/users/user-1', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }).then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                })
+                
+            } else {
+                const errorData = await response.json();
+                messageElement.textContent = 'Login failed: ' + errorData.message;
+                messageElement.style.color = 'red';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -15,7 +15,10 @@ const (
 	DB_PATH = "../../services/auth/database/"
 )
 
-var storage *orm.ORM
+var (
+	storage *orm.ORM
+	jwt     = utils.JWT{}
+)
 
 type Auth struct {
 	Auth *microservices.Microservice
@@ -30,10 +33,11 @@ func (auth *Auth) ConfigureEndpoint() {
 	}
 }
 
-func (auth *Auth) InitService() (err error){
-	storage, err = utils.InitStorage(DB_NAME, DB_PATH, userRegister{}, userLogin{})
+func (auth *Auth) InitService() (err error) {
+	storage, err = utils.InitStorage(DB_NAME, DB_PATH, UserRegister{}, userLogin{})
 	controllers := []microservices.Controller{
 		// add controller ...
+		&CheckToken{},
 		&Register{},
 		&Login{},
 	}
@@ -54,7 +58,7 @@ func Authenticate(Password string, toAuthenticate *userLogin) error {
 	return nil
 }
 
-func CryptPassword(user *userRegister) {
+func CryptPassword(user *UserRegister) {
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 8)
 	if err != nil {
 		log.Fatal(err)

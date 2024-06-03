@@ -1,19 +1,17 @@
 package utils
 
 import (
+	"bufio"
 	"encoding/json"
 	"io"
 	"net/http"
 	"os"
 	"real-time-forum/orm"
 	"reflect"
+	"strings"
 )
 
 const URL = ""
-
-type User struct {
-	message string
-}
 
 // The function `RespondWithJSON` writes JSON data to an HTTP response with the specified status code.
 func ResponseWithJSON(w http.ResponseWriter, data any, statusCode int) {
@@ -62,4 +60,29 @@ func DecodeJSONRequestBody(r *http.Request, model interface{}) (interface{}, int
 		return nil, http.StatusBadRequest, err
 	}
 	return decodedData, http.StatusOK, nil
+}
+
+func LoadEnv(filename string) error {
+	file, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		parts := strings.SplitN(line, "=", 2)
+		if len(parts) == 2 {
+			key := strings.TrimSpace(parts[0])
+			value := strings.TrimSpace(parts[1])
+			os.Setenv(key, value)
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+
+	return nil
 }

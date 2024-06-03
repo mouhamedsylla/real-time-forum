@@ -10,7 +10,7 @@ func (r *Register) HTTPServe() http.Handler {
 }
 
 func (r *Register) EndPoint() string {
-	return "/register"
+	return "/register/register"
 }
 
 func (r *Register) SetMethods() []string {
@@ -18,31 +18,14 @@ func (r *Register) SetMethods() []string {
 }
 
 func (r *Register) Register(w http.ResponseWriter, rq *http.Request) {
-	// data, err := io.ReadAll(rq.Body)
-	// if err != nil {
-	// 	http.Error(w, "500", http.StatusInternalServerError)
-	// 	return
-	// }
-
-	// var userRegister userRegister
-
-	// if err = json.Unmarshal(data, &userRegister); err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-
-	// if err = storage.Insert(userRegister); err != nil {
-	// 	return
-	// }
-
-	data, status, err := utils.DecodeJSONRequestBody(rq, userRegister{})
+	data, status, err := utils.DecodeJSONRequestBody(rq, UserRegister{})
 
 	if err != nil {
 		utils.ResponseWithJSON(w, err, status)
 		return
 	}
 
-	user := data.(*userRegister)
+	user := data.(*UserRegister)
 	CryptPassword(user)
 	if err = storage.Insert(*user); err != nil {
 		utils.ResponseWithJSON(w, "Service Auth.Register: Bad Request", http.StatusBadRequest)

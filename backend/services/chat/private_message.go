@@ -10,7 +10,7 @@ func (pm *getPrivateMessage) HTTPServe() http.Handler {
 }
 
 func (pm *getPrivateMessage) EndPoint() string {
-	return "/api/message/private/:senderId/:receiverId"
+	return "/chat/message/private/:senderId/:receiverId"
 }
 
 func (pm *getPrivateMessage) SetMethods() []string {

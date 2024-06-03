@@ -14,7 +14,7 @@ func main() {
 	allServices := []microservices.Service{
 		&auth.Auth{},
 		&chat.Chat{},
-		&posts.Posts{},
+		&posts.Publish{},
 	}
 	server := server.NewServer(allServices...)
 	server.StartServices()

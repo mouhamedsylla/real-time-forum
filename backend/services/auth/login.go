@@ -3,6 +3,7 @@ package auth
 import (
 	"net/http"
 	"real-time-forum/utils"
+	"time"
 )
 
 func (l *Login) HTTPServe() http.Handler {
@@ -10,7 +11,7 @@ func (l *Login) HTTPServe() http.Handler {
 }
 
 func (l *Login) EndPoint() string {
-	return "/login"
+	return "/auth/login"
 }
 
 func (l *Login) SetMethods() []string {
@@ -26,7 +27,7 @@ func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
 
 	toAuthenticate := *data.(*userLogin)
 	storage.Custom.Where("Email", &toAuthenticate.Identifier).Or("Nickname", &toAuthenticate.Identifier)
-	rslt := storage.Scan(userRegister{}, "Password").([]userRegister)
+	rslt := storage.Scan(UserRegister{}, "Password").([]UserRegister)
 	storage.Custom.Clear()
 
 	if len(rslt) == 0 {
@@ -35,10 +36,19 @@ func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := rslt[0]
-	if Authenticate(user.Password, &toAuthenticate); err != nil {
+	if err = Authenticate(user.Password, &toAuthenticate); err != nil {
 		utils.ResponseWithJSON(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
-	utils.ResponseWithJSON(w, "login successfull", http.StatusOK)
+	token := jwt.GenerateToken()
+	http.SetCookie(w, &http.Cookie{
+		Name:    "forum",
+		Value:   token,
+		Expires: time.Now().Add(10 * time.Minute),
+		Path:   "/",
+	})
+
+	m := Response{Message: "login successfull"}
+	utils.ResponseWithJSON(w, m, http.StatusOK)
 }
