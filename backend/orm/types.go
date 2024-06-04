@@ -15,9 +15,12 @@ func GetType(fieldType reflect.Type) (sqlType string) {
 	case reflect.Float64, reflect.Float32:
 		sqlType = "REAL"
 	case reflect.Struct:
-
 		if fieldType.Name() == "Time" {
 			sqlType = "DATETIME"
+		}
+	case reflect.Slice:
+		if field.Type().Elem().Kind() == reflect.Uint8 {
+			sqlType = "BLOB"
 		}
 	}
 	return sqlType

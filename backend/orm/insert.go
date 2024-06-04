@@ -27,6 +27,10 @@ func (o *ORM) Insert(tables ...interface{}) error {
 					values = append(values, v.Field(i).Int())
 				case reflect.String:
 					values = append(values, v.Field(i).String())
+                case reflect.Slice:
+                    if field.Type().Elem().Kind() == reflect.Uint8 {
+                        values = append(values, field.Bytes())
+                    }
 				case reflect.Float64, reflect.Float32:
 					values = append(values, v.Field(i).Float())
 				case reflect.Struct:

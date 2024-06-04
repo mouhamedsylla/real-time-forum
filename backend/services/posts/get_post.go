@@ -17,5 +17,5 @@ func (p *GetPost) SetMethods() []string {
 }
 
 func (p *GetPost) GetPost(w http.ResponseWriter, r *http.Request) {
-
+	
 }

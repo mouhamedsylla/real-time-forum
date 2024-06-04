@@ -5,6 +5,7 @@ import "real-time-forum/orm"
 type UserPosts struct {
 	orm.Model
 	Title   string `orm-go:"NOT NULL"`
+	Image 	[]byte
 	Content string `orm-go:"NOT NULL"`
 	Like    int    `json:"nbLike"`
 	Dislike int    `json:"nbDislike"`
