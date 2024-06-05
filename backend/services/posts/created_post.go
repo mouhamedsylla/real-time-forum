@@ -2,14 +2,15 @@ package posts
 
 import (
 	"net/http"
+	"real-time-forum/utils"
 )
 
 func (p *CreatedPost) HTTPServe() http.Handler {
 	return http.HandlerFunc(p.CreatedPost)
 }
 
-func (p *CreatedPost) Endpoint() string {
-	return "/posts/createpost"
+func (p *CreatedPost) EndPoint() string {
+	return "/posts/createdpost"
 }
 
 func (p *CreatedPost) SetMethods() []string {
@@ -17,8 +18,7 @@ func (p *CreatedPost) SetMethods() []string {
 }
 
 func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
-
-	pub, status, err := utils.DecodeJSONRequestBody(r, CreatedPost{})
+	pub, status, err := utils.DecodeJSONRequestBody(r, UserPosts{})
 	if err != nil {
 		utils.ResponseWithJSON(w, err, status)
 		return

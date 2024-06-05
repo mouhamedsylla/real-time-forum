@@ -6,6 +6,7 @@ import (
 	"real-time-forum/orm"
 	"real-time-forum/server/microservices"
 	"real-time-forum/utils"
+	"real-time-forum/utils/jwt"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -17,7 +18,7 @@ const (
 
 var (
 	storage *orm.ORM
-	jwt     = utils.JWT{}
+	Jwt = jwt.JWT{}
 )
 
 type Auth struct {
@@ -37,7 +38,6 @@ func (auth *Auth) InitService() (err error) {
 	storage, err = utils.InitStorage(DB_NAME, DB_PATH, UserRegister{}, userLogin{})
 	controllers := []microservices.Controller{
 		// add controller ...
-		&CheckToken{},
 		&Register{},
 		&Login{},
 	}

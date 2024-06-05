@@ -82,9 +82,9 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 
 func (gtw *Gateway) BootstrapApp() {
-	//gtw.Router.SetDirectory("/static/", "../../server/gateway/static/")
-	//gtw.Router.Handler("/static/", gtw.Router.StaticServe())
-	//gtw.Router.Method(http.MethodGet).Handler("/", http.HandlerFunc(Home))
+	gtw.Router.SetDirectory("/static/", "../../server/gateway/static/")
+	gtw.Router.Method(http.MethodGet).Handler("/static/", gtw.Router.StaticServe())
+	gtw.Router.Method(http.MethodGet).Handler("/", http.HandlerFunc(Home))
 	for port, endpoints := range Gateway_EndPoint {
 		for _, endpoint := range endpoints {
 			gtw.Router.Method(http.MethodPost, http.MethodGet).

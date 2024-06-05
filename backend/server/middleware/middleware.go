@@ -4,12 +4,17 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"real-time-forum/utils"
+	"real-time-forum/utils/jwt"
 
 	"github.com/mouhamedsylla/term-color/color"
 )
 
-var infosLog *log.Logger
-var clr = color.Color().SetText("[INFO] ")
+var (
+	infosLog *log.Logger
+	clr = color.Color().SetText("[INFO] ")
+ 	Jwt = jwt.JWT{}
+)
 
 func init() {
 	infosLog = log.New(os.Stdout, clr.Colorize(clr.Green), log.Ldate|log.Ltime|log.Lshortfile)
@@ -22,7 +27,7 @@ func CORSMiddleware(next http.Handler) http.Handler {
 		if origin != "" {
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 			// Gérer les requêtes prévol
@@ -32,6 +37,25 @@ func CORSMiddleware(next http.Handler) http.Handler {
 			}
 		}
 
+		next.ServeHTTP(w, r)
+	})
+}
+
+func Authenticate(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		session, err := r.Cookie("forum")
+		if err != nil {
+			utils.ResponseWithJSON(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		publicKey := utils.GetPublicKey()
+		_, err = Jwt.VerifyToken(session.Value, publicKey)
+
+		if err != nil {
+			utils.ResponseWithJSON(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
 		next.ServeHTTP(w, r)
 	})
 }

@@ -1,8 +1,11 @@
 package auth
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 	"real-time-forum/utils"
+	"real-time-forum/utils/jwt"
 	"time"
 )
 
@@ -27,7 +30,7 @@ func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
 
 	toAuthenticate := *data.(*userLogin)
 	storage.Custom.Where("Email", &toAuthenticate.Identifier).Or("Nickname", &toAuthenticate.Identifier)
-	rslt := storage.Scan(UserRegister{}, "Password").([]UserRegister)
+	rslt := storage.Scan(UserRegister{}, "Password", "Id").([]UserRegister)
 	storage.Custom.Clear()
 
 	if len(rslt) == 0 {
@@ -40,15 +43,38 @@ func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
 		utils.ResponseWithJSON(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
-
-	token := jwt.GenerateToken()
+	var token string
+	if err = GetUserToken(&token, user.Id); err != nil {
+		fmt.Println("error in get user token: ", err)
+		utils.ResponseWithJSON(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	http.SetCookie(w, &http.Cookie{
 		Name:    "forum",
 		Value:   token,
 		Expires: time.Now().Add(10 * time.Minute),
-		Path:   "/",
+		Path:    "/",
 	})
 
 	m := Response{Message: "login successfull"}
 	utils.ResponseWithJSON(w, m, http.StatusOK)
+}
+
+func GetUserToken(token *string, userId int) error {
+	key := jwt.Key{}
+	if _, err := os.Stat("../../utils/key/private_key.pem"); os.IsNotExist(err) {
+		if err := key.GenerateKey(); err != nil {
+			return err
+		}
+		pemK := key.PEMfromKey()
+		if err = pemK.SetPEMToFile("../../utils/key"); err != nil {
+			return err
+		}
+	}
+	if err := key.KeyfromPrivateFile("../../utils/key/private_key.pem"); err != nil {
+		return err
+	}
+
+	*token = Jwt.GenerateToken(userId, key.Private)
+	return nil
 }

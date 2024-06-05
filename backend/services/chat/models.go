@@ -16,9 +16,16 @@ func NewMessage(sender, receiver, content string) Message {
 		Content: content,
 	}
 }
-
 type Notification struct {
 	Type    string `json:"type"`
+	Message string `json:"message"`
+}
+
+type Request struct {
+	Token string `json:"token"`
+}
+
+type Response struct {
 	Message string `json:"message"`
 }
 

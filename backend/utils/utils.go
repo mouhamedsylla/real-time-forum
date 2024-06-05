@@ -2,11 +2,14 @@ package utils
 
 import (
 	"bufio"
+	"crypto/rsa"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"real-time-forum/orm"
+	"real-time-forum/utils/jwt"
 	"reflect"
 	"strings"
 )
@@ -85,4 +88,12 @@ func LoadEnv(filename string) error {
 	}
 
 	return nil
+}
+
+func GetPublicKey() *rsa.PublicKey {
+	key := jwt.Key{}
+	if err := key.KeyfromPublicFile("../../utils/key/public_key.pem"); err != nil {
+		log.Fatal(err.Error())
+	}
+	return key.Public
 }
