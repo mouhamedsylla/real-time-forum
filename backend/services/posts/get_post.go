@@ -1,8 +1,8 @@
 package posts
 
 import (
-	"fmt"
 	"net/http"
+	"real-time-forum/utils"
 )
 
 func (p *GetPost) HTTPServe() http.Handler {
@@ -26,8 +26,18 @@ func (p *GetPost) GetPost(w http.ResponseWriter, r *http.Request) {
 
 	// method mouhamed
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
-	fmt.Println(CustomRoute["postId"])
+	// fmt.Println(CustomRoute["postId"])
+
+	storage.Custom.Where("Id", CustomRoute["postId"])
 
 	result := storage.Scan(UserPosts{}, "Id", "CreatedAt", "Title", "Content", "Like", "Dislike").([]UserPosts)
-	fmt.Println(result)
+	if len(result) == 0 {
+		utils.ResponseWithJSON(w, "Error Message from Posts.get_post: No Post Found", http.StatusNotFound)
+		return
+	}
+
+	storage.Custom.Clear()
+
+	utils.ResponseWithJSON(w, result[0], http.StatusOK)
+
 }

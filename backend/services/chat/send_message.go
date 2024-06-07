@@ -7,6 +7,8 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+
+
 var (
 	upgrad = websocket.Upgrader{
 		ReadBufferSize:  1024,
@@ -17,6 +19,7 @@ var (
 	}
 
 	clients = make(map[string]*websocket.Conn, 0)
+	broadcast = make(chan Notification)
 )
 
 func (sm *sendMessage) HTTPServe() http.Handler {
@@ -53,12 +56,20 @@ func (sm *sendMessage) sendMessage(w http.ResponseWriter, r *http.Request) {
 			fmt.Printf("Error reading message: %s\n", err)
 			break
 		}
-
 		client := clients[CustomRoute["receiverId"]]
 		storage.Insert(NewMessage(userID, CustomRoute["receiverId"], string(msg)))
+
+		storage.Custom.OrderBy("Id", 1).Limit(1)
+		message := storage.Scan(Message{}, "Id").([]Message)[0]
+		storage.Custom.Clear()
+
+		
 		if err := client.WriteMessage(websocket.TextMessage, []byte(msg)); err != nil {
 			fmt.Printf("Error writing message: %s\n", err)
 		}
+		broadcast <- NewNotification(message.Id, CustomRoute["receiverId"], "false")
 
 	}
 }
+
+

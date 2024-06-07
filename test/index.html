@@ -41,8 +41,31 @@
         const inputText2 = document.getElementById("mess-2")
         const ul1 = document.getElementById("send-1")
         const ul2 = document.getElementById("send-2")
-        const socket1 = new WebSocket("ws://localhost:9090/api/message/private/send/user-2?user_id=user-1")
-        const socket2 = new WebSocket("ws://localhost:9090/api/message/private/send/user-1?user_id=user-2")
+        const socket1 = new WebSocket("ws://localhost:9090/chat/message/private/send/user-2?user_id=user-1")
+        const socket2 = new WebSocket("ws://localhost:9090/chat/message/private/send/user-1?user_id=user-2")
+
+        const notif_component = 
+        `
+        <div class="notification">
+	<div class="notification-header">
+		<h3 class="notification-title">New notification</h3>
+		<i class="fa fa-times notification-close"></i>
+	</div>
+	<div class="notification-container">
+		<div class="notification-media">
+			<img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80" alt="" class="notification-user-avatar">
+			<i class="fa fa-thumbs-up notification-reaction"></i>
+		</div>
+		<div class="notification-content">
+			<p class="notification-text">
+			<strong>evondev</strong>, <strong>Trần Anh Tuấn</strong> and 154 others react to your post in <strong>Cộng đồng Frontend Việt Nam</strong>
+			</p>
+			<span class="notification-timer">a few seconds ago</span>
+		</div>
+		<span class="notification-status"></span>
+	</div>
+</div>
+        `
 
         socket1.onmessage = function (event) {
             const li = document.createElement("li")

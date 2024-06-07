@@ -27,7 +27,7 @@ func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
 	publi := pub.(*UserPosts)
 
 	if err = storage.Insert(*publi); err != nil {
-		utils.ResponseWithJSON(w, "Service posts.CreatedPost: 400 Bad Request", http.StatusBadRequest)
+		utils.ResponseWithJSON(w, "Service Posts.CreatedPost: 400 BadRequest", http.StatusBadRequest)
 	}
 
 	utils.ResponseWithJSON(w, "Post Created Successfully", http.StatusOK)

@@ -9,16 +9,10 @@ type Message struct {
 	Content    string `orm-go:"NOT NULL"`
 }
 
-func NewMessage(sender, receiver, content string) Message {
-	return Message{
-		SenderId: sender,
-		ReceiverId: receiver,
-		Content: content,
-	}
-}
 type Notification struct {
-	Type    string `json:"type"`
-	Message string `json:"message"`
+	UserID    string
+	MessageId int
+	Read      string
 }
 
 type Request struct {
@@ -29,6 +23,21 @@ type Response struct {
 	Message string `json:"message"`
 }
 
+func NewMessage(sender, receiver, content string) Message {
+	return Message{
+		SenderId:   sender,
+		ReceiverId: receiver,
+		Content:    content,
+	}
+}
+
+func NewNotification(messageId int, userId, read string) Notification {
+	return Notification{
+		UserID:    userId,
+		MessageId: messageId,
+		Read:      read,
+	}
+}
 
 // notifications := []Notification{
 // 	{Type: "new_message", Message: "You have a new message from {sender}."},
@@ -40,4 +49,3 @@ type Response struct {
 // 	{Type: "message_sent", Message: "Your message was sent successfully."},
 // 	{Type: "message_failed", Message: "Failed to send your message. Please try again."},
 // }
-

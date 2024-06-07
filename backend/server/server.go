@@ -15,6 +15,15 @@ import (
 	"github.com/mouhamedsylla/term-color/color"
 )
 
+const welcome = 
+`
+_|_|_|   _|_|_|_|   _|_|   _|                  _|_|_|_|_| _|_|_| _|      _| _|_|_|_|            _|_|_|_|   _|_|   _|_|_|   _|    _| _|      _| 
+_|    _| _|       _|    _| _|                      _|       _|   _|_|  _|_| _|                  _|       _|    _| _|    _| _|    _| _|_|  _|_| 
+_|_|_|   _|_|_|   _|_|_|_| _|       _|_|_|_|_|     _|       _|   _|  _|  _| _|_|_|   _|_|_|_|_| _|_|_|   _|    _| _|_|_|   _|    _| _|  _|  _| 
+_|    _| _|       _|    _| _|                      _|       _|   _|      _| _|                  _|       _|    _| _|    _| _|    _| _|      _| 
+_|    _| _|_|_|_| _|    _| _|_|_|_|                _|     _|_|_| _|      _| _|_|_|_|            _|         _|_|   _|    _|   _|_|   _|      _|
+`
+
 type Server struct {
 	Services *microservices.AppServices
 }
@@ -31,6 +40,9 @@ func (s *Server) StartServices() {
 	var wg sync.WaitGroup
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
+
+	fmt.Println(clr.SetText(welcome).SetBold().Colorize(clr.Blue))
+	fmt.Println(clr.SetText("🔁 Starting services...").Colorize(clr.Purple))
 
 	for _, service := range s.Services.Microservices {
 		service := service.GetService()
@@ -64,5 +76,6 @@ func (s *Server) StartServices() {
 			}
 		}(service)
 	}
+	fmt.Print(".\n.\n.\n")
 	wg.Wait()
 }

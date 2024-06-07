@@ -12,7 +12,7 @@ import (
 type HttpClient struct {
 	// BaseURL is the base URL for the service the client will call.
 	BaseURL string
-	
+
 	// Method is the HTTP method (e.g., GET, POST) that the client will use.
 	Method string
 }
@@ -37,7 +37,7 @@ func (c *HttpClient) SetMethod(method string) {
 func (c *HttpClient) Call(serviceName, endpoint string, request, response interface{}) error {
 	// Construct the full URL for the request.
 	url := fmt.Sprintf("%s/%s/%s", c.BaseURL, serviceName, endpoint)
-	
+
 	// Marshal the request data into JSON.
 	rqBody, err := json.Marshal(request)
 	if err != nil {
@@ -49,10 +49,10 @@ func (c *HttpClient) Call(serviceName, endpoint string, request, response interf
 	if err != nil {
 		return err
 	}
-	
+
 	// Set the content type to application/json.
 	req.Header.Set("Content-Type", "application/json")
-	
+
 	// Create a new HTTP client and send the request.
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -64,4 +64,3 @@ func (c *HttpClient) Call(serviceName, endpoint string, request, response interf
 	// Decode the response body into the response structure.
 	return json.NewDecoder(resp.Body).Decode(response)
 }
-

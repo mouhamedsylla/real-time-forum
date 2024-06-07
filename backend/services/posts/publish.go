@@ -41,9 +41,13 @@ func (post *Publish) InitService() (err error) {
 	)
 	controllers := []microservices.Controller{
 		// add controller..
+		&GetComment{},
+		&PostComment{},
+		&GetAllPost{},
 		&CreatedPost{},
 		&GetPost{},
 	}
+
 	post.Post = microservices.NewMicroservice("Publish&Comments", ":8181")
 	post.Post.Controllers = append(post.Post.Controllers, controllers...)
 	return
