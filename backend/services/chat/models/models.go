@@ -1,4 +1,4 @@
-package chat
+package models
 
 import "real-time-forum/orm"
 

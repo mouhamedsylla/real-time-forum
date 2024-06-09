@@ -1,9 +1,11 @@
 package notification
 
 import (
-	"real-time-forum/orm"
 	"real-time-forum/server/microservices"
 	"real-time-forum/server/middleware"
+	"real-time-forum/services/notification/controllers"
+	"real-time-forum/services/notification/database"
+	"real-time-forum/services/notification/models"
 	"real-time-forum/utils"
 )
 
@@ -11,8 +13,6 @@ const (
 	DB_NAME = "notification.db"
 	DB_PATH = "../../services/notification/database/"
 )
-
-var storage *orm.ORM
 
 type Notification struct {
 	Notification *microservices.Microservice
@@ -30,10 +30,10 @@ func (notif *Notification) ConfigureEndpoint() {
 }
 
 func (notif *Notification) InitService() (err error) {
-	storage, err = utils.InitStorage(DB_NAME, DB_PATH, UserNotification{})
+	database.DbNotification.Storage, err = utils.InitStorage(DB_NAME, DB_PATH, models.UserNotification{})
 	controller := []microservices.Controller{
 		// add controller...
-		&CreateNotification{},
+		&controllers.CreateNotification{},
 	}
 
 	notif.Notification = microservices.NewMicroservice("Notification", ":9191")
@@ -41,7 +41,6 @@ func (notif *Notification) InitService() (err error) {
 	return err
 }
 
-func (notif *Notification) GetService() *microservices.Microservice{
+func (notif *Notification) GetService() *microservices.Microservice {
 	return notif.Notification
 }
-

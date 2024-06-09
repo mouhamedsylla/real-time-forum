@@ -1,19 +1,17 @@
 package posts
 
 import (
-	"real-time-forum/orm"
 	"real-time-forum/server/microservices"
 	"real-time-forum/server/middleware"
+	"real-time-forum/services/posts/controllers"
+	"real-time-forum/services/posts/database"
+	"real-time-forum/services/posts/models"
 	"real-time-forum/utils"
 )
 
 const (
 	DB_NAME = "Post.db"
 	DB_PATH = "../../services/posts/database/"
-)
-
-var (
-	storage *orm.ORM
 )
 
 type Publish struct {
@@ -32,20 +30,20 @@ func (post *Publish) ConfigureEndpoint() {
 }
 
 func (post *Publish) InitService() (err error) {
-	storage, err = utils.InitStorage(DB_NAME, DB_PATH,
-		Comments{},
-		UserPosts{},
-		Categories{},
-		ReactionPost{},
-		ReactionComment{},
+	database.DbPost.Storage, err = utils.InitStorage(DB_NAME, DB_PATH,
+		models.Comments{},
+		models.UserPosts{},
+		models.Categories{},
+		models.ReactionPost{},
+		models.ReactionComment{},
 	)
 	controllers := []microservices.Controller{
 		// add controller..
-		&GetComment{},
-		&PostComment{},
-		&GetAllPost{},
-		&CreatedPost{},
-		&GetPost{},
+		&controllers.GetAllPost{},
+		&controllers.PostComment{},
+		&controllers.GetAllPost{},
+		&controllers.CreatedPost{},
+		&controllers.GetPost{},
 	}
 
 	post.Post = microservices.NewMicroservice("Publish&Comments", ":8181")

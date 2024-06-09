@@ -1,6 +1,7 @@
 package orm
 
 import (
+	"fmt"
 	"log"
 	"reflect"
 )
@@ -14,7 +15,6 @@ func (o *ORM) Scan(table interface{}, columns ...string) interface{} {
 	var param []interface{}
 	__BUILDER__.custom = o.Custom
 	query, param = __BUILDER__.Select(columns...).From(__table).Build()
-	
 
 	rows, err := o.Db.Query(query, param...)
 	defer __BUILDER__.Clear()
@@ -24,6 +24,7 @@ func (o *ORM) Scan(table interface{}, columns ...string) interface{} {
 	defer rows.Close()
 
 	__results := reflect.MakeSlice(reflect.SliceOf(Type), 0, 0)
+	fmt.Println("Scan: ",__results)
 
 	for rows.Next() {
 		values := make([]interface{}, 0)

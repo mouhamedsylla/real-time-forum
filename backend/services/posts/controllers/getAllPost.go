@@ -1,7 +1,9 @@
-package posts
+package controllers
 
 import (
 	"net/http"
+	"real-time-forum/services/posts/database"
+	"real-time-forum/services/posts/models"
 	"real-time-forum/utils"
 )
 
@@ -20,7 +22,7 @@ func (p *GetAllPost) SetMethods() []string {
 
 func (p *GetAllPost) GetAllPost(w http.ResponseWriter, r *http.Request) {
 
-	result := storage.Scan(UserPosts{}, "Id", "CreatedAt", "Title", "Content", "Like", "Dislike").([]UserPosts)
+	result := database.DbPost.Storage.Scan(models.UserPosts{}, "Id", "CreatedAt", "Title", "Content", "Like", "Dislike").([]models.UserPosts)
 	if len(result) == 0 {
 		utils.ResponseWithJSON(w, "Error Message from Posts.getAllPost: No Post Found", http.StatusNotFound)
 		return

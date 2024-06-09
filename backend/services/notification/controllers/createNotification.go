@@ -1,11 +1,13 @@
-package notification
+package controllers
 
 import (
 	"net/http"
+	"real-time-forum/services/notification/database"
+	"real-time-forum/services/notification/models"
 	"real-time-forum/utils"
 )
 
-var userNotif = make(chan UserNotification)
+var userNotif = make(chan models.UserNotification)
 
 func (cn *CreateNotification) HTTPServe() http.Handler {
 	return http.HandlerFunc(cn.CreateNotification)
@@ -20,19 +22,19 @@ func (cn *CreateNotification) SetMethods() []string {
 }
 
 func (cn *CreateNotification) CreateNotification(w http.ResponseWriter, rq *http.Request) {
-	data, status, err := utils.DecodeJSONRequestBody(rq, UserNotification{})
+	data, status, err := utils.DecodeJSONRequestBody(rq, models.UserNotification{})
 	if err != nil {
 		utils.ResponseWithJSON(w, err, status)
 		return
 	}
-	notification := data.(*UserNotification)
-	if err = storage.Insert(*notification); err != nil {
+	notification := data.(*models.UserNotification)
+	if err = database.DbNotification.Storage.Insert(*notification); err != nil {
 		utils.ResponseWithJSON(w, "Service Notification.CreateNotification: Bad Request", http.StatusBadRequest)
 		return
 	}
 
 	userNotif <- *notification
-	message := Response{
+	message := models.Response{
 		Message: "Notification Created",
 	}
 

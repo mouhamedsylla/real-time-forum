@@ -1,8 +1,6 @@
-package notification
+package controllers
 
 import (
-	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -33,7 +31,6 @@ func (sn *SendNotification) SetMethods() []string {
 }
 
 func (sn *SendNotification) SendNotification(w http.ResponseWriter, r *http.Request) {
-	// Handle request logic here
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
 
 	conn, err := upgrad.Upgrade(w, r, nil)
@@ -43,19 +40,18 @@ func (sn *SendNotification) SendNotification(w http.ResponseWriter, r *http.Requ
 	}
 
 	clients[CustomRoute["receiverId"]] = conn
-	go HandleNotification(conn)
+	// go HandleNotification(conn)
 }
 
+// func HandleNotification(conn *websocket.Conn) {
+// 	for {
+// 		notif := <- userNotif
+// 		if err != nil {
+// 			log.Println(err)
+// 		}
 
-func HandleNotification(conn *websocket.Conn) {
-	for {
-		// Handle notification logic here
-		notif := <- userNotif
-		data, err := json.Marshal(notif)
-		if err != nil {
-			log.Println(err)
-		}
+// 		conn.WriteMessage(websocket.TextMessage, []byte(data))
+// 	}
+// }
 
-		conn.WriteMessage(websocket.TextMessage, []byte(data))
-	}
-}
+// 		data, err := json.Marshal(notif)

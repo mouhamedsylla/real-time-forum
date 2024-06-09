@@ -1,7 +1,9 @@
-package auth
+package controllers
 
 import (
 	"net/http"
+	"real-time-forum/services/auth/database"
+	"real-time-forum/services/auth/models"
 	"real-time-forum/utils"
 )
 
@@ -18,16 +20,16 @@ func (r *Register) SetMethods() []string {
 }
 
 func (r *Register) Register(w http.ResponseWriter, rq *http.Request) {
-	data, status, err := utils.DecodeJSONRequestBody(rq, UserRegister{})
+	data, status, err := utils.DecodeJSONRequestBody(rq, models.UserRegister{})
 
 	if err != nil {
 		utils.ResponseWithJSON(w, err, status)
 		return
 	}
 
-	user := data.(*UserRegister)
-	CryptPassword(user)
-	if err = storage.Insert(*user); err != nil {
+	user := data.(*models.UserRegister)
+	models.CryptPassword(user)
+	if err = database.Db.Storage.Insert(*user); err != nil {
 		utils.ResponseWithJSON(w, "Service Auth.Register: Bad Request", http.StatusBadRequest)
 		return
 	}
@@ -35,7 +37,3 @@ func (r *Register) Register(w http.ResponseWriter, rq *http.Request) {
 	utils.ResponseWithJSON(w, "Registering Successfuly", http.StatusOK)
 
 }
-
-// func validForm(s string) {
-
-// }

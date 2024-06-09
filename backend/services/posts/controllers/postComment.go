@@ -1,7 +1,9 @@
-package posts
+package controllers
 
 import (
 	"net/http"
+	"real-time-forum/services/posts/database"
+	"real-time-forum/services/posts/models"
 	"real-time-forum/utils"
 )
 
@@ -20,24 +22,22 @@ func (p *PostComment) SetMethods() []string {
 func (p *PostComment) PostComment(w http.ResponseWriter, r *http.Request) {
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
 
-	storage.Custom.Where("Id", CustomRoute["postId"])
-
-	result := storage.Scan(UserPosts{}, "Id")    
+	database.DbPost.Storage.Custom.Where("Id", CustomRoute["postId"])
+	result := database.DbPost.Storage.Scan(models.UserPosts{}, "Id")
+	
 	if result == nil {
 		utils.ResponseWithJSON(w, "Service Posts.postComment Post not found", http.StatusNotFound)
 		return
 	}
-	// fmt.Println("PostCommentId: ", CustomRoute["postId"])
-
-	com, status, err := utils.DecodeJSONRequestBody(r, Comments{})
+	com, status, err := utils.DecodeJSONRequestBody(r, models.Comments{})
 	if err != nil {
 		utils.ResponseWithJSON(w, err, status)
 		return
 	}
 
-	comment := com.(*Comments)
-		
-	if err = storage.Insert(*comment); err != nil {
+	comment := com.(*models.Comments)
+
+	if err = database.DbPost.Storage.Insert(*comment); err != nil {
 		utils.ResponseWithJSON(w, "Service Posts.postComment: 400 BadRequest", http.StatusBadRequest)
 	}
 

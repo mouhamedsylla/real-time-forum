@@ -1,24 +1,16 @@
 package auth
 
 import (
-	"errors"
-	"log"
-	"real-time-forum/orm"
 	"real-time-forum/server/microservices"
+	"real-time-forum/services/auth/controllers"
+	"real-time-forum/services/auth/database"
+	"real-time-forum/services/auth/models"
 	"real-time-forum/utils"
-	"real-time-forum/utils/jwt"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 const (
 	DB_NAME = "auth.db"
 	DB_PATH = "../../services/auth/database/"
-)
-
-var (
-	storage *orm.ORM
-	Jwt = jwt.JWT{}
 )
 
 type Auth struct {
@@ -35,11 +27,10 @@ func (auth *Auth) ConfigureEndpoint() {
 }
 
 func (auth *Auth) InitService() (err error) {
-	storage, err = utils.InitStorage(DB_NAME, DB_PATH, UserRegister{}, userLogin{})
+	database.Db.Storage, err = utils.InitStorage(DB_NAME, DB_PATH, models.UserLogin{}, models.UserRegister{})
 	controllers := []microservices.Controller{
 		// add controller ...
-		&Register{},
-		&Login{},
+		&controllers.Register{},
 	}
 	auth.Auth = microservices.NewMicroservice("Authentication", ":8080")
 	auth.Auth.Controllers = append(auth.Auth.Controllers, controllers...)
@@ -48,20 +39,4 @@ func (auth *Auth) InitService() (err error) {
 
 func (auth *Auth) GetService() *microservices.Microservice {
 	return auth.Auth
-}
-
-func Authenticate(Password string, toAuthenticate *userLogin) error {
-	err := bcrypt.CompareHashAndPassword([]byte(Password), []byte(toAuthenticate.Password))
-	if err != nil {
-		return errors.New("invalide email or password")
-	}
-	return nil
-}
-
-func CryptPassword(user *UserRegister) {
-	hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 8)
-	if err != nil {
-		log.Fatal(err)
-	}
-	user.Password = string(hashPassword)
 }

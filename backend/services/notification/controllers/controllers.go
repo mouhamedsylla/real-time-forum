@@ -1,4 +1,4 @@
-package notification
+package controllers
 
 type CreateNotification struct{}
 type DeleteNotification struct{}

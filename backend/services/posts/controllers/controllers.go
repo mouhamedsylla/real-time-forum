@@ -1,4 +1,4 @@
-package posts
+package controllers
 
 type CreatedPost struct{}
 type GetAllPost struct{}
@@ -7,3 +7,4 @@ type PostComment struct{}
 type GetComment struct{}
 type Like struct{}
 type Dislike struct{}
+type ReactionPosts struct{}

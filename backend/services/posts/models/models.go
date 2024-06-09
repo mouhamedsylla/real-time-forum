@@ -1,4 +1,4 @@
-package posts
+package models
 
 import "real-time-forum/orm"
 
@@ -32,4 +32,13 @@ type ReactionPost struct {
 type ReactionComment struct {
 	Value     string `json:"value"`
 	CommentId int    `orm-go:"FOREIGN_KEY:Comments:Id"`
+}
+
+
+type SuccessResponse struct {
+	Message string `json:"message"`
+}
+
+type ErrorResponse struct {
+	Error string `json:"error"`
 }

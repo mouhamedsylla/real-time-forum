@@ -1,13 +1,16 @@
-package auth
+package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"os"
+	"real-time-forum/services/auth/database"
+	"real-time-forum/services/auth/models"
 	"real-time-forum/utils"
 	"real-time-forum/utils/jwt"
 	"time"
 )
+
+var Jwt = jwt.JWT{}
 
 func (l *Login) HTTPServe() http.Handler {
 	return http.HandlerFunc(l.Login)
@@ -22,16 +25,16 @@ func (l *Login) SetMethods() []string {
 }
 
 func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
-	data, status, err := utils.DecodeJSONRequestBody(r, userLogin{})
+	data, status, err := utils.DecodeJSONRequestBody(r, models.UserLogin{})
 	if err != nil {
 		utils.ResponseWithJSON(w, err, status)
 		return
 	}
 
-	toAuthenticate := *data.(*userLogin)
-	storage.Custom.Where("Email", &toAuthenticate.Identifier).Or("Nickname", &toAuthenticate.Identifier)
-	rslt := storage.Scan(UserRegister{}, "Password", "Id").([]UserRegister)
-	storage.Custom.Clear()
+	toAuthenticate := *data.(*models.UserLogin)
+	database.Db.Storage.Custom.Where("Email", &toAuthenticate.Identifier).Or("Nickname", &toAuthenticate.Identifier)
+	rslt := database.Db.Storage.Scan(models.UserRegister{}, "Password", "Id").([]models.UserRegister)
+	database.Db.Storage.Custom.Clear()
 
 	if len(rslt) == 0 {
 		utils.ResponseWithJSON(w, "this user does't exist", http.StatusNotFound)
@@ -39,13 +42,12 @@ func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := rslt[0]
-	if err = Authenticate(user.Password, &toAuthenticate); err != nil {
+	if err = models.Authenticate(user.Password, &toAuthenticate); err != nil {
 		utils.ResponseWithJSON(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 	var token string
 	if err = GetUserToken(&token, user.Id); err != nil {
-		fmt.Println("error in get user token: ", err)
 		utils.ResponseWithJSON(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -56,7 +58,7 @@ func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
 		Path:    "/",
 	})
 
-	m := Response{Message: "login successfull"}
+	m := models.Response{Message: "login successfull"}
 	utils.ResponseWithJSON(w, m, http.StatusOK)
 }
 

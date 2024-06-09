@@ -1,13 +1,13 @@
-package chat
+package controllers
 
 import (
 	"fmt"
 	"net/http"
+	"real-time-forum/services/chat/database"
+	"real-time-forum/services/chat/models"
 
 	"github.com/gorilla/websocket"
 )
-
-
 
 var (
 	upgrad = websocket.Upgrader{
@@ -18,23 +18,23 @@ var (
 		},
 	}
 
-	clients = make(map[string]*websocket.Conn, 0)
-	broadcast = make(chan Notification)
+	clients   = make(map[string]*websocket.Conn, 0)
+	Broadcast = make(chan models.Notification)
 )
 
-func (sm *sendMessage) HTTPServe() http.Handler {
+func (sm *SendMessage) HTTPServe() http.Handler {
 	return http.HandlerFunc(sm.sendMessage)
 }
 
-func (sm *sendMessage) EndPoint() string {
+func (sm *SendMessage) EndPoint() string {
 	return "/chat/message/private/send/:receiverId"
 }
 
-func (sm *sendMessage) SetMethods() []string {
+func (sm *SendMessage) SetMethods() []string {
 	return []string{http.MethodGet}
 }
 
-func (sm *sendMessage) sendMessage(w http.ResponseWriter, r *http.Request) {
+func (sm *SendMessage) sendMessage(w http.ResponseWriter, r *http.Request) {
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
 
 	userID := r.URL.Query().Get("user_id")
@@ -57,19 +57,16 @@ func (sm *sendMessage) sendMessage(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		client := clients[CustomRoute["receiverId"]]
-		storage.Insert(NewMessage(userID, CustomRoute["receiverId"], string(msg)))
+		database.DbChat.Storage.Insert(models.NewMessage(userID, CustomRoute["receiverId"], string(msg)))
 
-		storage.Custom.OrderBy("Id", 1).Limit(1)
-		message := storage.Scan(Message{}, "Id").([]Message)[0]
-		storage.Custom.Clear()
+		database.DbChat.Storage.Custom.OrderBy("Id", 1).Limit(1)
+		message := database.DbChat.Storage.Scan(models.Message{}, "Id").([]models.Message)[0]
+		database.DbChat.Storage.Custom.Clear()
 
-		
 		if err := client.WriteMessage(websocket.TextMessage, []byte(msg)); err != nil {
 			fmt.Printf("Error writing message: %s\n", err)
 		}
-		broadcast <- NewNotification(message.Id, CustomRoute["receiverId"], "false")
+		Broadcast <- models.NewNotification(message.Id, CustomRoute["receiverId"], "false")
 
 	}
 }
-
-
