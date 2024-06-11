@@ -28,6 +28,7 @@ func (r *Register) Register(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	user := data.(*models.UserRegister)
+	
 	models.CryptPassword(user)
 	if err = database.Db.Storage.Insert(*user); err != nil {
 		utils.ResponseWithJSON(w, "Service Auth.Register: Bad Request", http.StatusBadRequest)

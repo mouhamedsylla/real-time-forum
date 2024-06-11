@@ -43,6 +43,7 @@ func (post *Publish) InitService() (err error) {
 		&controllers.PostComment{},
 		&controllers.GetAllPost{},
 		&controllers.CreatedPost{},
+		&controllers.GetComment{},
 		&controllers.GetPost{},
 	}
 

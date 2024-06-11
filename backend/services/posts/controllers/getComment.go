@@ -24,6 +24,7 @@ func (c *GetComment) GetComment(w http.ResponseWriter, r *http.Request) {
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
 
 	database.DbPost.Storage.Custom.Where("Post_id", CustomRoute["postId"])
+
 	data := database.DbPost.Storage.Scan(models.Comments{}, "Id", "CreatedAt", "Comment", "Post_id", "Like", "Dislike")
 	database.DbPost.Storage.Custom.Clear()
 
@@ -32,7 +33,7 @@ func (c *GetComment) GetComment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := data.([]models.Comments)
-	
+
 	if len(result) == 0 {
 		utils.ResponseWithJSON(w, "Error Message from Posts.postComment: No Comment Found", http.StatusNotFound)
 		return
