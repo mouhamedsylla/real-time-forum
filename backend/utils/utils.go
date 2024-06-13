@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"crypto/rsa"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -60,10 +61,12 @@ func DecodeJSONRequestBody(r *http.Request, model interface{}) (interface{}, int
 	}
 
 	if err = json.Unmarshal(data, decodedData); err != nil {
+		fmt.Println("Error: ", err)
 		return nil, http.StatusBadRequest, err
 	}
 	return decodedData, http.StatusOK, nil
 }
+
 
 func LoadEnv(filename string) error {
 	file, err := os.Open(filename)

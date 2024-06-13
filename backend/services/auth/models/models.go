@@ -24,13 +24,13 @@ type UserLogin struct {
 
 type UserRegister struct {
 	orm.Model
-	Nickname  string `orm-go:"NOT NULL UNIQUE" json:"nickname"`
-	Age       int    `orm-go:"NOT NULL" json:"age"`
-	Gender    string `orm-go:"NOT NULL" json:"gender"`
-	FirstName string `orm-go:"NOT NULL" json:"firstName"`
-	LastName  string `orm-go:"NOT NULL" json:"lastName"`
-	Email     string `orm-go:"NOT NULL UNIQUE" json:"email"`
-	Password  string `orm-go:"NOT NULL" json:"password"`
+	Nickname  string `orm-go:"NOT NULL UNIQUE" json:"nickname" validate:"username"`
+	Age       int    `orm-go:"NOT NULL" json:"age" validate:"min(18)"`
+	Gender    string `orm-go:"NOT NULL" json:"gender" validate:"required"`
+	FirstName string `orm-go:"NOT NULL" json:"firstName" validate:"required"`
+	LastName  string `orm-go:"NOT NULL" json:"lastName" validate:"required"`
+	Email     string `orm-go:"NOT NULL UNIQUE" json:"email" validate:"email"`
+	Password  string `orm-go:"NOT NULL" json:"password" validate:"required"`
 }
 
 func Authenticate(Password string, toAuthenticate *UserLogin) error {

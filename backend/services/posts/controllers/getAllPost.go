@@ -7,7 +7,6 @@ import (
 	"real-time-forum/utils"
 )
 
-
 func (p *GetAllPost) HTTPServe() http.Handler {
 	return http.HandlerFunc(p.GetAllPost)
 }
@@ -22,9 +21,9 @@ func (p *GetAllPost) SetMethods() []string {
 
 func (p *GetAllPost) GetAllPost(w http.ResponseWriter, r *http.Request) {
 
-	result := database.DbPost.Storage.Scan(models.UserPosts{}, "Id", "CreatedAt", "Title", "Content", "Like", "Dislike").([]models.UserPosts)
+	result := database.DbPost.Storage.Scan(models.UserPosts{}, "Id", "CreatedAt", "Title", "Image", "Content", "Like", "Dislike").([]models.UserPosts)
 	if len(result) == 0 {
-		utils.ResponseWithJSON(w, "Error Message from Posts.getAllPost: No Post Found", http.StatusNotFound)
+		utils.ResponseWithJSON(w, "Error Message from Posts.getAllPost: No Post Found", http.StatusNoContent)
 		return
 	}
 

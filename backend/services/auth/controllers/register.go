@@ -5,6 +5,7 @@ import (
 	"real-time-forum/services/auth/database"
 	"real-time-forum/services/auth/models"
 	"real-time-forum/utils"
+	validation "real-time-forum/utils/Validation"
 )
 
 func (r *Register) HTTPServe() http.Handler {
@@ -12,7 +13,7 @@ func (r *Register) HTTPServe() http.Handler {
 }
 
 func (r *Register) EndPoint() string {
-	return "/register/register"
+	return "/auth/register"
 }
 
 func (r *Register) SetMethods() []string {
@@ -28,8 +29,16 @@ func (r *Register) Register(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	user := data.(*models.UserRegister)
-	
+
+	var valid = validation.NewValidator()
+	valid.Init(&user)
+	if err := valid.Validate(); err != nil {
+		utils.ResponseWithJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
 	models.CryptPassword(user)
+
 	if err = database.Db.Storage.Insert(*user); err != nil {
 		utils.ResponseWithJSON(w, "Service Auth.Register: Bad Request", http.StatusBadRequest)
 		return

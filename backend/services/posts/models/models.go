@@ -4,6 +4,7 @@ import "real-time-forum/orm"
 
 type UserPosts struct {
 	orm.Model
+	UserId string
 	Title   string `orm-go:"NOT NULL"`
 	Image 	[]byte
 	Content string `orm-go:"NOT NULL"`

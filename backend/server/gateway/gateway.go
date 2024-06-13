@@ -19,7 +19,10 @@ var Gateway_EndPoint = map[string][]string{
 		"/auth/register",
 		"/auth/login",
 	},
-	"8181": {},
+	"8181": {
+		"/posts/getAllPost",
+		"/posts/createdpost/:userId",
+	},
 }
 
 type Gateway struct {
@@ -73,7 +76,7 @@ func (gtw *Gateway) Authenticate() {
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	tmp, err := template.ParseFiles("../../server/gateway/static/index.html")
+	tmp, err := template.ParseFiles("../../../frontend/App/assets/index.html")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -82,8 +85,8 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 
 func (gtw *Gateway) BootstrapApp() {
-	gtw.Router.SetDirectory("/static/", "../../server/gateway/static/")
-	gtw.Router.Method(http.MethodGet).Handler("/static/", gtw.Router.StaticServe())
+	gtw.Router.SetDirectory("/assets/", "../../../frontend/App/assets/")
+	gtw.Router.Method(http.MethodGet).Handler("/assets/", gtw.Router.StaticServe())
 	gtw.Router.Method(http.MethodGet).Handler("/", http.HandlerFunc(Home))
 	for port, endpoints := range Gateway_EndPoint {
 		for _, endpoint := range endpoints {

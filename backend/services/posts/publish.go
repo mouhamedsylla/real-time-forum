@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	DB_NAME = "Post.db"
+	DB_NAME = "post.db"
 	DB_PATH = "../../services/posts/database/"
 )
 

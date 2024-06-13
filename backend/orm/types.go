@@ -19,23 +19,18 @@ func GetType(fieldType reflect.Type) (sqlType string) {
 			sqlType = "DATETIME"
 		}
 	case reflect.Slice:
-		if CheckTypeSlice(fieldType) {
+		if fieldType.Elem().Kind() == reflect.Uint8 {
 			sqlType = "BLOB"
 		}
-		// if field.Type().Elem().Kind() == reflect.Uint8 {
-		// 	sqlType = "BLOB"
-		// }
-
 	}
 	return sqlType
 }
 
-
-func CheckTypeSlice(fieldType reflect.Type) bool{
-	for elem := range fieldType.Elem().Kind() {
-		if elem != reflect.Uint8 {
-			return false
-		}
-	}
-	return true
-}
+// func CheckTypeSlice(fieldType reflect.Type) bool {
+// 	for elem := range fieldType.Elem().Kind() {
+// 		if elem != reflect.Uint8 {
+// 			return false
+// 		}
+// 	}
+// 	return true
+// }

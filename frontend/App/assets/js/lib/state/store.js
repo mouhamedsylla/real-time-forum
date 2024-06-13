@@ -2,20 +2,20 @@ import PubSub from "./pubsub.js"
 
 export default class Store {
     constructor(params) {
-        this.events = new PubSub()
-        this.state = {}
-        this.actions = params.actions || {}
-        this.mutations = params.mutations || {}
-        this.status = 'resting'
+        let self = this
+        self.events = new PubSub()
+        self.state = {}
+        self.actions = params.actions || {}
+        self.mutations = params.mutations || {}
+        self.status = 'resting'
 
-        this.state = new Proxy(params.state || {}, {
+        self.state = new Proxy(params.state || {}, {
             set: function(state, key, value) {
-                let self = this
                 state[key] = value
                 self.events.publish('stateChange', self.state)
 
                 if (self.status !== 'mutation') {
-                    console.error(`You should use a mutation to set ${key}`)
+                    console.log(`You should use a mutation to set ${key}`)
                 }
 
                 self.status = 'resting'
@@ -26,7 +26,7 @@ export default class Store {
 
     dispatch(actionKey, payload) {
         let self = this
-        if (self.actions[actionKey] !== 'function') {
+        if (typeof self.actions[actionKey] !== 'function') {
             console.error(`Action ${actionKey} doesn't exist.`)
             return false
         }

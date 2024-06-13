@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"real-time-forum/services/posts/database"
 	"real-time-forum/services/posts/models"
@@ -12,7 +14,7 @@ func (p *CreatedPost) HTTPServe() http.Handler {
 }
 
 func (p *CreatedPost) EndPoint() string {
-	return "/posts/createdpost"
+	return "/posts/createdpost/:userId"
 }
 
 func (p *CreatedPost) SetMethods() []string {
@@ -20,23 +22,28 @@ func (p *CreatedPost) SetMethods() []string {
 }
 
 func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
-	// Decode the JSON request body
-	data, status, err := utils.DecodeJSONRequestBody(r, models.UserPosts{})
+	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
+	var post = &models.UserPosts{}
+
+	post.Title = r.FormValue("title")
+	post.Content = r.FormValue("content")
+	imageFile, _, err := r.FormFile("image")
 	if err != nil {
-		response := models.ErrorResponse{Error: err.Error()}
-		utils.ResponseWithJSON(w, response, status)
+		http.Error(w, "Unable to get image file", http.StatusBadRequest)
 		return
 	}
+	defer imageFile.Close()
 
-	// Type assert the decoded data to *UserPosts
-	post, ok := data.(*models.UserPosts)
-	if !ok {
-		response := models.ErrorResponse{Error: "Invalid data format"}
-		utils.ResponseWithJSON(w, response, http.StatusBadRequest)
+	// Lire le fichier image
+	post.Image, err = ioutil.ReadAll(imageFile)
+	if err != nil {
+		http.Error(w, "Unable to read image file", http.StatusInternalServerError)
 		return
 	}
 
 	// Insert the post into the storage
+	post.UserId = CustomRoute["userId"]
+	fmt.Println(CustomRoute)
 	if err = database.DbPost.Storage.Insert(*post); err != nil {
 		response := models.ErrorResponse{Error: "Failed to create post"}
 		utils.ResponseWithJSON(w, response, http.StatusBadRequest)
