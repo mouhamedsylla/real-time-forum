@@ -22,6 +22,10 @@ type UserLogin struct {
 	Password   string `json:"password"`
 }
 
+type UserContact struct {
+	UsersId []int `json:"usersId"`
+}
+
 type UserRegister struct {
 	orm.Model
 	Nickname  string `orm-go:"NOT NULL UNIQUE" json:"nickname" validate:"username"`

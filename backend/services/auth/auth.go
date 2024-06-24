@@ -28,12 +28,16 @@ func (auth *Auth) ConfigureEndpoint() {
 
 func (auth *Auth) InitService() (err error) {
 	database.Db.Storage, err = utils.InitStorage(DB_NAME, DB_PATH, models.UserLogin{}, models.UserRegister{})
-	controllers := []microservices.Controller{
+	controller := []microservices.Controller{
 		// add controller ...
 		&controllers.Register{},
+		&controllers.Login{},
+		&controllers.GetGroupUserDiscussion{},
 	}
 	auth.Auth = microservices.NewMicroservice("Authentication", ":8080")
-	auth.Auth.Controllers = append(auth.Auth.Controllers, controllers...)
+	controllers.AuthClient = auth.Auth.Client
+	auth.Auth.Controllers = append(auth.Auth.Controllers, controller...)
+
 	return
 }
 

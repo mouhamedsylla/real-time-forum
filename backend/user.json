@@ -1,0 +1,39 @@
+[
+    {
+        "nickname": "dany",
+        "age": 29,
+        "gender": "female",
+        "firstName": "Daenerys",
+        "lastName": "Targaryen",
+        "email": "daenerys@gameofthrone.film",
+        "password": "dragonQueen"
+      },
+      {
+        "nickname": "jhony",
+        "age": 32,
+        "gender": "male",
+        "firstName": "Jhon",
+        "lastName": "Snow",
+        "email": "jhon@gameofthrone.film",
+        "password": "wallGarden"
+      },
+      {
+        "nickname": "imp",
+        "age": 40,
+        "gender": "male",
+        "firstName": "Tyrion",
+        "lastName": "Lannister",
+        "email": "tyrion@gameofthrone.film",
+        "password": "handOfTheKing"
+      },
+      {
+        "nickname": "noOne",
+        "age": 18,
+        "gender": "female",
+        "firstName": "Arya",
+        "lastName": "Stark",
+        "email": "arya@gameofthrone.film",
+        "password": "faceless"
+      }
+                  
+]

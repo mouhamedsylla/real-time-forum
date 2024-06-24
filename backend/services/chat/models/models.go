@@ -4,8 +4,8 @@ import "real-time-forum/orm"
 
 type Message struct {
 	orm.Model
-	SenderId   string `orm-go:"NOT NULL"`
-	ReceiverId string `orm-go:"NOT NULL"`
+	SenderId   int
+	ReceiverId int
 	Content    string `orm-go:"NOT NULL"`
 }
 
@@ -13,6 +13,10 @@ type Notification struct {
 	UserID    string
 	MessageId int
 	Read      string
+}
+
+type UserContact struct {
+	UsersId []int `json:"usersId"`
 }
 
 type Request struct {
@@ -23,7 +27,7 @@ type Response struct {
 	Message string `json:"message"`
 }
 
-func NewMessage(sender, receiver, content string) Message {
+func NewMessage(sender, receiver int, content string) Message {
 	return Message{
 		SenderId:   sender,
 		ReceiverId: receiver,

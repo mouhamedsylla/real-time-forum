@@ -5,6 +5,7 @@ import (
 	"real-time-forum/services/posts/database"
 	"real-time-forum/services/posts/models"
 	"real-time-forum/utils"
+	"strconv"
 )
 
 func (p *PostComment) HTTPServe() http.Handler {
@@ -22,21 +23,28 @@ func (p *PostComment) SetMethods() []string {
 func (p *PostComment) PostComment(w http.ResponseWriter, r *http.Request) {
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
 
-	database.DbPost.Storage.Custom.Where("Id", CustomRoute["postId"])
+	postId, err := strconv.Atoi(CustomRoute["postId"])
+	if err != nil {
+		utils.ResponseWithJSON(w, "Service Posts.postComment: 400 BadRequest", http.StatusBadRequest)
+		return
+	}
+
+	database.DbPost.Storage.Custom.Where("Id", postId)
 	result := database.DbPost.Storage.Scan(models.UserPosts{}, "Id")
+	database.DbPost.Storage.Custom.Clear()
 	
 	if result == nil {
 		utils.ResponseWithJSON(w, "Service Posts.postComment Post not found", http.StatusNotFound)
 		return
 	}
-	com, status, err := utils.DecodeJSONRequestBody(r, models.Comments{})
+	data, status, err := utils.DecodeJSONRequestBody(r, models.Comments{})
 	if err != nil {
 		utils.ResponseWithJSON(w, err, status)
 		return
 	}
 
-	comment := com.(*models.Comments)
-
+	comment := data.(*models.Comments)
+	comment.Post_id = postId
 	if err = database.DbPost.Storage.Insert(*comment); err != nil {
 		utils.ResponseWithJSON(w, "Service Posts.postComment: 400 BadRequest", http.StatusBadRequest)
 	}

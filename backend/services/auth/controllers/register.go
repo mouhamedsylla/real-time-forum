@@ -31,9 +31,9 @@ func (r *Register) Register(w http.ResponseWriter, rq *http.Request) {
 	user := data.(*models.UserRegister)
 
 	var valid = validation.NewValidator()
-	valid.Init(&user)
+	valid.Init(*user)
 	if err := valid.Validate(); err != nil {
-		utils.ResponseWithJSON(w, err, http.StatusBadRequest)
+		utils.ResponseWithJSON(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 

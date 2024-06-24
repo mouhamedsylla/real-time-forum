@@ -15,6 +15,7 @@ var Gateway_EndPoint = map[string][]string{
 		"/chat/message/private/users/:userId",
 	},
 	"8080": {
+		"/auth/getGroupUser/:userId",
 		"/auth/checkToken",
 		"/auth/register",
 		"/auth/login",
@@ -22,6 +23,8 @@ var Gateway_EndPoint = map[string][]string{
 	"8181": {
 		"/posts/getAllPost",
 		"/posts/createdpost/:userId",
+		"/posts/:postId/comment",
+		"/posts/:postId/getcomment",
 	},
 }
 
@@ -76,7 +79,7 @@ func (gtw *Gateway) Authenticate() {
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	tmp, err := template.ParseFiles("../../../frontend/App/assets/index.html")
+	tmp, err := template.ParseFiles("../../../frontend/App/index.html")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -85,8 +88,8 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 
 func (gtw *Gateway) BootstrapApp() {
-	gtw.Router.SetDirectory("/assets/", "../../../frontend/App/assets/")
-	gtw.Router.Method(http.MethodGet).Handler("/assets/", gtw.Router.StaticServe())
+	gtw.Router.SetDirectory("/App/", "../../../frontend/App/")
+	gtw.Router.Method(http.MethodGet).Handler("/App/", gtw.Router.StaticServe())
 	gtw.Router.Method(http.MethodGet).Handler("/", http.HandlerFunc(Home))
 	for port, endpoints := range Gateway_EndPoint {
 		for _, endpoint := range endpoints {

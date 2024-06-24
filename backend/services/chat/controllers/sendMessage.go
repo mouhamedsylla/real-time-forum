@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"real-time-forum/services/chat/database"
 	"real-time-forum/services/chat/models"
+	"strconv"
 
 	"github.com/gorilla/websocket"
 )
@@ -57,7 +58,9 @@ func (sm *SendMessage) sendMessage(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		client := clients[CustomRoute["receiverId"]]
-		database.DbChat.Storage.Insert(models.NewMessage(userID, CustomRoute["receiverId"], string(msg)))
+		idU, _ := strconv.Atoi(userID)
+		idReceiver, _ := strconv.Atoi(CustomRoute["receiverId"])
+		database.DbChat.Storage.Insert(models.NewMessage(idU, idReceiver, string(msg)))
 
 		database.DbChat.Storage.Custom.OrderBy("Id", 1).Limit(1)
 		message := database.DbChat.Storage.Scan(models.Message{}, "Id").([]models.Message)[0]

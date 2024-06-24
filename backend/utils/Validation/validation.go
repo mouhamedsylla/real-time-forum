@@ -75,6 +75,10 @@ func (tg *Target) GetRuleByTagRuleName(tagRule string) (*RuleSet, error) {
 func (v *Validator) Init(models ...interface{}) {
 	for _, m := range models {
 		val := reflect.ValueOf(m)
+
+		if val.Kind() == reflect.Ptr { // Dereference pointer if model is a pointer.
+			val = val.Elem()
+		}
 		for i := 0; i < val.NumField(); i++ { // Iterate through fields of the model.
 			field := val.Field(i)
 			target := NewTarget(

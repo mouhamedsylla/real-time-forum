@@ -3,6 +3,7 @@ package microservices
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -38,6 +39,44 @@ func (c *HttpClient) Call(serviceName, endpoint string, request, response interf
 	// Construct the full URL for the request.
 	url := fmt.Sprintf("%s/%s/%s", c.BaseURL, serviceName, endpoint)
 
+	fmt.Println("URL: ", url)
+
+	// Marshal the request data into JSON.
+	rqBody, err := json.Marshal(request)
+	if err != nil {
+		fmt.Println("Error0:", err)
+		return err
+	}
+
+	// Create a new HTTP request with the specified method, URL, and request body.
+	req, err := http.NewRequest(c.Method, url, bytes.NewBuffer(rqBody))
+	if err != nil {
+		fmt.Println("Error1:", err)
+		return err
+	}
+
+	// Set the content type to application/json.
+	req.Header.Set("Content-Type", "application/json")
+
+	// Create a new HTTP client and send the request.
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error2: ", err)
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Decode the response body into the response structure.
+	return json.NewDecoder(resp.Body).Decode(response)
+}
+
+// Call makes a request to the specified service and endpoint, using the provided request data.
+// It decodes the response into the provided response structure and returns an error if any occurs.
+func (c *HttpClient) CallWithContext(ctx context.Context, serviceName, endpoint string, request, response interface{}) error {
+	// Construct the full URL for the request.
+	url := fmt.Sprintf("%s/%s/%s", c.BaseURL, serviceName, endpoint)
+
 	// Marshal the request data into JSON.
 	rqBody, err := json.Marshal(request)
 	if err != nil {
@@ -45,7 +84,7 @@ func (c *HttpClient) Call(serviceName, endpoint string, request, response interf
 	}
 
 	// Create a new HTTP request with the specified method, URL, and request body.
-	req, err := http.NewRequest(c.Method, url, bytes.NewBuffer(rqBody))
+	req, err := http.NewRequestWithContext(ctx, c.Method, url, bytes.NewBuffer(rqBody))
 	if err != nil {
 		return err
 	}

@@ -1,6 +1,8 @@
 package orm
 
-import "strings"
+import (
+	"strings"
+)
 
 var (
 	// The `Order` variable is a map that maps integers to strings. It is used to represent the order of
@@ -157,3 +159,15 @@ func (b *SQLBuilder) Having(condition string) *SQLBuilder {
 	return b
 }
 
+func (b *SQLBuilder) WhereIn(column string, values []interface{}) *SQLBuilder {
+	b.query += " WHERE " + column + " IN ("
+	for i := 0; i < len(values); i++ {
+		if i > 0 {
+			b.query += ", "
+		}
+		b.query += "?"
+	}
+	b.query += ")"
+	b.parameters = append(b.parameters, values...)
+	return b
+}

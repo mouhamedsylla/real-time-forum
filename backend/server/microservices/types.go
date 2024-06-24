@@ -2,6 +2,7 @@
 package microservices
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -11,10 +12,10 @@ import (
 type Service interface {
 	// GetService returns the Microservice instance.
 	GetService() *Microservice
-	
+
 	// InitService initializes the service and returns an error if initialization fails.
 	InitService() error
-	
+
 	// ConfigureEndpoint sets up the service endpoints.
 	ConfigureEndpoint()
 }
@@ -25,10 +26,10 @@ type Service interface {
 type Controller interface {
 	// HTTPServe returns an http.Handler to handle HTTP requests.
 	HTTPServe() http.Handler
-	
+
 	// SetMethods defines and returns a slice of HTTP methods (e.g., GET, POST) that the controller supports.
 	SetMethods() []string
-	
+
 	// EndPoint returns the URL endpoint as a string.
 	EndPoint() string
 }
@@ -40,10 +41,12 @@ type Client interface {
 	// Call makes a request to another service.
 	// It takes the service name, endpoint, request data, and a response structure, returning an error if the call fails.
 	Call(serviceName, endpoint string, request, response interface{}) error
-	
+
+	CallWithContext(ctx context.Context, serviceName, endpoint string, request, response interface{}) error
+
 	// SetBaseURL sets the base URL for the client.
 	SetBaseURL(url string)
-	
+
 	// SetMethod sets the HTTP method (e.g., GET, POST) for the client.
 	SetMethod(method string)
 }

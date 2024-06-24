@@ -29,7 +29,9 @@ func (c *GetComment) GetComment(w http.ResponseWriter, r *http.Request) {
 	database.DbPost.Storage.Custom.Clear()
 
 	if data == nil {
-		fmt.Println("not found")
+		fmt.Println("no comment")
+		utils.ResponseWithJSON(w, "no comment", http.StatusNoContent)
+		return
 	}
 
 	result := data.([]models.Comments)
