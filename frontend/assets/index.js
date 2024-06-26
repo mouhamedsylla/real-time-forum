@@ -3,9 +3,12 @@ import Register from "./js/pages/register.js"
 
 const app = document.getElementById("app")
 
+const register = new Register()
+const login = new Login()
+
 const pages = {
-    "/register": new Register(),
-    "/login": new Login()
+    "/register": register,
+    "/login": login
 }
 
 function getPage(path) {
@@ -13,7 +16,6 @@ function getPage(path) {
     Object.entries(pages).forEach(([key, value]) => {
         if (key == path) {
             page = value.getHTML()
-            console.log(page)
         }
     })
     return page
@@ -22,14 +24,26 @@ function getPage(path) {
 function navigateTo(path) {
     history.pushState(null, "", path)
     app.innerHTML = getPage(path)
+    
+
+    if (path == "/login") {
+        login.bindInputs()
+    }
+
+    if (path == "/register") {
+        register.bindInputs()
+    }
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("a[data-link]").forEach(a => {
-        a.addEventListener("click", (event) => {
-            event.preventDefault()
-            console.log('ok')
+document.addEventListener("DOMContentLoaded", (e) => {
+    document.body.addEventListener("click", (event) => {
+        console.log("ok")
+        event.preventDefault()
+        console.log(event.target.getAttribute("href"))
+        if (event.target.matches("[data-link]")) {
             navigateTo(event.target.getAttribute("href"))
-        })
+        }
     })
 })
+
+console.log("hello")

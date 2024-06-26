@@ -1,9 +1,23 @@
 import Page from "./pages.js";
 
 export default class Register extends Page {
-    constructor(params) {
+    constructor() {
         super("Register")
-        this.params = params
+        this.UserInfos = {}
+    }
+
+    bindInputs() {
+        const inputs = document.querySelectorAll(".login__input")
+        inputs.forEach(input => {
+            input.addEventListener("input", (e) => {
+                this.UserInfos[e.target.name] = input.value
+            })
+        })
+
+        const signUp = document.getElementById("sign-in")
+        signUp.addEventListener("submit", (e) => {
+            console.log(this.UserInfos)
+        })
     }
 
     getHTML() {
@@ -15,45 +29,45 @@ export default class Register extends Page {
                 </div>
 
                 <div class="login__forms">
-                    <form action="" class="login__create none" id="login-up">
+                    <form action="" class="login__create" id="login-up">
                         <h1 class="login__title">Create Account</h1>
     
                         <div class="login__box">
                             <i class='bx bx-user login__icon'></i>
-                            <input type="text" placeholder="Nickname" class="login__input">
+                            <input name="nickname" type="text" placeholder="Nickname" class="login__input">
                         </div>
 
                         <div class="login__box">
-                            <input type="text" placeholder="Age" class="login__input">
+                            <input name="age" type="text" placeholder="Age" class="login__input">
                         </div>
 
                         <div class="login__box">
-                            <input type="text" placeholder="Gender" class="login__input">
+                            <input name="gender" type="text" placeholder="Gender" class="login__input">
                         </div>
 
                         <div class="login__box">
-                            <input type="text" placeholder="FirstName" class="login__input">
+                            <input name="firstName" type="text" placeholder="FirstName" class="login__input">
                         </div>
 
                         <div class="login__box">
-                            <input type="text" placeholder="LastName" class="login__input">
+                            <input name="lastName" type="text" placeholder="LastName" class="login__input">
                         </div>
     
                         <div class="login__box">
                             <i class='bx bx-at login__icon'></i>
-                            <input type="text" placeholder="Email" class="login__input">
+                            <input name="email" type="text" placeholder="Email" class="login__input">
                         </div>
 
                         <div class="login__box">
                             <i class='bx bx-lock-alt login__icon'></i>
-                            <input type="password" placeholder="Password" class="login__input">
+                            <input name="password" type="password" placeholder="Password" class="login__input">
                         </div>
 
-                        <a href="/login" class="login__button" data-link>Sign Up</a>
+                        <a id="sign-in" class="login__button" data-link>Sign Up</a>
 
                         <div>
                             <span class="login__account">Already have an Account ?</span>
-                            <span class="login__signup" id="sign-in">Sign In</span>
+                            <span class="login__signup" href="/login" data-link>Sign In</span>
                         </div>
 
                         <!-- <div class="login__social">

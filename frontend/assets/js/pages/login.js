@@ -2,9 +2,20 @@ import Page from "./pages.js";
 
 export default class Login extends Page {
 
-    constructor(params) {
+    constructor() {
         super("Login")
-        this.params = params
+        this.credentials = {}
+    }
+
+    bindInputs() {
+        const inputs = document.querySelectorAll(".login__input")
+        console.log(inputs) 
+        inputs.forEach(input => {
+            input.addEventListener("input", (e) => {
+                this.credentials[e.target.name] = input.value
+                console.log(this.credentials)
+            })
+        })
     }
 
 
@@ -22,21 +33,21 @@ export default class Login extends Page {
     
                         <div class="login__box">
                             <i class='bx bx-user login__icon'></i>
-                            <input type="text" placeholder="Nickname or Email" class="login__input">
+                            <input type="text" name="identifier" placeholder="Nickname or Email" class="login__input">
                         </div>
     
                         <div class="login__box">
                             <i class='bx bx-lock-alt login__icon'></i>
-                            <input type="password" placeholder="Password" class="login__input">
+                            <input type="password" name="password" placeholder="Password" class="login__input">
                         </div>
 
                         <a href="#" class="login__forgot">Forgot password?</a>
 
-                        <a href="/register" class="login__button" data-link>Sign In</a>
+                        <a href="#" class="login__button" data-link>Sign In</a>
 
                         <div>
                             <span class="login__account">Don't have an Account ?</span>
-                            <span class="login__signin" id="sign-up">Sign Up</span>
+                            <span class="login__signin" id="sign-up" href="/register" data-link>Sign Up</span>
                         </div>
                     </form>
                 </div>
