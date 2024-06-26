@@ -36,12 +36,14 @@ function navigateTo(path) {
 }
 
 document.addEventListener("DOMContentLoaded", (e) => {
+    //const matchLinks = document.querySelectorAll("[data-link]") 
     document.body.addEventListener("click", (event) => {
-        console.log("ok")
         event.preventDefault()
-        console.log(event.target.getAttribute("href"))
         if (event.target.matches("[data-link]")) {
-            navigateTo(event.target.getAttribute("href"))
+            let route = event.target.getAttribute("href")
+            if (route) {
+                navigateTo(route)
+            }
         }
     })
 })

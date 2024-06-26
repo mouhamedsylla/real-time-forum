@@ -14,9 +14,9 @@ export default class Register extends Page {
             })
         })
 
-        const signUp = document.getElementById("sign-in")
-        signUp.addEventListener("submit", (e) => {
-            console.log(this.UserInfos)
+        const signUp = document.getElementById("sign-up")
+        signUp.addEventListener("click", (e) => {
+            console.log("User Infos: ", this.UserInfos)
         })
     }
 
@@ -63,7 +63,7 @@ export default class Register extends Page {
                             <input name="password" type="password" placeholder="Password" class="login__input">
                         </div>
 
-                        <a id="sign-in" class="login__button" data-link>Sign Up</a>
+                        <div id="sign-up" class="login__button">Sign Up</div>
 
                         <div>
                             <span class="login__account">Already have an Account ?</span>

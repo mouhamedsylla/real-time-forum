@@ -9,12 +9,15 @@ export default class Login extends Page {
 
     bindInputs() {
         const inputs = document.querySelectorAll(".login__input")
-        console.log(inputs) 
         inputs.forEach(input => {
             input.addEventListener("input", (e) => {
                 this.credentials[e.target.name] = input.value
-                console.log(this.credentials)
             })
+        })
+
+        const signIn = document.getElementById("sign-in")
+        signIn.addEventListener("click", (e) => {
+            console.log("Credentials: ", this.credentials)
         })
     }
 
@@ -43,7 +46,7 @@ export default class Login extends Page {
 
                         <a href="#" class="login__forgot">Forgot password?</a>
 
-                        <a href="#" class="login__button" data-link>Sign In</a>
+                        <div id="sign-in" class="login__button" >Sign In</div>
 
                         <div>
                             <span class="login__account">Don't have an Account ?</span>
