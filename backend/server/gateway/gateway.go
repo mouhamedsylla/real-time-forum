@@ -79,17 +79,16 @@ func (gtw *Gateway) Authenticate() {
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	tmp, err := template.ParseFiles("../../../frontend/App/index.html")
+	tmp, err := template.ParseFiles("../../../frontend/assets/index.html")
 	if err != nil {
 		log.Fatal(err)
 	}
 	tmp.Execute(w, nil)
 }
 
-
 func (gtw *Gateway) BootstrapApp() {
-	gtw.Router.SetDirectory("/App/", "../../../frontend/App/")
-	gtw.Router.Method(http.MethodGet).Handler("/App/", gtw.Router.StaticServe())
+	gtw.Router.SetDirectory("/frontend/", "../../../frontend/")
+	gtw.Router.Method(http.MethodGet).Handler("/frontend/", gtw.Router.StaticServe())
 	gtw.Router.Method(http.MethodGet).Handler("/", http.HandlerFunc(Home))
 	for port, endpoints := range Gateway_EndPoint {
 		for _, endpoint := range endpoints {
