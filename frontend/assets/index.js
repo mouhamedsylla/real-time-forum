@@ -1,42 +1,42 @@
 import Login from "./js/pages/login.js"
 import Register from "./js/pages/register.js"
+import Error from "./js/pages/error.js"
+
+var found = false
 
 const app = document.getElementById("app")
-
 const register = new Register()
 const login = new Login()
-
+const error = new Error()
 const pages = {
+    "/": login, // Default page is login
     "/register": register,
-    "/login": login
+    "/login": login,
+    "/error": error
 }
 
-function getPage(path) {
-    var page = ""
+function renderView(path) {
     Object.entries(pages).forEach(([key, value]) => {
         if (key == path) {
-            page = value.getHTML()
+            app.innerHTML = value.getHTML()
+            if (typeof value.bindInputs === "function") {
+                found = true
+                value.bindInputs()
+            }
         }
     })
-    return page
+    if (!found) {
+        app.innerHTML = error.getHTML()
+    }
 }
 
 function navigateTo(path) {
     history.pushState(null, "", path)
-    app.innerHTML = getPage(path)
-    
-
-    if (path == "/login") {
-        login.bindInputs()
-    }
-
-    if (path == "/register") {
-        register.bindInputs()
-    }
+    renderView(path)
 }
 
 document.addEventListener("DOMContentLoaded", (e) => {
-    //const matchLinks = document.querySelectorAll("[data-link]") 
+    navigateTo(window.location.pathname)
     document.body.addEventListener("click", (event) => {
         event.preventDefault()
         if (event.target.matches("[data-link]")) {
@@ -47,5 +47,3 @@ document.addEventListener("DOMContentLoaded", (e) => {
         }
     })
 })
-
-console.log("hello")

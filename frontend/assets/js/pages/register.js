@@ -15,7 +15,7 @@ export default class Register extends Page {
         })
 
         const signUp = document.getElementById("sign-up")
-        signUp.addEventListener("click", (e) => {
+        signUp.addEventListener("click", () => {
             console.log("User Infos: ", this.UserInfos)
         })
     }
@@ -55,7 +55,7 @@ export default class Register extends Page {
     
                         <div class="login__box">
                             <i class='bx bx-at login__icon'></i>
-                            <input name="email" type="text" placeholder="Email" class="login__input">
+                            <input name="email" type="email" placeholder="Email" class="login__input">
                         </div>
 
                         <div class="login__box">

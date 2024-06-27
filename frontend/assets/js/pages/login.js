@@ -1,7 +1,6 @@
 import Page from "./pages.js";
 
 export default class Login extends Page {
-
     constructor() {
         super("Login")
         this.credentials = {}
@@ -17,10 +16,21 @@ export default class Login extends Page {
 
         const signIn = document.getElementById("sign-in")
         signIn.addEventListener("click", (e) => {
-            console.log("Credentials: ", this.credentials)
+            this.login()
         })
     }
 
+    login() {
+        fetch("http://localhost:3000/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(this.credentials)
+        })
+        .then(response => response.json())
+        .then(data => { console.log(data) })
+    }
 
     getHTML() {
         return `
