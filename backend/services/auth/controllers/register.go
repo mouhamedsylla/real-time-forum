@@ -21,29 +21,36 @@ func (r *Register) SetMethods() []string {
 }
 
 func (r *Register) Register(w http.ResponseWriter, rq *http.Request) {
+	var response models.Response
 	data, status, err := utils.DecodeJSONRequestBody(rq, models.UserRegister{})
 
 	if err != nil {
-		utils.ResponseWithJSON(w, err, status)
+		response.Message = err.Error()
+		utils.ResponseWithJSON(w, response, status)
 		return
 	}
 
 	user := data.(*models.UserRegister)
 
 	var valid = validation.NewValidator()
+
 	valid.Init(*user)
+
 	if err := valid.Validate(); err != nil {
-		utils.ResponseWithJSON(w, err.Error(), http.StatusBadRequest)
+		response.Message = err.Error()
+		utils.ResponseWithJSON(w, response, http.StatusBadRequest)
 		return
 	}
 
 	models.CryptPassword(user)
 
 	if err = database.Db.Storage.Insert(*user); err != nil {
-		utils.ResponseWithJSON(w, "Service Auth.Register: Bad Request", http.StatusBadRequest)
+		response.Message = err.Error()
+		utils.ResponseWithJSON(w, response, http.StatusBadRequest)
 		return
 	}
 
-	utils.ResponseWithJSON(w, "Registering Successfuly", http.StatusOK)
+	response.Message = "Registering Successfuly"
+	utils.ResponseWithJSON(w, response, http.StatusOK)
 
 }
