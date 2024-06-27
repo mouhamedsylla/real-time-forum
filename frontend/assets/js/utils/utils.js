@@ -4,6 +4,7 @@ const alert_icons_iframes = {
 }
 
 function alert(message, type, parentElement) {
+    let result = alert_icons_iframes.success == type
     if (parentElement) {
         for (let i = 0; i < parentElement.children.length; i++) {
             if (parentElement.children[i].className.includes("alert")) {
@@ -11,6 +12,8 @@ function alert(message, type, parentElement) {
             }
         }
     }
+    
+
     const div = document.createElement("div")
     div.className = "alert"
     div.innerHTML = `
@@ -19,6 +22,7 @@ function alert(message, type, parentElement) {
         
     `
     parentElement.appendChild(div)
+    return result
 }
 
 export { alert, alert_icons_iframes }

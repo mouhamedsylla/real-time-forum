@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"real-time-forum/services/auth/database"
@@ -25,9 +26,11 @@ func (l *Login) SetMethods() []string {
 }
 
 func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
+	var response models.Response
 	data, status, err := utils.DecodeJSONRequestBody(r, models.UserLogin{})
 	if err != nil {
-		utils.ResponseWithJSON(w, err, status)
+		response.Message = err.Error()
+		utils.ResponseWithJSON(w, response, status)
 		return
 	}
 
@@ -36,19 +39,25 @@ func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
 	rslt := database.Db.Storage.Scan(models.UserRegister{}, "Password", "Id").([]models.UserRegister)
 	database.Db.Storage.Custom.Clear()
 
+	fmt.Println("OK")
+
 	if len(rslt) == 0 {
-		utils.ResponseWithJSON(w, "this user does't exist", http.StatusNotFound)
+		response.Message = "this user does't exist"
+		utils.ResponseWithJSON(w, response, http.StatusNotFound)
 		return
 	}
 
 	user := rslt[0]
 	if err = models.Authenticate(user.Password, &toAuthenticate); err != nil {
-		utils.ResponseWithJSON(w, err.Error(), http.StatusUnauthorized)
+		response.Message = err.Error()
+		fmt.Println(response)
+		utils.ResponseWithJSON(w, response, http.StatusUnauthorized)
 		return
 	}
 	var token string
 	if err = GetUserToken(&token, user.Id); err != nil {
-		utils.ResponseWithJSON(w, err.Error(), http.StatusInternalServerError)
+		response.Message = err.Error()
+		utils.ResponseWithJSON(w, response, http.StatusInternalServerError)
 		return
 	}
 	http.SetCookie(w, &http.Cookie{
@@ -58,8 +67,8 @@ func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
 		Path:    "/",
 	})
 
-	m := models.Response{Message: "login successfull"}
-	utils.ResponseWithJSON(w, m, http.StatusOK)
+	response.Message = "login successfull"
+	utils.ResponseWithJSON(w, response, http.StatusOK)
 }
 
 func GetUserToken(token *string, userId int) error {
