@@ -1,6 +1,13 @@
 import Login from "./js/pages/login.js"
 import Register from "./js/pages/register.js"
 import Error from "./js/pages/error.js"
+import Home from "./js/pages/home.js"
+import API from './js/api/api.js';
+
+const api = new API();
+api.setbaseURL("http://localhost:3000");
+
+export default api;
 
 var found = false
 
@@ -8,8 +15,12 @@ const app = document.getElementById("app")
 const register = new Register()
 const login = new Login()
 const error = new Error()
+const home = new Home()
+
+
 const pages = {
     "/": login, // Default page is login
+    "/home": home,
     "/register": register,
     "/login": login,
     "/error": error
@@ -25,7 +36,7 @@ function renderView(path) {
             }
         }
     })
-    if (!found) {
+    if (!found && (path == "/login" || path == "/register")) {
         app.innerHTML = error.getHTML()
     }
 }

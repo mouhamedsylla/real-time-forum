@@ -36,7 +36,7 @@ func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
 
 	toAuthenticate := *data.(*models.UserLogin)
 	database.Db.Storage.Custom.Where("Email", &toAuthenticate.Identifier).Or("Nickname", &toAuthenticate.Identifier)
-	rslt := database.Db.Storage.Scan(models.UserRegister{}, "Password", "Id").([]models.UserRegister)
+	rslt := database.Db.Storage.Scan(models.UserRegister{}, "Password", "Id", "Nickname", "FirstName", "LastName", "Email").([]models.UserRegister)
 	database.Db.Storage.Custom.Clear()
 
 	fmt.Println("OK")
@@ -68,7 +68,8 @@ func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
 	})
 
 	response.Message = "login successfull"
-	utils.ResponseWithJSON(w, response, http.StatusOK)
+	loggedUser := models.NewLoggedUser(user, "login successfull")
+	utils.ResponseWithJSON(w, loggedUser, http.StatusOK)
 }
 
 func GetUserToken(token *string, userId int) error {

@@ -16,6 +16,15 @@ type Request struct {
 	Token string `json:"token"`
 }
 
+type LoggedUser struct {
+	Id       int    `json:"id"`
+	Nickname string `json:"nickname"`
+	FirstName string `json:"firstName"`
+	LastName string `json:"lastName"`
+	Email    string `json:"email"`
+	Message  string `json:"message"`
+}
+
 type UserLogin struct {
 	orm.Model
 	Identifier string `json:"identifier"`
@@ -51,4 +60,15 @@ func CryptPassword(user *UserRegister) {
 		log.Fatal(err)
 	}
 	user.Password = string(hashPassword)
+}
+
+func NewLoggedUser(user UserRegister, message string) LoggedUser {
+	return LoggedUser{
+		Id:       user.Id,
+		Nickname: user.Nickname,
+		FirstName: user.FirstName,
+		LastName: user.LastName,
+		Email:    user.Email,
+		Message:  message,
+	}
 }

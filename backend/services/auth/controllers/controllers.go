@@ -5,6 +5,7 @@ import "real-time-forum/server/microservices"
 
 
 type GetGroupUserDiscussion struct{}
+type GetUser struct{}
 type Register struct{}
 type Login struct{}
 
