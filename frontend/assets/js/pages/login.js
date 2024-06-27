@@ -1,12 +1,15 @@
 import Page from "./pages.js";
+import { alert, alert_icons_iframes } from "../utils/utils.js";
 
 export default class Login extends Page {
     constructor() {
         super("Login")
         this.credentials = {}
+        this.formContainer = null
     }
 
     bindInputs() {
+        this.formContainer = document.getElementById("login-in")
         const inputs = document.querySelectorAll(".login__input")
         inputs.forEach(input => {
             input.addEventListener("input", (e) => {
@@ -14,8 +17,8 @@ export default class Login extends Page {
             })
         })
 
-        const signIn = document.getElementById("sign-in")
-        signIn.addEventListener("click", (e) => {
+        const signInBtn = document.getElementById("sign-in")
+        signInBtn.addEventListener("click", () => {
             this.login()
         })
     }
@@ -29,7 +32,11 @@ export default class Login extends Page {
             body: JSON.stringify(this.credentials)
         })
         .then(response => response.json())
-        .then(data => { console.log(data) })
+        .then(data => {
+            data.message == "login successfull" ?
+                alert(data.message, alert_icons_iframes.success, this.formContainer) :
+                alert(data.message, alert_icons_iframes.failed, this.formContainer)
+        })
     }
 
     getHTML() {

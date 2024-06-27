@@ -358,3 +358,20 @@ img{
     transform: rotate(0);
   }
 }
+
+.alert {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.alert iframe {
+  width: 75px;
+  margin-right: -20px ;
+}
+
+
+.alert p {
+  font-family: var(--body-font);
+}
