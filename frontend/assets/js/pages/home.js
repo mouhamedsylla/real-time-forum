@@ -29,6 +29,8 @@ export default class Home extends Page {
             this.posts.apiPost.posts.forEach(async post => {
                 await this.comments.render(post.Id)
             })
+            console.log("Niow")
+            this.comments.bindInput()
         })
     }
 

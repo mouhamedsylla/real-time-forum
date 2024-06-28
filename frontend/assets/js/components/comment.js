@@ -5,6 +5,33 @@ export default class Comment {
         this.apiComment = new CommentAPI()
         this.currentComment = null
         this.targetElement = null
+        this.commentText = null
+    }
+
+    bindInput(elem) {
+        const inputs = document.querySelectorAll(".all__input")
+        console.log(inputs)
+        inputs.forEach(input => {
+            console.log(input)
+            input.addEventListener('keypress', (event) => {
+                const id = event.target.Id.split('-')[2]
+                console.log(event.key)
+                if (event.key === 'Enter') {
+                    this.apiComment.postComment({
+                        Comment: input.value, 
+                        Post_Id: parseInt(id)
+                    }, id)
+                }
+            })
+        });
+    }
+
+    getInputComment() {
+        this.input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                
+            }
+        })
     }
 
     createCommentHTML(comment) {

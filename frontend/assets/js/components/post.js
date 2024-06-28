@@ -103,7 +103,7 @@ export default class Post {
                     </div>
                     <div class="new-comment">
                         <img src="./frontend/assets/profile2.jpg" alt="" />
-                        <input type="text" placeholder="Add a comment..." id="comment-input-${post.Id}" />
+                        <input class="all__input" type="text" placeholder="Add a comment..." id="comment-input-${post.Id}"/>
                     </div>
                 </div>`
         elem.innerHTML = post_component
