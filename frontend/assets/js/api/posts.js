@@ -1,14 +1,11 @@
-import api from "./main.js";
+import api from "../../index.js";
 export default class PostAPI {
-    constructor(targetElement, api) {
-        this.api = api
+    constructor() {
         this.posts = []
-        this.element = targetElement
-        this.currentPost = {}
     }
 
     async getPosts() {
-        return await this.api.get("posts/getAllPost")
+        this.posts = await api.get("/posts/getAllPost")
     }
 
     async createPost(payload) {
@@ -16,10 +13,6 @@ export default class PostAPI {
         formData.append("image", payload.Image)
         formData.append("title", payload.Title)
         formData.append("content", payload.Content)
-        return await this.api.post(`posts/createdpost/${this.api.client.id}}`, formData)
-    }
-
-    addPost() {
-        
+        return await api.post(`/posts/createdpost/${api.client.Id}`, formData)
     }
 }

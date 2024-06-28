@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"real-time-forum/services/posts/database"
 	"real-time-forum/services/posts/models"
@@ -21,6 +20,7 @@ func (c *GetComment) SetMethods() []string {
 }
 
 func (c *GetComment) GetComment(w http.ResponseWriter, r *http.Request) {
+	var response models.Response
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
 
 	database.DbPost.Storage.Custom.Where("Post_id", CustomRoute["postId"])
@@ -29,15 +29,16 @@ func (c *GetComment) GetComment(w http.ResponseWriter, r *http.Request) {
 	database.DbPost.Storage.Custom.Clear()
 
 	if data == nil {
-		fmt.Println("no comment")
-		utils.ResponseWithJSON(w, "no comment", http.StatusNoContent)
+		response.Message = "no comment"
+		utils.ResponseWithJSON(w, response, http.StatusNoContent)
 		return
 	}
 
 	result := data.([]models.Comments)
 
 	if len(result) == 0 {
-		utils.ResponseWithJSON(w, "Error Message from Posts.postComment: No Comment Found", http.StatusNotFound)
+		response.Message = "No Comment Found"
+		utils.ResponseWithJSON(w, response, http.StatusNotFound)
 		return
 	}
 

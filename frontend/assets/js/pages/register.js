@@ -35,7 +35,7 @@ export default class Register extends Page {
         })
     }
 
-    getHTML() {
+    async getHTML() {
         return `
         <div class="login">
             <div class="login__content">

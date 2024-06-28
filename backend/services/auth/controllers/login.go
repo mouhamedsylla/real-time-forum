@@ -68,8 +68,7 @@ func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
 	})
 
 	response.Message = "login successfull"
-	loggedUser := models.NewLoggedUser(user, "login successfull")
-	utils.ResponseWithJSON(w, loggedUser, http.StatusOK)
+	utils.ResponseWithJSON(w, response, http.StatusOK)
 }
 
 func GetUserToken(token *string, userId int) error {

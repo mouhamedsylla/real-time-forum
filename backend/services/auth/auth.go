@@ -32,6 +32,7 @@ func (auth *Auth) InitService() (err error) {
 		// add controller ...
 		&controllers.Register{},
 		&controllers.Login{},
+		&controllers.GetUser{},
 		&controllers.GetGroupUserDiscussion{},
 	}
 	auth.Auth = microservices.NewMicroservice("Authentication", ":8080")

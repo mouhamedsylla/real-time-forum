@@ -7,7 +7,6 @@ export default class Login extends Page {
         super("Login")
         this.credentials = {}
         this.formContainer = null
-        this.loginResponse = null
     }
 
     bindInputs() {
@@ -35,15 +34,12 @@ export default class Login extends Page {
         })
         .then(response => response.json())
         .then(data => {
-            this.loginResponse = Object.assign({}, data)
-            console.log(this.loginResponse)
             return data.message == "login successfull" ?
                 alert(data.message, alert_icons_iframes.success, this.formContainer) :
                 alert(data.message, alert_icons_iframes.failed, this.formContainer)
         })
         .then(result => {
             if (result) {
-                api.setClient(this.loginResponse)
                 setTimeout(() => {
                     window.location.href = "/home"
                 }, 3000)
@@ -51,7 +47,7 @@ export default class Login extends Page {
         })
     }
 
-    getHTML() {
+    async getHTML() {
         return `
         <div class="login">
             <div class="login__content">

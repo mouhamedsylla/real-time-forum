@@ -25,4 +25,38 @@ function alert(message, type, parentElement) {
     return result
 }
 
-export { alert, alert_icons_iframes }
+function alert_token_expire() {
+    const body = document.querySelector("body")
+    const div = document.createElement("div")
+    div.classList.add("token-alert")
+    div.innerHTML = `
+        <div class="card">
+            <h2>token not found or expired</h2>
+            <br>
+            <label class="btn btn-primary" id="token-lost-alert">Back to login</label>
+        </div>`
+    body.appendChild(div)
+    const btn = document.getElementById("token-lost-alert")
+    btn.addEventListener("click", () => {
+        window.location.href = "/"
+    })
+}
+
+function parseJwt(token) {
+    try {
+        return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+        return null;
+    }
+}
+
+function backToHome(route) {
+    if (route == "/login" || route == "/") {
+        const token_payload = parseJwt(document.cookie)
+        if (token_payload) {
+            window.location.href = "/home"
+        }
+    }
+}
+
+export { alert, alert_icons_iframes, alert_token_expire, parseJwt, backToHome }

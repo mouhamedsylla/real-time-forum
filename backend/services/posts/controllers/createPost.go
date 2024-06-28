@@ -22,6 +22,7 @@ func (p *CreatedPost) SetMethods() []string {
 }
 
 func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
+	var response models.Response
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
 	var post = &models.UserPosts{}
 
@@ -29,7 +30,8 @@ func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
 	post.Content = r.FormValue("content")
 	imageFile, _, err := r.FormFile("image")
 	if err != nil {
-		http.Error(w, "Unable to get image file", http.StatusBadRequest)
+		response.Message = "Unable to get image file"
+		utils.ResponseWithJSON(w, response, http.StatusBadRequest)
 		return
 	}
 	defer imageFile.Close()
@@ -37,7 +39,8 @@ func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
 	// Lire le fichier image
 	post.Image, err = ioutil.ReadAll(imageFile)
 	if err != nil {
-		http.Error(w, "Unable to read image file", http.StatusInternalServerError)
+		response.Message = "Unable to read image file"
+		utils.ResponseWithJSON(w, response, http.StatusInternalServerError)
 		return
 	}
 
@@ -45,13 +48,13 @@ func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
 	post.UserId = CustomRoute["userId"]
 	fmt.Println(CustomRoute)
 	if err = database.DbPost.Storage.Insert(*post); err != nil {
-		response := models.ErrorResponse{Error: "Failed to create post"}
+		response.Message = "Failed to create post"
 		utils.ResponseWithJSON(w, response, http.StatusBadRequest)
 		return
 	}
 
 	// Respond with success message
-	response := models.SuccessResponse{Message: "Post Created Successfully"}
+	response.Message = "Post Created Successfully"
 	utils.ResponseWithJSON(w, response, http.StatusOK)
 
 }

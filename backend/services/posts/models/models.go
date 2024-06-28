@@ -36,7 +36,7 @@ type ReactionComment struct {
 }
 
 
-type SuccessResponse struct {
+type Response struct {
 	Message string `json:"message"`
 }
 

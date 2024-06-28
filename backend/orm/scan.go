@@ -1,7 +1,6 @@
 package orm
 
 import (
-	"fmt"
 	"log"
 	"reflect"
 )
@@ -24,7 +23,6 @@ func (o *ORM) Scan(table interface{}, columns ...string) interface{} {
 	defer rows.Close()
 
 	__results := reflect.MakeSlice(reflect.SliceOf(Type), 0, 0)
-	fmt.Println("Scan: ",__results)
 
 	for rows.Next() {
 		values := make([]interface{}, 0)

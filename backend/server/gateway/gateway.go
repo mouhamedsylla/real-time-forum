@@ -1,6 +1,7 @@
 package gateway
 
 import (
+	"fmt"
 	"html/template"
 	"io"
 	"log"
@@ -16,6 +17,7 @@ var Gateway_EndPoint = map[string][]string{
 	},
 	"8080": {
 		"/auth/getGroupUser/:userId",
+		"/auth/getUsers",
 		"/auth/checkToken",
 		"/auth/register",
 		"/auth/login",
@@ -41,6 +43,10 @@ func NewGateway() *Gateway {
 func (gtw *Gateway) Proxy(path, target string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		targetURL := target + r.URL.Path
+		
+		if r.URL.RawQuery != "" {
+			targetURL += "?" + r.URL.RawQuery
+		}
 		req, err := http.NewRequest(r.Method, targetURL, r.Body)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadGateway)
@@ -96,5 +102,6 @@ func (gtw *Gateway) BootstrapApp() {
 				Handler(endpoint, gtw.Proxy(endpoint, "http://localhost:"+port))
 		}
 	}
+	fmt.Println("Server is running on: http://localhost:3000")
 	log.Fatal(http.ListenAndServe(":3000", gtw.Router))
 }
