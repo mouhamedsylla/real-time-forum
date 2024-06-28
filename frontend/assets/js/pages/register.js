@@ -1,12 +1,15 @@
 import Page from "./pages.js";
+import {alert, alert_icons_iframes} from "../utils/utils.js"
 
 export default class Register extends Page {
     constructor() {
         super("Register")
         this.UserInfos = {}
+        this.FormContainer = null
     }
 
     bindInputs() {
+        this.FormContainer = document.getElementById("login-up")
         const inputs = document.querySelectorAll(".login__input")
         inputs.forEach(input => {
             input.addEventListener("input", (e) => {
@@ -31,7 +34,16 @@ export default class Register extends Page {
         })
         .then(response => response.json())
         .then(data => { 
-            console.log(data)
+            // console.log(data)
+            if (data.message == "Registering Successfuly") {
+                if (alert(data.message, alert_icons_iframes.success, this.FormContainer)) {
+                    setTimeout(() => {
+                        window.location.href = "/login"
+                    }, 3000);
+                }
+            } else {
+                alert(data.message, alert_icons_iframes.failed, this.FormContainer)
+            }
         })
     }
 
