@@ -19,7 +19,6 @@ export default class Register extends Page {
 
         const signUp = document.getElementById("sign-up")
         signUp.addEventListener("click", () => {
-            // console.log("User Infos: ", this.UserInfos)
             this.register()
         })
     }
@@ -34,7 +33,6 @@ export default class Register extends Page {
         })
         .then(response => response.json())
         .then(data => { 
-            // console.log(data)
             if (data.message == "Registering Successfuly") {
                 if (alert(data.message, alert_icons_iframes.success, this.FormContainer)) {
                     setTimeout(() => {

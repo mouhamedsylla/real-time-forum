@@ -3,11 +3,13 @@ import api from "../../index.js"
 import Post from "../components/post.js"
 import Comment from "../components/comment.js"
 import { parseJwt, alert_token_expire } from "../utils/utils.js"
+import Discussion from "../components/discussions.js"
 export default class Home extends Page {
     constructor() {
         super("home")
         this.posts = new Post()
         this.comments = new Comment()
+        this.discussionsList = new Discussion()
     }
 
     async initClient() {
@@ -25,12 +27,17 @@ export default class Home extends Page {
     async renderComponents() {
         const postsTarget = document.querySelector(".feeds")
         this.posts.setElementTarget(postsTarget)
-        await this.posts.render().then(() => {
+        await this.posts.render()
+        .then(() => {
             this.posts.apiPost.posts.forEach(async post => {
                 await this.comments.render(post.Id)
             })
             console.log("Niow")
             this.comments.bindInput()
+        })
+        .then(async () => {
+            this.discussionsList.setTargetElement(document.querySelector(".discussions"))
+            await this.discussionsList.render()
         })
     }
 
@@ -96,20 +103,11 @@ export default class Home extends Page {
                     </div>
                     <!-- -------------------- RIGHT -------------------- -->
                     <div class="right">
-                        <div class="messages">
+                        <div class="messages discussions">
                             <div class="heading">
-                                <h4>Messages</h4><i class="uil uil-edit"></i>
+                                <h4>Discussions</h4><i class="uil uil-edit"></i>
                             </div>
-                            <div class="message">
-                                <div class="profile-photo">
-                                    <img src="./frontend/assets/images/profile-7.jpg" alt="">
-                                    <div class="active"></div>
-                                </div>
-                                <div class="message-body">
-                                    <h5>John Snow</h5>
-                                    <p class="text-muted">Just woke up bruh</p>
-                                </div>
-                            </div>
+                            <!-- adding discussions HERE -->
                         </div>
                     </div>
                 </div>

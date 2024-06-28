@@ -58,4 +58,8 @@ export default class Comment {
         })
         })
     }
+
+    async addComment(idPost, comment) {
+        
+    }
 }
