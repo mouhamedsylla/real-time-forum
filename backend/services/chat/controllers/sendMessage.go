@@ -66,10 +66,14 @@ func (sm *SendMessage) sendMessage(w http.ResponseWriter, r *http.Request) {
 		message := database.DbChat.Storage.Scan(models.Message{}, "Id").([]models.Message)[0]
 		database.DbChat.Storage.Custom.Clear()
 
+		
+		fmt.Println("Message received: ", string(msg))
 		if err := client.WriteMessage(websocket.TextMessage, []byte(msg)); err != nil {
 			fmt.Printf("Error writing message: %s\n", err)
 		}
-		Broadcast <- models.NewNotification(message.Id, CustomRoute["receiverId"], "false")
-
+		
+		go func(message models.Message) {
+			Broadcast <- models.NewNotification(message.Id, CustomRoute["receiverId"], "false")
+		}(message)
 	}
 }

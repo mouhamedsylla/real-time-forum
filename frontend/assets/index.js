@@ -3,7 +3,7 @@ import Register from "./js/pages/register.js"
 import Error from "./js/pages/error.js"
 import Home from "./js/pages/home.js"
 import API from './js/api/api.js';
-import { backToHome } from "./js/utils/utils.js";
+import { backToHome, modeSelect } from "./js/utils/utils.js";
 
 const api = new API();
 api.setbaseURL("http://localhost:3000");
@@ -34,6 +34,7 @@ function renderView(path) {
             app.innerHTML = await value.getHTML()
             if (path == "/home") {
                 await home.renderComponents()
+                modeSelect()
             }
             if (typeof value.bindInputs === "function") {
                 value.bindInputs()

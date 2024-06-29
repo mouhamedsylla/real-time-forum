@@ -26,10 +26,10 @@ func (pm *GetPrivateMessage) getPrivateMessage(w http.ResponseWriter, r *http.Re
 	sendId, _ := strconv.Atoi(CustomRoute["senderId"])
 	receiveId, _ := strconv.Atoi(CustomRoute["receiverId"])
 	database.DbChat.Storage.Custom.
-		Where("senderId", sendId).
-		And("receiverId", receiveId)
+		Where("senderId", sendId).And("receiverId", receiveId).
+		Or("senderId", receiveId).And("receiverId", sendId)
 
-	result := database.DbChat.Storage.Scan(models.Message{}, "SenderId", "ReceiverId", "Content").([]models.Message)
+	result := database.DbChat.Storage.Scan(models.Message{},"Id", "CreatedAt", "SenderId", "ReceiverId", "Content").([]models.Message)
 	database.DbChat.Storage.Custom.Clear()
 	utils.ResponseWithJSON(w, result, http.StatusOK)
 }

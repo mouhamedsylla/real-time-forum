@@ -5,8 +5,14 @@ export default class CommentAPI {
     }
 
     async getComments(idPost) {
-        this.comments[idPost] = await api.get(`/posts/${idPost}/getcomment`)
+        try {
+            const response = await api.get(`/posts/${idPost}/getcomment`);
+            this.comments[idPost] = response;
+        } catch (error) {
+            console.error("Error getting comments:", error);
+        }
     }
+    
 
     postComment(comment, idPost) {
         api.post(`/posts/${idPost}/comment`, comment)

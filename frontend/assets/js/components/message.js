@@ -1,4 +1,4 @@
-import MessageAPI from "../api/messages.js"
+import api from "../../index.js"
 
 export default class Message {
     constructor() {
@@ -7,6 +7,43 @@ export default class Message {
 
     setTargetElement(element) {
         this.targetElement = element
+    }
+
+    newMessage(content, type) {
+        console.log("New message: ", content)
+        const message = document.createElement("div")
+        message.classList.add("message", type)
+        message.textContent = content
+        return message
+    }
+
+    async onloadDiscussion(contactId, apiMessage) {
+        try {
+            await apiMessage.getMessages(contactId)
+            apiMessage.messages.forEach(message => {
+                const target = document.querySelector(".chat-messages")
+                target.appendChild(this.newMessage(message.Content, message.SenderId === api.client.Id ? "user" : "other"))
+            })
+        } catch (error) {
+            console.error("Error while loading messages: ", error)
+        }
+    }
+
+    sendMessage(socket) {
+        const input = document.querySelector("#message-text")
+        const target = document.querySelector(".chat-messages")
+        input.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") {
+                target.appendChild(this.newMessage(input.value, "user"))
+                socket.send(input.value)
+                input.value = ""
+            }
+        })
+    }
+
+    receiveMessage(event) {
+        const target = document.querySelector(".chat-messages")
+        target.appendChild(this.newMessage(event.data, "other"))
     }
 
     createMessageHTML(contact) {
@@ -31,14 +68,14 @@ export default class Message {
                 </div>
             </div>
             <div class="input">
-                <i class="far fa-laugh-beam"></i><input placeholder="Type your message here!" type="text" />
+                <i class="far fa-laugh-beam"></i><input id="message-text" placeholder="Type your message here!" type="text" />
             </div>
         `
         return elem
     }
 
-    render(idContact, apiMessage) {
-        const contact = apiMessage.getUserById(idContact)
+    render(contactId, apiMessage) {
+        const contact = apiMessage.getUserById(contactId)
         for (let i = 0; i < this.targetElement.children.length; i++) {
             if (this.targetElement.children[i].className.includes("chat")) {
                 this.targetElement.children[i].remove()

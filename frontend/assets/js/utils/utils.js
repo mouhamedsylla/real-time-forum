@@ -59,4 +59,24 @@ function backToHome(route) {
     }
 }
 
-export { alert, alert_icons_iframes, alert_token_expire, parseJwt, backToHome }
+function modeSelect() {
+    const toggleIcon = document.getElementById('toggleIcon');
+    let isLightMode = true;
+
+        toggleIcon.addEventListener('click', () => {
+            console.log('clicked');
+            if (isLightMode) {
+                document.body.style.backgroundColor = 'hsl(252, 30%, 17%)';
+                toggleIcon.classList.remove('uil-sun');
+                toggleIcon.classList.add('uil-moon');
+            } else {
+                document.body.style.backgroundColor = 'white';
+                document.body.style.color = 'black';
+                toggleIcon.classList.remove('uil-moon');
+                toggleIcon.classList.add('uil-sun');
+            }
+            isLightMode = !isLightMode;
+        });
+}
+
+export { alert, alert_icons_iframes, alert_token_expire, parseJwt, backToHome, modeSelect }

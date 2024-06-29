@@ -27,19 +27,27 @@ export default class Home extends Page {
     async renderComponents() {
         const postsTarget = document.querySelector(".feeds")
         this.posts.setElementTarget(postsTarget)
-        await this.posts.render()
-        .then(() => {
-            this.posts.apiPost.posts.forEach(async post => {
+        this.posts.bindButton()
+        try {
+            await this.posts.render();
+            const renderComments = this.posts.apiPost.posts.map(async (post) => {
                 await this.comments.render(post.Id)
-            })
-            console.log("Niow")
+            });
+    
+            await Promise.all(renderComments)
             this.comments.bindInput()
-        })
-        .then(async () => {
+        } catch (error) {
+            console.error("Error rendering posts or comments:", error)
+        }
+    
+        try {
             this.discussionsList.setTargetElement(document.querySelector(".discussions"))
-            await this.discussionsList.render()
-        })
+            await this.discussionsList.render();
+        } catch (error) {
+            console.error("Error rendering discussions:", error)
+        }
     }
+    
 
     async getHTML() {
         await this.initClient()
@@ -55,9 +63,9 @@ export default class Home extends Page {
                     </div>
                     <div class="create">
                         <label class="btn btn-primary" for="create-post">Create</label>
-                        <div class="profile-photo">
-                            <img src="./frontend/assets/profile.jpg" alt="profile">
-                        </div>
+                        
+                        <i class="uil uil-sun icon" id="toggleIcon"></i>
+                        
                     </div>
                 </div>
             </nav>
@@ -103,10 +111,11 @@ export default class Home extends Page {
                     </div>
                     <!-- -------------------- RIGHT -------------------- -->
                     <div class="right">
-                        <div class="messages discussions">
-                            <div class="heading">
+                        <div class="heading">
                                 <h4>Discussions</h4><i class="uil uil-edit"></i>
-                            </div>
+                        </div>
+                        <div class="messages discussions">
+                            
                             <!-- adding discussions HERE -->
                         </div>
                     </div>

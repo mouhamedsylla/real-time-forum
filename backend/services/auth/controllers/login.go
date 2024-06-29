@@ -63,7 +63,7 @@ func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:    "forum",
 		Value:   token,
-		Expires: time.Now().Add(10 * time.Minute),
+		Expires: time.Now().Add(60 * time.Minute),
 		Path:    "/",
 	})
 

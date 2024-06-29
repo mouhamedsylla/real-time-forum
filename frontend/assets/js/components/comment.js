@@ -8,7 +8,7 @@ export default class Comment {
         this.commentText = null
     }
 
-    bindInput(elem) {
+    bindInput() {
         const inputs = document.querySelectorAll(".all__input")
         console.log(inputs)
         inputs.forEach(input => {

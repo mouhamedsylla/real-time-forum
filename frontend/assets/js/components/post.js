@@ -115,7 +115,6 @@ export default class Post {
         this.apiPost.posts.forEach(post => {
             this.elementTarget.appendChild(this.createPostHTML(post))
         })
-        this.bindButton()
     }
 
     async addPost(post) {

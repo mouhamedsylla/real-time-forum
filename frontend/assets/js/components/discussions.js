@@ -34,9 +34,16 @@ export default class Discussion {
             this.apiMessage.otherUser.forEach(user => {
                 const currentElement = this.createDiscussionHTML(user)
                 this.targetElement.appendChild(currentElement)
-                currentElement.addEventListener("click", () => {
+                currentElement.addEventListener("click", async () => {
+
                     this.message.setTargetElement(document.querySelector(".right"))
                     this.message.render(user.Id, this.apiMessage)
+
+                    const sendMessageCallback = (socket) => this.message.sendMessage(socket)
+                    const receiveMessageCallback = (event) => this.message.receiveMessage(event)
+                    this.apiMessage.initDiscussion(user.Id, sendMessageCallback, receiveMessageCallback)
+                    
+                    await this.message.onloadDiscussion(user.Id, this.apiMessage)
                 })
             })
         })
