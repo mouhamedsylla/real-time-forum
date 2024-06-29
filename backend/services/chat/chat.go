@@ -52,8 +52,10 @@ func (chat *Chat) GetService() *microservices.Microservice {
 func (chat *Chat) HandleNotification() {
 	var mutex sync.Mutex
 	for {
-		notif := <-controllers.Broadcast
+
 		mutex.Lock()
+		notif := <-controllers.Broadcast
+		mutex.Unlock()
 
 		chat.Chat.Client.SetMethod(http.MethodPost)
 		err := utils.LoadEnv("../../.env")

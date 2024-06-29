@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"real-time-forum/services/posts/database"
 	"real-time-forum/services/posts/models"
@@ -31,7 +30,6 @@ func (c *GetComment) GetComment(w http.ResponseWriter, r *http.Request) {
 
 	if data == nil {
 		response.Message = "no comment"
-		fmt.Println("no comment")
 		utils.ResponseWithJSON(w, response, http.StatusNoContent)
 		return
 	}
@@ -40,7 +38,6 @@ func (c *GetComment) GetComment(w http.ResponseWriter, r *http.Request) {
 
 	if len(result) == 0 {
 		response.Message = "No Comment Found"
-		fmt.Println("No Comment Found")
 		utils.ResponseWithJSON(w, response, http.StatusNotFound)
 		return
 	}

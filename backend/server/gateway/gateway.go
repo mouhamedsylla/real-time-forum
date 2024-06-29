@@ -28,6 +28,9 @@ var Gateway_EndPoint = map[string][]string{
 		"/posts/:postId/comment",
 		"/posts/:postId/getcomment",
 	},
+	"9191": {
+		"/chat/message/private/getConnectedUser/:userId",
+	},
 }
 
 type Gateway struct {

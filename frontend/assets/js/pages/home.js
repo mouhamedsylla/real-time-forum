@@ -4,12 +4,15 @@ import Post from "../components/post.js"
 import Comment from "../components/comment.js"
 import { parseJwt, alert_token_expire } from "../utils/utils.js"
 import Discussion from "../components/discussions.js"
+import Notification from "../components/notification.js"
 export default class Home extends Page {
     constructor() {
         super("home")
+        this.contactStatus = null
         this.posts = new Post()
         this.comments = new Comment()
         this.discussionsList = new Discussion()
+        this.notification = new Notification()
     }
 
     async initClient() {
@@ -46,6 +49,7 @@ export default class Home extends Page {
         } catch (error) {
             console.error("Error rendering discussions:", error)
         }
+        this.notification.initConnectedUser()
     }
     
 

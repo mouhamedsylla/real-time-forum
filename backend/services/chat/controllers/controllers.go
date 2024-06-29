@@ -8,3 +8,4 @@ type GetPrivateMessage struct{}
 
 // Endpoint to retrieve the list of users with whom the user has exchanged private messagess
 type GetPrivateMessageUsers struct{}
+

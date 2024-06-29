@@ -1,7 +1,11 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"real-time-forum/services/notification/database"
+	"real-time-forum/services/notification/models"
+	"strconv"
 
 	"github.com/gorilla/websocket"
 )
@@ -15,7 +19,9 @@ var (
 		},
 	}
 
-	clients = make(map[string]*websocket.Conn, 0)
+	Clients = make(map[int]*websocket.Conn, 0)
+	Disconnect_channel = make(chan int)
+	Connection_channel = make(chan int)
 )
 
 func (sn *SendNotification) HTTPServe() http.Handler {
@@ -39,19 +45,58 @@ func (sn *SendNotification) SendNotification(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	clients[CustomRoute["receiverId"]] = conn
-	// go HandleNotification(conn)
+	receiverId, _ := strconv.Atoi(CustomRoute["receiverId"])
+	Clients[receiverId] = conn
+	Connection_channel <- receiverId
+	go HandleNotification()
+	go CheckDisconnect(conn)
 }
 
-// func HandleNotification(conn *websocket.Conn) {
-// 	for {
-// 		notif := <- userNotif
-// 		if err != nil {
-// 			log.Println(err)
-// 		}
+func HandleNotification() {
+	for {
 
-// 		conn.WriteMessage(websocket.TextMessage, []byte(data))
-// 	}
-// }
+		notif := <-userNotif
+		fmt.Println("Sending notification to user: ", notif.Id)
 
-// 		data, err := json.Marshal(notif)
+		for id, client := range Clients {
+			if id == notif.ReceiverId {
+				user_infos := models.UserInfos{
+					Type: "notification",
+					Id: notif.SenderId,
+					Status: "",
+				}
+				err := client.WriteJSON(user_infos)
+				if err == nil {
+					database.DbNotification.Storage.SetModel("Id", notif.Id, models.UserNotification{}).
+						UpdateField("true", "Read").Update(database.DbNotification.Storage.Db)
+				}
+			}
+		}
+	}
+}
+
+func CheckDisconnect(conn *websocket.Conn) {
+	for {
+		defer func() {
+			disconnectUser(conn)
+			conn.Close()
+		}()
+		_, _, err := conn.ReadMessage()
+		if err != nil {
+			fmt.Println("Error reading message: ", err)
+			break
+		}
+
+	}
+}
+
+func disconnectUser(conn *websocket.Conn) {
+	fmt.Println("Disconnecting user")
+	for key, value := range Clients {
+		if value == conn {
+			delete(Clients, key)
+			Disconnect_channel <- key
+			break
+		}
+	}
+}

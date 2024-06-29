@@ -4,9 +4,19 @@ import "real-time-forum/orm"
 
 type UserNotification struct {
 	orm.Model
-	UserID    string `orm-go:"NOT NULL"`
-	MessageId int
+	SenderId  int `json:"senderId"`
+	ReceiverId int `json:"receiverId"`
 	Read      string `orm-go:"NOT NULL"`
+}
+
+type ConnectedUser struct {
+	Id       int    `json:"id"`
+}
+
+type UserInfos struct {
+	Type	 string `json:"type"`
+	Id       int    `json:"id"`
+	Status   string `json:"status"`
 }
 
 type NotifCount struct {

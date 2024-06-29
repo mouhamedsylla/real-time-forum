@@ -1,8 +1,7 @@
 package controllers
 
 import (
-	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"real-time-forum/services/posts/database"
 	"real-time-forum/services/posts/models"
@@ -37,7 +36,7 @@ func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
 	defer imageFile.Close()
 
 	// Lire le fichier image
-	post.Image, err = ioutil.ReadAll(imageFile)
+	post.Image, err = io.ReadAll(imageFile)
 	if err != nil {
 		response.Message = "Unable to read image file"
 		utils.ResponseWithJSON(w, response, http.StatusInternalServerError)
@@ -46,7 +45,6 @@ func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
 
 	// Insert the post into the storage
 	post.UserId = CustomRoute["userId"]
-	fmt.Println(CustomRoute)
 	if err = database.DbPost.Storage.Insert(*post); err != nil {
 		response.Message = "Failed to create post"
 		utils.ResponseWithJSON(w, response, http.StatusBadRequest)

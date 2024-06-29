@@ -19,7 +19,7 @@ export default class Discussion {
         const content = `
                 <div class="profile-photo">
                     <img src="./frontend/assets/images/profile-${discussion.Id}.jpg" alt="">
-                    <div class="active"></div>
+                    <div class="status" id="${discussion.Id}"></div>
                 </div>
                 <div class="message-body">
                     <h5>${discussion.firstName} ${discussion.lastName}</h5>
@@ -42,7 +42,7 @@ export default class Discussion {
                     const sendMessageCallback = (socket) => this.message.sendMessage(socket)
                     const receiveMessageCallback = (event) => this.message.receiveMessage(event)
                     this.apiMessage.initDiscussion(user.Id, sendMessageCallback, receiveMessageCallback)
-                    
+
                     await this.message.onloadDiscussion(user.Id, this.apiMessage)
                 })
             })

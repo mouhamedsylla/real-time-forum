@@ -20,16 +20,7 @@ func (p *GetPost) SetMethods() []string {
 }
 
 func (p *GetPost) GetPost(w http.ResponseWriter, r *http.Request) {
-	//method Aziz
-	// urlpath := r.URL.Path
-	// tab_url := strings.Split(urlpath, "/")
-	// urlpath = tab_url[len(tab_url)-1]
-	// fmt.Println("GetPostId: ", urlpath)
-
-	// method mouhamed
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
-	// fmt.Println(CustomRoute["postId"])
-
 	database.DbPost.Storage.Custom.Where("Id", CustomRoute["postId"])
 
 	result := database.DbPost.Storage.Scan(models.UserPosts{}, "Id", "CreatedAt", "Title", "Content", "Like", "Dislike").([]models.UserPosts)

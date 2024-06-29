@@ -8,7 +8,7 @@ export default class MessageAPI {
 
     initDiscussion(idContact, callbackSend, callbackReceive) {
         console.log(`chat initialized with ${idContact}`)
-        this.socket = new WebSocket(`ws://localhost:9090/chat/message/private/send/${api.client.Id}?user_id=${idContact}`)
+        this.socket = new WebSocket(`ws://localhost:9090/chat/message/private/send/${idContact}?user_id=${api.client.Id}`)
         
         this.socket.onopen = () => { console.log("Socket open") }
         this.socket.onclose = () => { console.log("Socket closed") }

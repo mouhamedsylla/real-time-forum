@@ -7,6 +7,7 @@ import (
 	"real-time-forum/services/notification/database"
 	"real-time-forum/services/notification/models"
 	"real-time-forum/utils"
+	"sync"
 )
 
 const (
@@ -34,13 +35,53 @@ func (notif *Notification) InitService() (err error) {
 	controller := []microservices.Controller{
 		// add controller...
 		&controllers.CreateNotification{},
+		&controllers.SendNotification{},
+		&controllers.ConnectedUser{},
 	}
 
 	notif.Notification = microservices.NewMicroservice("Notification", ":9191")
 	notif.Notification.Controllers = append(notif.Notification.Controllers, controller...)
+	go notif.HandleUserDisconnect()
+	go notif.HandleUserConnect()
 	return err
 }
 
 func (notif *Notification) GetService() *microservices.Microservice {
 	return notif.Notification
+}
+
+func (notif *Notification) HandleUserDisconnect() {
+	var mutex sync.Mutex
+	for {
+		mutex.Lock()
+		idUser := <-controllers.Disconnect_channel
+		mutex.Unlock()
+
+		infos_user := models.UserInfos{
+			Type:   "user_status",
+			Id:     idUser,
+			Status: "offline",
+		}
+		for _, client := range controllers.Clients {
+			client.WriteJSON(infos_user)
+		}
+	}
+}
+
+func (notif *Notification) HandleUserConnect() {
+	var mutex sync.Mutex
+	for {
+		mutex.Lock()
+		idUser := <-controllers.Connection_channel
+		mutex.Unlock()
+
+		infos_user := models.UserInfos{
+			Type:   "user_status",
+			Id:     idUser,
+			Status: "online",
+		}
+		for _, client := range controllers.Clients {
+			client.WriteJSON(infos_user)
+		}
+	}
 }

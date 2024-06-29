@@ -10,8 +10,8 @@ type Message struct {
 }
 
 type Notification struct {
-	UserID    string
-	MessageId int
+	SenderId  int
+	ReceiverId int
 	Read      string
 }
 
@@ -35,21 +35,10 @@ func NewMessage(sender, receiver int, content string) Message {
 	}
 }
 
-func NewNotification(messageId int, userId, read string) Notification {
+func NewNotification(senderId, receiverId int, read string) Notification {
 	return Notification{
-		UserID:    userId,
-		MessageId: messageId,
+		SenderId:  senderId,
+		ReceiverId: receiverId,
 		Read:      read,
 	}
 }
-
-// notifications := []Notification{
-// 	{Type: "new_message", Message: "You have a new message from {sender}."},
-// 	{Type: "error", Message: "An error occurred. Please try again later."},
-// 	{Type: "user_online", Message: "{username} is now online."},
-// 	{Type: "user_offline", Message: "{username} is now offline."},
-// 	{Type: "connection_lost", Message: "Connection lost. Reconnecting..."},
-// 	{Type: "connection_restored", Message: "Connection restored."},
-// 	{Type: "message_sent", Message: "Your message was sent successfully."},
-// 	{Type: "message_failed", Message: "Failed to send your message. Please try again."},
-// }

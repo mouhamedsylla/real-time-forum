@@ -10,7 +10,6 @@ export default class Message {
     }
 
     newMessage(content, type) {
-        console.log("New message: ", content)
         const message = document.createElement("div")
         message.classList.add("message", type)
         message.textContent = content
