@@ -1,8 +1,12 @@
 import api from "../../index.js"
-
+import { session_expired, alert_token_expire, throttle, alert_loading} from "../utils/utils.js"
 export default class Message {
     constructor() {
         this.targetElement = null
+        this.doLoad = null
+        this.messages = []
+        this.pointer = 1
+        this.amount = 10
     }
 
     setTargetElement(element) {
@@ -16,13 +20,42 @@ export default class Message {
         return message
     }
 
+    addMessages() {
+        this.messages.forEach(message => {
+            const target = document.querySelector(".chat-messages")
+            target.appendChild(this.newMessage(message.Content, message.SenderId === api.client.Id ? "user" : "other"))
+        })
+    }
+
+    handleScroll(contactId, apiMessage) {
+        const target = document.querySelector(".chat-messages")        
+        target.addEventListener('scroll', throttle(async function(e) {            
+            if (target.scrollHeight - target.scrollTop === target.clientHeight) {
+                const container = document.querySelector(".chat-messages")
+                const lastchild = container.lastChild
+                alert_loading(container, this.doLoad)
+                await new Promise(resolve => setTimeout(resolve, 2000))
+                this.pointer++
+                if (!lastchild.className.includes("loading")) {
+                    this.messages = await apiMessage.getMessagesPage(contactId, this.pointer, this.amount)
+                }
+                if (this.messages === null) {
+                    this.doLoad = false
+                }
+                
+                this.addMessages()
+            } 
+        }.bind(this), 1000, { leading: true, trailing: true }))
+    }
+
     async onloadDiscussion(contactId, apiMessage) {
         try {
-            await apiMessage.getMessages(contactId)
-            apiMessage.messages.forEach(message => {
-                const target = document.querySelector(".chat-messages")
-                target.appendChild(this.newMessage(message.Content, message.SenderId === api.client.Id ? "user" : "other"))
-            })
+            session_expired() ? alert_token_expire() :
+            this.pointer = 1
+            this.messages = await apiMessage.getMessagesPage(contactId, this.pointer, this.amount)
+            this.addMessages()
+            this.doLoad = true
+            this.handleScroll(contactId, apiMessage)
         } catch (error) {
             console.error("Error while loading messages: ", error)
         }
@@ -33,15 +66,20 @@ export default class Message {
         const target = document.querySelector(".chat-messages")
         input.addEventListener("keypress", (event) => {
             if (event.key === "Enter") {
-                target.appendChild(this.newMessage(input.value, "user"))
-                socket.send(input.value)
-                input.value = ""
+                if (session_expired()) { 
+                    alert_token_expire()
+                } else {
+                    target.appendChild(this.newMessage(input.value, "user"))
+                    socket.send(input.value)
+                    input.value = ""
+                }
             }
         })
     }
 
     receiveMessage(event) {
         const target = document.querySelector(".chat-messages")
+        session_expired() ? alert_token_expire() :
         target.appendChild(this.newMessage(event.data, "other"))
     }
 
@@ -80,6 +118,7 @@ export default class Message {
                 this.targetElement.children[i].remove()
             }
         }
+
         this.targetElement.appendChild(this.createMessageHTML(contact))
     }
 }

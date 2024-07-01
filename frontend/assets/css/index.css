@@ -1263,6 +1263,12 @@ input[type=file]::file-selector-button:hover {
   color: #999;
 }
 
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 
 @keyframes typing {

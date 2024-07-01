@@ -27,7 +27,6 @@ func (pmu *GetPrivateMessageUsers) getPrivateMessageUsers(w http.ResponseWriter,
 	result := database.DbChat.Storage.Scan(models.Message{}, "ReceiverId").([]models.Message)
 	database.DbChat.Storage.Custom.Clear()
 
-
 	var rsp models.UserContact
 	for _, v := range result {
 		if ContainsInt(rsp.UsersId, v.ReceiverId) {
@@ -38,6 +37,7 @@ func (pmu *GetPrivateMessageUsers) getPrivateMessageUsers(w http.ResponseWriter,
 
 	utils.ResponseWithJSON(w, rsp, http.StatusOK)
 }
+
 
 func ContainsInt(array []int, target int) bool {
 	for _, value := range array {

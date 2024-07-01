@@ -1,5 +1,5 @@
 import PostAPI from "../api/posts.js";
-
+import { session_expired, alert_token_expire } from "../utils/utils.js";
 export default class Post {
     constructor() {
         this.apiPost = new PostAPI()
@@ -18,7 +18,7 @@ export default class Post {
         const postAdd = document.getElementById("post-btn")
 
         postAdd.addEventListener("click", async () => {
-            await this.addPost(this.getPostInput())
+            session_expired() ? alert_token_expire() : await this.addPost(this.getPostInput())
             postAdd_popup.classList.add("close")
         })
 

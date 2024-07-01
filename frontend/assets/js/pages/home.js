@@ -2,13 +2,12 @@ import Page from "./pages.js"
 import api from "../../index.js"
 import Post from "../components/post.js"
 import Comment from "../components/comment.js"
-import { parseJwt, alert_token_expire } from "../utils/utils.js"
+import { session_expired, alert_token_expire, parseJwt } from "../utils/utils.js"
 import Discussion from "../components/discussions.js"
 import Notification from "../components/notification.js"
 export default class Home extends Page {
     constructor() {
         super("home")
-        this.contactStatus = null
         this.posts = new Post()
         this.comments = new Comment()
         this.discussionsList = new Discussion()
@@ -16,11 +15,11 @@ export default class Home extends Page {
     }
 
     async initClient() {
-        const token_payload = parseJwt(document.cookie)
-        if (!token_payload) {
+        if (session_expired()) {
             alert_token_expire()
             return false
         }
+        const token_payload = parseJwt(document.cookie)
         await api.get("/auth/getUsers", { userId: token_payload.id}).then(data => {
             api.setClient(data)
         })

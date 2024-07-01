@@ -83,6 +83,7 @@ func (sm *SendMessage) sendMessage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		go func(message models.Message) {
+			fmt.Println("Sending message to broadcast")
 			Broadcast <- models.NewNotification(idU, idReceiver, "false")
 		}(message)
 	}

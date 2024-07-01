@@ -45,6 +45,7 @@ func Authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		session, err := r.Cookie("forum")
 		if err != nil {
+			log.Println("Unauthorized: ", err)
 			utils.ResponseWithJSON(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
@@ -53,6 +54,7 @@ func Authenticate(next http.Handler) http.Handler {
 		_, err = Jwt.VerifyToken(session.Value, publicKey)
 
 		if err != nil {
+			log.Println("Unauthorized: ", err)
 			utils.ResponseWithJSON(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}

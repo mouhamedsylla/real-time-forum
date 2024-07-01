@@ -13,7 +13,6 @@ function alert(message, type, parentElement) {
         }
     }
     
-
     const div = document.createElement("div")
     div.className = "alert"
     div.innerHTML = `
@@ -42,6 +41,20 @@ function alert_token_expire() {
     })
 }
 
+
+async function alert_loading(target, bool) {
+    const div = document.createElement("div")
+    div.classList.add("loading")
+    div.innerHTML = `
+        <iframe src="https://lottie.host/embed/454fc9f7-9ba7-4eb6-b116-f52cb7ed59a4/soP2gQypD7.json" style="border: none; height: 60px;"></iframe>
+    `
+    if (bool) {
+        target.appendChild(div)
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        target.removeChild(div)
+    }
+}
+
 function parseJwt(token) {
     try {
         return JSON.parse(atob(token.split('.')[1]));
@@ -58,6 +71,41 @@ function backToHome(route) {
         }
     }
 }
+
+function session_expired() {
+    const token_payload = parseJwt(document.cookie)
+    if (!token_payload) {
+        return true
+    }
+    return false
+}
+
+
+function throttle(fn, delay, { leading = false, trailing = true } = {}) {
+    let last = 0
+    let timer = null
+    return function () {
+        const now = +new Date()
+        if (!last && leading === false) {
+            last = now
+        }
+        if (now - last > delay) {
+            if (timer) {
+                clearTimeout(timer)
+                timer = null
+            }
+            fn.apply(this, arguments)
+            last = now
+        } else if (!timer && trailing !== false) {
+            timer = setTimeout(() => {
+                fn.apply(this, arguments)
+                last = +new Date()
+                timer = null
+            }, delay)
+        }
+    }
+}
+
 
 function modeSelect() {
     const toggleIcon = document.getElementById('toggleIcon');
@@ -79,4 +127,13 @@ function modeSelect() {
         });
 }
 
-export { alert, alert_icons_iframes, alert_token_expire, parseJwt, backToHome, modeSelect }
+export {
+        alert, alert_icons_iframes, 
+        alert_token_expire,
+        backToHome, 
+        modeSelect, 
+        session_expired, 
+        parseJwt,
+        throttle,
+        alert_loading 
+}

@@ -6,7 +6,9 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"real-time-forum/server/middleware"
 	"real-time-forum/server/router"
+	"strings"
 )
 
 var Gateway_EndPoint = map[string][]string{
@@ -16,11 +18,9 @@ var Gateway_EndPoint = map[string][]string{
 		"/chat/message/private/users/:userId",
 	},
 	"8080": {
-		"/auth/getGroupUser/:userId",
 		"/auth/getUsers",
-		"/auth/checkToken",
-		"/auth/register",
-		"/auth/login",
+		"/auth/public/register",
+		"/auth/public/login",
 	},
 	"8181": {
 		"/posts/getAllPost",
@@ -46,7 +46,7 @@ func NewGateway() *Gateway {
 func (gtw *Gateway) Proxy(path, target string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		targetURL := target + r.URL.Path
-		
+
 		if r.URL.RawQuery != "" {
 			targetURL += "?" + r.URL.RawQuery
 		}
@@ -95,14 +95,25 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	tmp.Execute(w, nil)
 }
 
+func (gtw *Gateway) SubcribeHandler(port string, endpoint string) {
+	target := "http://localhost:" + port
+	if strings.Contains(endpoint, "public") {
+		gtw.Router.Method(http.MethodPost, http.MethodGet).
+			Handler(endpoint, gtw.Proxy(endpoint, target))
+	} else {
+		gtw.Router.Method(http.MethodPost, http.MethodGet).
+			Middleware(middleware.Authenticate).
+			Handler(endpoint, gtw.Proxy(endpoint, target))
+	}
+}
+
 func (gtw *Gateway) BootstrapApp() {
 	gtw.Router.SetDirectory("/frontend/", "../../../frontend/")
 	gtw.Router.Method(http.MethodGet).Handler("/frontend/", gtw.Router.StaticServe())
 	gtw.Router.Method(http.MethodGet).Handler("/", http.HandlerFunc(Home))
 	for port, endpoints := range Gateway_EndPoint {
 		for _, endpoint := range endpoints {
-			gtw.Router.Method(http.MethodPost, http.MethodGet).
-				Handler(endpoint, gtw.Proxy(endpoint, "http://localhost:"+port))
+			gtw.SubcribeHandler(port, endpoint)
 		}
 	}
 	fmt.Println("Server is running on: http://localhost:3000")

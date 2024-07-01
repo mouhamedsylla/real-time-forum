@@ -1,5 +1,6 @@
 import MessageAPI from "../api/messages.js";
 import Message from "./message.js";
+import { session_expired, alert_token_expire } from "../utils/utils.js";
 
 export default class Discussion {
     constructor() {
@@ -29,6 +30,7 @@ export default class Discussion {
     }
 
     async render() {
+        session_expired() ? alert_token_expire() :
         await this.apiMessage.getOtherUser()
         .then(() => {
             this.apiMessage.otherUser.forEach(user => {
@@ -43,7 +45,7 @@ export default class Discussion {
                     const receiveMessageCallback = (event) => this.message.receiveMessage(event)
                     this.apiMessage.initDiscussion(user.Id, sendMessageCallback, receiveMessageCallback)
 
-                    await this.message.onloadDiscussion(user.Id, this.apiMessage)
+                    session_expired() ? alert_token_expire() : await this.message.onloadDiscussion(user.Id, this.apiMessage)
                 })
             })
         })

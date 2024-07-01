@@ -13,7 +13,7 @@ func (r *Register) HTTPServe() http.Handler {
 }
 
 func (r *Register) EndPoint() string {
-	return "/auth/register"
+	return "/auth/public/register"
 }
 
 func (r *Register) SetMethods() []string {
@@ -31,9 +31,7 @@ func (r *Register) Register(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	user := data.(*models.UserRegister)
-
 	var valid = validation.NewValidator()
-
 	valid.Init(*user)
 
 	if err := valid.Validate(); err != nil {

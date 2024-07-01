@@ -25,7 +25,7 @@ export default class Login extends Page {
     }
 
     login() {
-        fetch("http://localhost:3000/auth/login", {
+        fetch("http://localhost:3000/auth/public/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

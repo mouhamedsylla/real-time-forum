@@ -24,7 +24,7 @@ export default class Register extends Page {
     }
 
     register() {
-        fetch("http://localhost:3000/auth/register", {
+        fetch("http://localhost:3000/auth/public/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

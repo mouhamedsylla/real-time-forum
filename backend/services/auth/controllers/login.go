@@ -18,7 +18,7 @@ func (l *Login) HTTPServe() http.Handler {
 }
 
 func (l *Login) EndPoint() string {
-	return "/auth/login"
+	return "/auth/public/login"
 }
 
 func (l *Login) SetMethods() []string {

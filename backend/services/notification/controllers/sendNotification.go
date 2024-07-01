@@ -54,10 +54,7 @@ func (sn *SendNotification) SendNotification(w http.ResponseWriter, r *http.Requ
 
 func HandleNotification() {
 	for {
-
 		notif := <-userNotif
-		fmt.Println("Sending notification to user: ", notif.Id)
-
 		for id, client := range Clients {
 			if id == notif.ReceiverId {
 				user_infos := models.UserInfos{

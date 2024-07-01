@@ -1,4 +1,5 @@
 import NotificationAPI from "../api/notifications.js"
+import { session_expired, alert_token_expire } from "../utils/utils.js"
 
 export default class Notification {
     constructor() {
@@ -26,6 +27,7 @@ export default class Notification {
     async initConnectedUser() {
         this.contactStatus = document.querySelectorAll(".status")
         try {
+            session_expired() ? alert_token_expire() :
             await this.apiNotification.getConnectedUsers().then(() => {
                 this.apiNotification.connectUser.forEach(user => {
                     this.setStatusContact(user.id, true)
@@ -36,7 +38,7 @@ export default class Notification {
         }
 
         const handler = (event) => this.notificationHandler(event)
-        this.apiNotification.connectToNotificationService(handler)
+        session_expired() ? alert_token_expire() : this.apiNotification.connectToNotificationService(handler)
     }
 
 }

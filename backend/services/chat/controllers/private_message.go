@@ -31,5 +31,33 @@ func (pm *GetPrivateMessage) getPrivateMessage(w http.ResponseWriter, r *http.Re
 
 	result := database.DbChat.Storage.Scan(models.Message{},"Id", "CreatedAt", "SenderId", "ReceiverId", "Content").([]models.Message)
 	database.DbChat.Storage.Custom.Clear()
+
+	params := r.URL.Query()
+	limit := params.Get("limit")
+	page := params.Get("page")
+	if limit != "" && page != "" {
+		limitInt, _ := strconv.Atoi(limit)
+		pageInt, _ := strconv.Atoi(page)
+		chunk := chunkMessage(limitInt, result)
+		result = chunk[pageInt]
+		utils.ResponseWithJSON(w, result, http.StatusOK)
+		return
+	}
+	
 	utils.ResponseWithJSON(w, result, http.StatusOK)
+}
+
+func chunkMessage(limit int, message []models.Message) map[int][]models.Message {
+	chunk := make(map[int][]models.Message)
+	chuncIndex := 1
+	for _, v := range message {
+		if len(chunk[chuncIndex]) < limit {
+			chunk[chuncIndex] = append(chunk[chuncIndex], v)
+		}
+		if len(chunk[chuncIndex]) == limit {
+			chuncIndex++
+		}
+	}
+	return chunk
+	
 }

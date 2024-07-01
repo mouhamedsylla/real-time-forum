@@ -7,11 +7,7 @@ export default class MessageAPI {
     }
 
     initDiscussion(idContact, callbackSend, callbackReceive) {
-        console.log(`chat initialized with ${idContact}`)
         this.socket = new WebSocket(`ws://localhost:9090/chat/message/private/send/${idContact}?user_id=${api.client.Id}`)
-        
-        this.socket.onopen = () => { console.log("Socket open") }
-        this.socket.onclose = () => { console.log("Socket closed") }
         
         callbackSend(this.socket)
         this.socket.onmessage = (event) => {
@@ -22,6 +18,16 @@ export default class MessageAPI {
 
     async getMessages(contactId) {
         this.messages = await api.get(`/chat/message/private/${api.client.Id}/${contactId}`)
+    }
+
+    async getMessagesPage(contactId, page, limit = 10) {
+       try {
+            const response = await api.get(`/chat/message/private/${api.client.Id}/${contactId}?page=${page}&limit=${limit}`)
+            return response
+       } catch (error) {
+            console.error("Error while fetching messages: ", error)
+       }
+        
     }
 
     async getOtherUser() {
