@@ -45,7 +45,8 @@ func (p *PostComment) PostComment(w http.ResponseWriter, r *http.Request) {
 
 	comment := data.(*models.Comments)
 	comment.Post_id = postId
-	if err = database.DbPost.Storage.Insert(*comment); err != nil {
+	_, err = database.DbPost.Storage.Insert(*comment)
+	if err != nil {
 		utils.ResponseWithJSON(w, "Service Posts.postComment: 400 BadRequest", http.StatusBadRequest)
 	}
 

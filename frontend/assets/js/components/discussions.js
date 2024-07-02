@@ -1,6 +1,7 @@
 import MessageAPI from "../api/messages.js";
 import Message from "./message.js";
 import { session_expired, alert_token_expire } from "../utils/utils.js";
+import api from "../../index.js";
 
 export default class Discussion {
     constructor() {
@@ -29,25 +30,26 @@ export default class Discussion {
         return elem
     }
 
-    async render() {
-        session_expired() ? alert_token_expire() :
-        await this.apiMessage.getOtherUser()
-        .then(() => {
-            this.apiMessage.otherUser.forEach(user => {
+    render() {
+        if (session_expired()) {
+            alert_token_expire()
+        } else {
+            api.sortUsers()
+            api.otherUser.forEach(user => {
                 const currentElement = this.createDiscussionHTML(user)
                 this.targetElement.appendChild(currentElement)
                 currentElement.addEventListener("click", async () => {
-
+    
                     this.message.setTargetElement(document.querySelector(".right"))
                     this.message.render(user.Id, this.apiMessage)
-
+    
                     const sendMessageCallback = (socket) => this.message.sendMessage(socket)
                     const receiveMessageCallback = (event) => this.message.receiveMessage(event)
                     this.apiMessage.initDiscussion(user.Id, sendMessageCallback, receiveMessageCallback)
-
+    
                     session_expired() ? alert_token_expire() : await this.message.onloadDiscussion(user.Id, this.apiMessage)
                 })
             })
-        })
+        }  
     }
 }

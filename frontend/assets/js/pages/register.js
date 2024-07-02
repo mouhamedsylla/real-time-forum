@@ -16,7 +16,7 @@ export default class Register extends Page {
                 this.UserInfos[e.target.name] = e.target.name == "age" ? parseInt(input.value) : input.value 
             })
         })
-
+        
         const signUp = document.getElementById("sign-up")
         signUp.addEventListener("click", () => {
             this.register()

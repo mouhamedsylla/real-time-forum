@@ -42,7 +42,8 @@ func (r *Register) Register(w http.ResponseWriter, rq *http.Request) {
 
 	models.CryptPassword(user)
 
-	if err = database.Db.Storage.Insert(*user); err != nil {
+	_, err = database.Db.Storage.Insert(*user); 
+	if err != nil {
 		response.Message = err.Error()
 		utils.ResponseWithJSON(w, response, http.StatusBadRequest)
 		return

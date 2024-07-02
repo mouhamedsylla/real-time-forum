@@ -2,7 +2,6 @@ import api from "../../index.js";
 export default class MessageAPI {
     constructor() {
         this.messages = []
-        this.otherUser = {}
         this.socket = null
     }
 
@@ -30,15 +29,11 @@ export default class MessageAPI {
         
     }
 
-    async getOtherUser() {
-        await api.get("/auth/getUsers").then(data => {
-            this.otherUser = data.filter(user => user.Id != api.client.Id)
-        })
-    }
-
-    getUserById(id) {
-        return this.otherUser.find(user => user.Id === parseInt(id))
-    }
-
-
+    // async getOtherUser() {
+    //     await api.get("/auth/getUsers").then(data => {
+    //         api.otherUser = data.filter(user => user.Id != api.client.Id)
+    //     })
+    //     api.otherUser.forEach(user => user.status = "offline")
+    //     api.sortUsers()
+    // }
 }

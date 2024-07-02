@@ -1,5 +1,6 @@
+import api from "../../index.js";
 import PostAPI from "../api/posts.js";
-import { session_expired, alert_token_expire } from "../utils/utils.js";
+import { session_expired, alert_token_expire, formatTimeAgo, like, dislike } from "../utils/utils.js";
 export default class Post {
     constructor() {
         this.apiPost = new PostAPI()
@@ -52,30 +53,54 @@ export default class Post {
         return { Title, Image, Content }
     }
 
-    createPostHTML(post) {
+    handleReaction() {
+        const likeBtn = document.querySelectorAll("[reaction]")
+        likeBtn.forEach(element => {
+            const observer = new MutationObserver((mutationsList) => {
+                for (const mutation of mutationsList) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                        const newStyle = window.getComputedStyle(element).color;
+                        if (newStyle === like) {
+                            console.log(`post ${element.id} liked`)
+                        } else if (newStyle === dislike) {
+                            console.log(`post ${element.id} disliked`)
+                        }
+                    }
+                }
+            })
+            observer.observe(element, { attributes: true })
+
+            element.addEventListener("click", () => {
+                element.style.color = element.style.color === 'rgb(255, 87, 51)' ? '#3498db' : '#ff5733';
+            });
+        })
+    }
+
+    createPostHTML(post, userPosted, lastId) {
+        const postId = post.Id ? post.Id : lastId
         const elem = document.createElement("div")
         elem.classList.add("feed")
         let post_component = `
                 <div class="head">
                     <div class="user">
                         <div class="profile-photo">
-                            <img src="./frontend/assets/profile2.jpg">
+                            <img src="./frontend/assets/images/profile-${userPosted.Id}.jpg">
                         </div>
                         <div class="ingo">
-                            <h3>Daenerys</h3>
-                            <small>New York, 15 MINUTES AGO</small>
+                            <h3>${userPosted.firstName} ${userPosted.lastName}</h3>
+                            <small>${formatTimeAgo(post.CreatedAt)}</small>
                         </div>
                     </div>
                 </div>
                 <div class="photo">
                     <img src="data:image/jpeg;base64,${post.Image}">
                 </div>
-                <input type="checkbox" name="" id="like-${post.Id}" class="btn-check like-check" />
-                <input type="checkbox" name="" id="comment-${post.Id}" class="btn-check comment-check" />
+                <input type="checkbox" name="" id="like-${postId}" class="btn-check like-check"/>
+                <input type="checkbox" name="" id="comment-${postId}" class="btn-check comment-check" />
                 <div class="action-buttons">
                     <div class="interaction-buttons">
-                        <label for="like-${post.Id}" id="like-btn"></label>
-                        <label for="comment-${post.Id}" id="comment-btn"></label>
+                        <label for="like-${postId}" class="like-btn" id="${postId}" reaction></label>
+                        <label for="comment-${postId}" id="comment-btn"></label>
                         <span><i class="uil uil-share-alt"></i></span>
                     </div>
                     <div class="bookmark">
@@ -94,16 +119,16 @@ export default class Post {
                 <div class="post-comment">
                     <div class="head-comment">
                         <div class="name">Comments</div>
-                        <label for="comment-${post.Id}" id="comment-btn3">
+                        <label for="comment-${postId}" id="comment-btn3">
                           <i class="fa-solid fa-xmark"></i>
                         </label>
                     </div>
-                    <div class="comment-container" data-comment-post-${post.Id}>
+                    <div class="comment-container" data-comment-post-${postId}>
 
                     </div>
                     <div class="new-comment">
                         <img src="./frontend/assets/profile2.jpg" alt="" />
-                        <input class="all__input" type="text" placeholder="Add a comment..." id="comment-input-${post.Id}"/>
+                        <input class="all__input" type="text" placeholder="Add a comment..." id="comment-input-${postId}"/>
                     </div>
                 </div>`
         elem.innerHTML = post_component
@@ -111,15 +136,25 @@ export default class Post {
     }
 
     async render() {
-        await this.apiPost.getPosts()
-        this.apiPost.posts.forEach(post => {
-            this.elementTarget.appendChild(this.createPostHTML(post))
-        })
+        try {
+            await this.apiPost.getPosts()
+            .then(() => {
+                this.apiPost.posts.forEach(async post => {
+                    await this.apiPost.getUserByPostId(post.UserId)
+                    .then(userPosted => {
+                        this.elementTarget.appendChild(this.createPostHTML(post, userPosted))
+                    })
+                })
+            }) 
+        } catch (error) {
+            console.error("Error while rendering posts: ", error)
+        }
     }
 
     async addPost(post) {
         await this.apiPost.createPost(post)
-        this.elementTarget.appendChild(this.createPostHTML(this.currentPost))
+        this.elementTarget.appendChild(this.createPostHTML(this.currentPost, api.client, this.apiPost.lastPostId.lastId))
+        this.handleReaction()
         this.currentPost = null
     }
 }

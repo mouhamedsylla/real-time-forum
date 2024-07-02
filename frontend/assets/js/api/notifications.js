@@ -21,5 +21,12 @@ export default class NotificationAPI {
         }
     }
 
+    async getUserByNotificationId(id) {
+        try {
+            return await api.get(`/auth/getUsers?userId=${id}`)
+        } catch (error) {
+            console.error("Error getting user by post id:", error)
+        }
+    }
 
 }

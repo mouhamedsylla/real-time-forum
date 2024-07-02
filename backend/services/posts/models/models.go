@@ -35,6 +35,10 @@ type ReactionComment struct {
 	CommentId int    `orm-go:"FOREIGN_KEY:Comments:Id"`
 }
 
+type LastCreated struct {
+	LastId int64 `json:"lastId"`
+}
+
 
 type Response struct {
 	Message string `json:"message"`

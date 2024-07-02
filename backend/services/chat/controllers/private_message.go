@@ -29,7 +29,7 @@ func (pm *GetPrivateMessage) getPrivateMessage(w http.ResponseWriter, r *http.Re
 		Where("senderId", sendId).And("receiverId", receiveId).
 		Or("senderId", receiveId).And("receiverId", sendId)
 
-	result := database.DbChat.Storage.Scan(models.Message{},"Id", "CreatedAt", "SenderId", "ReceiverId", "Content").([]models.Message)
+	result := database.DbChat.Storage.Scan(models.Message{}, "Id", "CreatedAt", "SenderId", "ReceiverId", "Content").([]models.Message)
 	database.DbChat.Storage.Custom.Clear()
 
 	params := r.URL.Query()
@@ -43,21 +43,27 @@ func (pm *GetPrivateMessage) getPrivateMessage(w http.ResponseWriter, r *http.Re
 		utils.ResponseWithJSON(w, result, http.StatusOK)
 		return
 	}
-	
+
 	utils.ResponseWithJSON(w, result, http.StatusOK)
 }
 
 func chunkMessage(limit int, message []models.Message) map[int][]models.Message {
+	// Reverse the input slice
+	reversed := make([]models.Message, len(message))
+	for i, v := range message {
+		reversed[len(message)-1-i] = v
+	}
+
+	// Chunk the reversed slice
 	chunk := make(map[int][]models.Message)
-	chuncIndex := 1
-	for _, v := range message {
-		if len(chunk[chuncIndex]) < limit {
-			chunk[chuncIndex] = append(chunk[chuncIndex], v)
+	chunkIndex := 1
+	for _, v := range reversed {
+		if len(chunk[chunkIndex]) < limit {
+			chunk[chunkIndex] = append(chunk[chunkIndex], v)
 		}
-		if len(chunk[chuncIndex]) == limit {
-			chuncIndex++
+		if len(chunk[chunkIndex]) == limit {
+			chunkIndex++
 		}
 	}
 	return chunk
-	
 }

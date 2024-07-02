@@ -2,6 +2,7 @@ export default class API {
     constructor() {
         this.baseURL
         this.client
+        this.otherUser = {}
     }
 
     setbaseURL(baseURL) {
@@ -10,6 +11,27 @@ export default class API {
 
     setClient(client) {
         this.client = Object.assign({}, client) 
+    }
+
+    sortUsers() {
+        return this.otherUser.sort((a, b) => {
+          if (a.status === "online" && b.status === "offline") {
+            return -1;
+          } else if (a.status === "offline" && b.status === "online") {
+            return 1;
+          } else if (a.status === "offline" && b.status === "offline") {
+            return a.firstName.localeCompare(b.firstName);
+          }
+          return 0;
+        })
+    }
+
+    getUserById(id) {
+        return this.otherUser.find(user => user.Id === parseInt(id))
+    }
+
+    setUserStatus(id, status) {
+        this.otherUser.find(user => user.Id === parseInt(id)).status =  status
     }
 
     async get(endpoint, params = {}) {

@@ -27,13 +27,14 @@ func (gtuser *GetUser) GetUser(w http.ResponseWriter, r *http.Request) {
 	if param != "" {
 		userId, _ := strconv.Atoi(param)
 		database.Db.Storage.Custom.Where("Id", userId)
-		result = database.Db.Storage.Scan(models.UserRegister{}, "Id", "Nickname", "FirstName", "LastName", "Email").([]models.UserRegister)
+		data := database.Db.Storage.Scan(models.UserRegister{}, "Id", "Nickname", "FirstName", "LastName", "Email")
 		database.Db.Storage.Custom.Clear()
-		if len(result) == 0 {
+		if data == nil {
 			response.Message = "user not found"
 			utils.ResponseWithJSON(w, response, http.StatusNotFound)
 			return
 		}
+		result = data.([]models.UserRegister)
 		user := result[0]
 		utils.ResponseWithJSON(w, user, http.StatusOK)
 		return

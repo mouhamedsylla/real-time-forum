@@ -23,6 +23,10 @@ export default class Home extends Page {
         await api.get("/auth/getUsers", { userId: token_payload.id}).then(data => {
             api.setClient(data)
         })
+        await api.get("/auth/getUsers").then(data => {
+            api.otherUser = data.filter(user => user.Id != api.client.Id)
+        })
+        api.otherUser.forEach(user => user.status = "offline")
         return true
     }
 
@@ -31,24 +35,22 @@ export default class Home extends Page {
         this.posts.setElementTarget(postsTarget)
         this.posts.bindButton()
         try {
-            await this.posts.render();
+            await this.posts.render()
             const renderComments = this.posts.apiPost.posts.map(async (post) => {
                 await this.comments.render(post.Id)
             });
-    
+
             await Promise.all(renderComments)
             this.comments.bindInput()
         } catch (error) {
             console.error("Error rendering posts or comments:", error)
         }
-    
-        try {
-            this.discussionsList.setTargetElement(document.querySelector(".discussions"))
-            await this.discussionsList.render();
-        } catch (error) {
-            console.error("Error rendering discussions:", error)
-        }
+
+        this.discussionsList.setTargetElement(document.querySelector(".discussions"))
+        this.discussionsList.render();
         this.notification.initConnectedUser()
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        this.posts.handleReaction()
     }
     
 

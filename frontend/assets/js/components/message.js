@@ -1,5 +1,5 @@
 import api from "../../index.js"
-import { session_expired, alert_token_expire, throttle, alert_loading} from "../utils/utils.js"
+import { session_expired, alert_token_expire, throttle, alert_loading, prependChild} from "../utils/utils.js"
 export default class Message {
     constructor() {
         this.targetElement = null
@@ -20,6 +20,13 @@ export default class Message {
         return message
     }
 
+    addMessagesInTop() {
+        this.messages.forEach(message => {
+            const target = document.querySelector(".chat-messages")
+            prependChild(target, this.newMessage(message.Content, message.SenderId === api.client.Id ? "user" : "other"))
+        })
+    }
+
     addMessages() {
         this.messages.forEach(message => {
             const target = document.querySelector(".chat-messages")
@@ -29,31 +36,33 @@ export default class Message {
 
     handleScroll(contactId, apiMessage) {
         const target = document.querySelector(".chat-messages")        
-        target.addEventListener('scroll', throttle(async function(e) {            
-            if (target.scrollHeight - target.scrollTop === target.clientHeight) {
+        target.addEventListener('scroll', throttle(async function(e) {    
+            if ( target.scrollTop === 0 ) {
                 const container = document.querySelector(".chat-messages")
-                const lastchild = container.lastChild
+                const firstchild = container.firstChild
                 alert_loading(container, this.doLoad)
                 await new Promise(resolve => setTimeout(resolve, 2000))
                 this.pointer++
-                if (!lastchild.className.includes("loading")) {
+                if (!firstchild.className.includes("loading")) {
                     this.messages = await apiMessage.getMessagesPage(contactId, this.pointer, this.amount)
                 }
                 if (this.messages === null) {
                     this.doLoad = false
                 }
                 
-                this.addMessages()
+                await this.addMessagesInTop()
             } 
         }.bind(this), 1000, { leading: true, trailing: true }))
     }
 
     async onloadDiscussion(contactId, apiMessage) {
+        const target = document.querySelector(".chat-messages")        
         try {
             session_expired() ? alert_token_expire() :
             this.pointer = 1
             this.messages = await apiMessage.getMessagesPage(contactId, this.pointer, this.amount)
-            this.addMessages()
+            this.addMessagesInTop()
+            target.scrollTop = target.scrollHeight
             this.doLoad = true
             this.handleScroll(contactId, apiMessage)
         } catch (error) {
@@ -112,7 +121,7 @@ export default class Message {
     }
 
     render(contactId, apiMessage) {
-        const contact = apiMessage.getUserById(contactId)
+        const contact = api.getUserById(contactId)
         for (let i = 0; i < this.targetElement.children.length; i++) {
             if (this.targetElement.children[i].className.includes("chat")) {
                 this.targetElement.children[i].remove()

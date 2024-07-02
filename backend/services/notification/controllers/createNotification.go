@@ -29,7 +29,8 @@ func (cn *CreateNotification) CreateNotification(w http.ResponseWriter, rq *http
 		return
 	}
 	notification := data.(*models.UserNotification)
-	if err = database.DbNotification.Storage.Insert(*notification); err != nil {
+	_, err = database.DbNotification.Storage.Insert(*notification); 
+	if err != nil {
 		utils.ResponseWithJSON(w, "Service Notification.CreateNotification: Bad Request", http.StatusBadRequest)
 		return
 	}

@@ -45,14 +45,16 @@ func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
 
 	// Insert the post into the storage
 	post.UserId = CustomRoute["userId"]
-	if err = database.DbPost.Storage.Insert(*post); err != nil {
+	rsl, err := database.DbPost.Storage.Insert(*post)
+	if err != nil {
 		response.Message = "Failed to create post"
 		utils.ResponseWithJSON(w, response, http.StatusBadRequest)
 		return
 	}
 
 	// Respond with success message
-	response.Message = "Post Created Successfully"
-	utils.ResponseWithJSON(w, response, http.StatusOK)
+	var postResponse models.LastCreated
+	postResponse.LastId, _ = rsl[0].LastInsertId()
+	utils.ResponseWithJSON(w, postResponse, http.StatusOK)
 
 }

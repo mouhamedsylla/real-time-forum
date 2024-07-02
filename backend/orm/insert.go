@@ -1,6 +1,7 @@
 package orm
 
 import (
+	"database/sql"
 	"reflect"
 )
 
@@ -12,7 +13,8 @@ var (
 
 // The `Insert` function is a method of the `ORM` struct. It takes in one or more tables as arguments,
 // which are of type `interface{}`.
-func (o *ORM) Insert(tables ...interface{}) error {
+func (o *ORM) Insert(tables ...interface{}) ([]sql.Result, error) {
+	var results []sql.Result
 	for _, t := range tables {
 
 		_, __TABLE__ := InitTable(t)
@@ -38,16 +40,18 @@ func (o *ORM) Insert(tables ...interface{}) error {
 				}
 			}
 
+
 			if len(values) > 0 {
 				__BUILDER__.Clear()
 				__QUERY__, __PARAMS__ = __BUILDER__.Insert(__TABLE__, values).Build()
-				_, err := o.Db.Exec(__QUERY__, __PARAMS__...)
+				rlt, err := o.Db.Exec(__QUERY__, __PARAMS__...)
 				if err != nil {
-					return err
+					return nil, err
 				}
+				results = append(results, rlt)
 			}
 
 		}
 	}
-	return nil
+	return results, nil
 }
