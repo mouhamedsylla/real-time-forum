@@ -1,3 +1,4 @@
+import api from "../../index.js"
 import CommentAPI from "../api/comments.js"
 
 export default class Comment {
@@ -5,7 +6,6 @@ export default class Comment {
         this.apiComment = new CommentAPI()
         this.currentComment = null
         this.targetElement = null
-        this.commentText = null
     }
 
     bindInput() {
@@ -14,13 +14,11 @@ export default class Comment {
         inputs.forEach(input => {
             console.log(input)
             input.addEventListener('keypress', (event) => {
-                const id = event.target.Id.split('-')[2]
+                const id = event.target.id.split('-')[2]
                 console.log(event.key)
                 if (event.key === 'Enter') {
-                    this.apiComment.postComment({
-                        Comment: input.value, 
-                        Post_Id: parseInt(id)
-                    }, id)
+                    this.addComment(input.value, id)
+                    input.value = ""
                 }
             })
         });
@@ -34,12 +32,13 @@ export default class Comment {
         })
     }
 
-    createCommentHTML(comment) {
+    createCommentHTML(comment, lastId) {
+        const commentId = comment.Id ? comment.Id : lastId
         const elem  = document.createElement("div")
         elem.classList.add("comment")
-        elem.setAttribute("id", comment.Id)
+        elem.setAttribute("id", commentId)
         elem.innerHTML = `
-            <img src="./frontend/assets/images/profile-${comment.Id}.jpg" alt="" />
+            <img src="./frontend/assets/images/profile-${commentId}.jpg" alt="" />
 			<span>
 				${comment.Comment}
 				<div class="desc">2m ago <span>Reply</span></div>
@@ -59,7 +58,12 @@ export default class Comment {
         })
     }
 
-    async addComment(idPost, comment) {
+    async addComment(comment, idPost) {
+        const lastId = await this.apiComment.postComment(comment, idPost)
+        console.log(lastId)
+        elem = this.createCommentHTML(comment, lastId)
         
+        this.targetElement.appendChild(elem)
     }
+
 }

@@ -88,7 +88,7 @@ func (gtw *Gateway) Authenticate() {
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	tmp, err := template.ParseFiles("../../../../frontend/assets/index.html")
+	tmp, err := template.ParseFiles("../../../frontend/assets/index.html")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -108,7 +108,7 @@ func (gtw *Gateway) SubcribeHandler(port string, endpoint string) {
 }
 
 func (gtw *Gateway) BootstrapApp() {
-	gtw.Router.SetDirectory("/frontend/", "../../../../frontend/")
+	gtw.Router.SetDirectory("/frontend/", "../../../frontend/")
 	gtw.Router.Method(http.MethodGet).Handler("/frontend/", gtw.Router.StaticServe())
 	gtw.Router.Method(http.MethodGet).Handler("/", http.HandlerFunc(Home))
 	for port, endpoints := range Gateway_EndPoint {

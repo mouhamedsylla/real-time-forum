@@ -23,7 +23,6 @@ export default class Post {
             postAdd_popup.classList.add("close")
         })
 
-
         postCreate.addEventListener("change", () => {
             if (postCreate.checked) {
                 postAdd_popup.classList.remove("close")
@@ -157,4 +156,5 @@ export default class Post {
         this.handleReaction()
         this.currentPost = null
     }
+
 }

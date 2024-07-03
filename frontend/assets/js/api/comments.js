@@ -14,7 +14,7 @@ export default class CommentAPI {
     }
     
 
-    postComment(comment, idPost) {
-        api.post(`/posts/${idPost}/comment`, comment)
+    async postComment(comment, idPost) {
+       return await api.post(`/posts/${idPost}/comment`, comment)
     }
 }

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"net/http"
 	"real-time-forum/services/posts/database"
 	"real-time-forum/services/posts/models"
@@ -24,6 +25,7 @@ func (p *PostComment) PostComment(w http.ResponseWriter, r *http.Request) {
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
 
 	postId, err := strconv.Atoi(CustomRoute["postId"])
+
 	if err != nil {
 		utils.ResponseWithJSON(w, "Service Posts.postComment: 400 BadRequest", http.StatusBadRequest)
 		return
@@ -32,7 +34,7 @@ func (p *PostComment) PostComment(w http.ResponseWriter, r *http.Request) {
 	database.DbPost.Storage.Custom.Where("Id", postId)
 	result := database.DbPost.Storage.Scan(models.UserPosts{}, "Id")
 	database.DbPost.Storage.Custom.Clear()
-	
+
 	if result == nil {
 		utils.ResponseWithJSON(w, "Service Posts.postComment Post not found", http.StatusNotFound)
 		return
@@ -44,11 +46,22 @@ func (p *PostComment) PostComment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	comment := data.(*models.Comments)
+
 	comment.Post_id = postId
-	_, err = database.DbPost.Storage.Insert(*comment)
+
+	var commentId []sql.Result
+
+	commentId, _ = database.DbPost.Storage.Insert(*comment)
+
+	Id, err := commentId[0].LastInsertId()
+
+	var idComment models.LastCreated
+
+	idComment.LastId = Id
+
 	if err != nil {
 		utils.ResponseWithJSON(w, "Service Posts.postComment: 400 BadRequest", http.StatusBadRequest)
 	}
 
-	utils.ResponseWithJSON(w, "Comment posted Successfully", http.StatusOK)
+	utils.ResponseWithJSON(w, idComment, http.StatusOK)
 }
