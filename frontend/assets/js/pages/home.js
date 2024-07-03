@@ -41,7 +41,7 @@ export default class Home extends Page {
             });
 
             await Promise.all(renderComments)
-            this.comments.bindInput()
+            console.log("Comments:", this.comments)
         } catch (error) {
             console.error("Error rendering posts or comments:", error)
         }
@@ -51,6 +51,7 @@ export default class Home extends Page {
         this.notification.initConnectedUser()
         await new Promise(resolve => setTimeout(resolve, 1000))
         this.posts.handleReaction()
+        this.comments.bindInput()
     }
     
 

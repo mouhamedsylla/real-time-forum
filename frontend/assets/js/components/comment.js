@@ -10,14 +10,17 @@ export default class Comment {
 
     bindInput() {
         const inputs = document.querySelectorAll(".all__input")
-        console.log(inputs)
+        console.log("input: ",inputs)
         inputs.forEach(input => {
-            console.log(input)
-            input.addEventListener('keypress', (event) => {
+            input.addEventListener('keypress', async (event) => {
                 const id = event.target.id.split('-')[2]
                 console.log(event.key)
                 if (event.key === 'Enter') {
-                    this.addComment(input.value, id)
+                    await this.addComment({
+                        Comment: input.value,
+                        Post_id: parseInt(id)
+                    
+                    }, id)
                     input.value = ""
                 }
             })
@@ -38,7 +41,7 @@ export default class Comment {
         elem.classList.add("comment")
         elem.setAttribute("id", commentId)
         elem.innerHTML = `
-            <img src="./frontend/assets/images/profile-${commentId}.jpg" alt="" />
+            <img src="./frontend/assets/images/profile-1.jpg" alt="" />
 			<span>
 				${comment.Comment}
 				<div class="desc">2m ago <span>Reply</span></div>
@@ -60,9 +63,7 @@ export default class Comment {
 
     async addComment(comment, idPost) {
         const lastId = await this.apiComment.postComment(comment, idPost)
-        console.log(lastId)
-        elem = this.createCommentHTML(comment, lastId)
-        
+        const elem = this.createCommentHTML(comment, lastId)
         this.targetElement.appendChild(elem)
     }
 
