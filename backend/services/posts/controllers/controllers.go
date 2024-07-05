@@ -5,6 +5,6 @@ type GetAllPost struct{}
 type GetPost struct{}
 type PostComment struct{}
 type GetComment struct{}
-type Like struct{}
-type Dislike struct{}
+type GetAllcomment struct{}
 type ReactionPosts struct{}
+type GetUserPostReactions struct{}

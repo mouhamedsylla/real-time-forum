@@ -44,12 +44,21 @@ func (gtuser *GetGroupUserDiscussion) GetGroupUserDiscussion(w http.ResponseWrit
 	}
 
 	database.Db.Storage.Custom.WhereIn("Id", IntSliceToInterfaceSlice(users_discussionsId.UsersId))
-	result, ok := database.Db.Storage.Scan(models.UserRegister{}, "Id", "Nickname", "FirstName", "LastName").([]models.UserRegister)
+	data, ok := database.Db.Storage.Scan(models.UserRegister{}, "Id", "Nickname", "FirstName", "LastName").([]models.UserRegister)
 	database.Db.Storage.Custom.Clear()
 
 	if !ok {
 		utils.ResponseWithJSON(w, "Service Auth.GetGroupUserDiscussion: Bad Request", http.StatusBadRequest)
 		return
+	}
+
+	var result []models.UserRegister
+	for _, v := range users_discussionsId.UsersId {
+		for _, d := range data {
+			if v == d.Id {
+				result = append(result, d)
+			}
+		}
 	}
 
 	utils.ResponseWithJSON(w, result, http.StatusOK)

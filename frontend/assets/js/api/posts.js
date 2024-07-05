@@ -8,8 +8,18 @@ export default class PostAPI {
     async getPosts() {
         try {
             this.posts = await api.get("/posts/getAllPost")
+            return this.posts
         } catch (error) {
             console.error("Error getting posts:", error)
+        }
+    }
+
+    async getReactionPost() {
+        try {
+            console.log(api.client.Id)
+            return await api.get(`/posts/GetUserPostReactions/${api.client.Id}`)
+        } catch (error) {
+            console.error("Error getting reaction posts:", error)
         }
     }
 
@@ -18,7 +28,7 @@ export default class PostAPI {
         formData.append("image", payload.Image)
         formData.append("title", payload.Title)
         formData.append("content", payload.Content)
-        this.lastPostId = await api.post(`/posts/createdpost/${api.client.Id}`, formData)
+        this.lastPostId = await api.post(`posts/createdpost/${api.client.Id}`, formData)
     }
 
     async getUserByPostId(id) {
@@ -26,6 +36,14 @@ export default class PostAPI {
             return await api.get(`/auth/getUsers?userId=${id}`)
         } catch (error) {
             console.error("Error getting user by post id:", error)
+        }
+    }
+
+    async reactionPost(idPost, reaction) {
+        try {
+            return await api.post(`posts/ReactionPosts/${api.client.Id}/${idPost}`, reaction)
+        } catch (error) {
+            console.error("Error reacting to post: ", error)
         }
     }
 }

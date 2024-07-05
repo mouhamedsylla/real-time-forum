@@ -5,6 +5,7 @@ import (
 	"real-time-forum/services/posts/database"
 	"real-time-forum/services/posts/models"
 	"real-time-forum/utils"
+	"strconv"
 )
 
 func (c *GetComment) HTTPServe() http.Handler {
@@ -22,15 +23,16 @@ func (c *GetComment) SetMethods() []string {
 func (c *GetComment) GetComment(w http.ResponseWriter, r *http.Request) {
 	var response models.Response
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
+	postId, _ := strconv.Atoi(CustomRoute["postId"])
 
-	database.DbPost.Storage.Custom.Where("Post_id", CustomRoute["postId"])
+	database.DbPost.Storage.Custom.Where("Post_id", postId)
 
 	data := database.DbPost.Storage.Scan(models.Comments{}, "Id", "CreatedAt", "Comment", "Post_id", "Like", "Dislike")
 	database.DbPost.Storage.Custom.Clear()
 
 	if data == nil {
 		response.Message = "no comment"
-		utils.ResponseWithJSON(w, response, http.StatusNoContent)
+		utils.ResponseWithJSON(w, response, http.StatusNotFound)
 		return
 	}
 

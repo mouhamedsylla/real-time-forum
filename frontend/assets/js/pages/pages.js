@@ -1,5 +1,7 @@
-export default class Page{
-    constructor(title) {
+export default class Page {
+    constructor() {}
+
+    setTitle(title) {
         document.title = title
     }
 }

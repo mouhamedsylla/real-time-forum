@@ -1,5 +1,0 @@
-CREATE TABLE IF NOT EXISTS Categories (
-	Name TEXT NOT NULL,
-	Id_Post INTEGER ,
-	FOREIGN KEY (Id_Post) REFERENCES Post (Id)
-)

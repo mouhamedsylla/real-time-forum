@@ -55,6 +55,7 @@ func (sn *SendNotification) SendNotification(w http.ResponseWriter, r *http.Requ
 func HandleNotification() {
 	for {
 		notif := <-userNotif
+		fmt.Println("Notification received: ", notif)
 		for id, client := range Clients {
 			if id == notif.ReceiverId {
 				user_infos := models.UserInfos{
@@ -65,7 +66,7 @@ func HandleNotification() {
 				err := client.WriteJSON(user_infos)
 				if err == nil {
 					database.DbNotification.Storage.SetModel("Id", notif.Id, models.UserNotification{}).
-						UpdateField("true", "Read").Update(database.DbNotification.Storage.Db)
+					UpdateField("true", "Read").Update(database.DbNotification.Storage.Db)
 				}
 			}
 		}

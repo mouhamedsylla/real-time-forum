@@ -19,6 +19,7 @@ var Gateway_EndPoint = map[string][]string{
 	},
 	"8080": {
 		"/auth/getUsers",
+		"/auth/getGroupUser/:userId",
 		"/auth/public/register",
 		"/auth/public/login",
 	},
@@ -27,6 +28,9 @@ var Gateway_EndPoint = map[string][]string{
 		"/posts/createdpost/:userId",
 		"/posts/:postId/comment",
 		"/posts/:postId/getcomment",
+		"/posts/getAllcomment",
+		"/posts/ReactionPosts/:userId/:postId",
+		"/posts/GetUserPostReactions/:userId",
 	},
 	"9191": {
 		"/chat/message/private/getConnectedUser/:userId",

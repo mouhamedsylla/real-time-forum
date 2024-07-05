@@ -2,7 +2,6 @@
 package microservices
 
 import (
-	"context"
 	"net/http"
 )
 
@@ -41,8 +40,6 @@ type Client interface {
 	// Call makes a request to another service.
 	// It takes the service name, endpoint, request data, and a response structure, returning an error if the call fails.
 	Call(serviceName, endpoint string, request, response interface{}) error
-
-	CallWithContext(ctx context.Context, serviceName, endpoint string, request, response interface{}) error
 
 	// SetBaseURL sets the base URL for the client.
 	SetBaseURL(url string)

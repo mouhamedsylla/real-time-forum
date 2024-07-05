@@ -27,6 +27,12 @@ type Response struct {
 	Message string `json:"message"`
 }
 
+type Typing struct {
+	Id 	 int    `json:"id"`
+	Username string `json:"username"`
+	Infos   string `json:"infos"`
+}
+
 func NewMessage(sender, receiver int, content string) Message {
 	return Message{
 		SenderId:   sender,

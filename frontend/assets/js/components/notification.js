@@ -1,8 +1,6 @@
-import NotificationAPI from "../api/notifications.js"
-import { session_expired, alert_token_expire, showToast } from "../utils/utils.js"
-import MessageAPI from "../api/messages.js"
-import Discussion from "./discussions.js"
-import api from "../../index.js"
+import NotificationAPI from "../api/notifications.js";
+import { showToast, session_expired } from "../utils/other.js";
+import { alert_token_expire } from "../utils/alert.js";
 
 export default class Notification {
     constructor() {
@@ -26,42 +24,42 @@ export default class Notification {
             <button id="close" onclick="closeToast()">
                 &times;
             </button>
-        </div>
-        `
-        this.targetElement.appendChild(div)
-    }
+        </div>`
 
-    async getUsers() {
-        return await this.apiMessage.getOtherUser()
+        this.targetElement.appendChild(div)
     }
 
     setStatusContact(idContact, bool) {
         this.contactStatus.forEach(contact => {
             const id = contact.getAttribute("id")
-            if ((parseInt(id) === idContact)) {
+            if ((+id === idContact)) {
                 bool ? contact.classList.add("active") : contact.classList.remove("active")
             }
-        });
+        })
     }
+
 
     async notificationHandler(event) {
         const notification = JSON.parse(event.data)
         if (notification.type === "user_status") {
             notification.status === "online" ? this.setStatusContact(notification.id, true) : this.setStatusContact(notification.id, false)
-            api.setUserStatus(notification.id, notification.status)
-            console.log("User status:", notification)
-            console.log("User status:", api.otherUser)
         }
 
         if (notification.type === "notification") {
             const user = await this.apiNotification.getUserByNotificationId(notification.id)
             this.createNotifcationHTML(user)
             showToast()
+            this.upadateDiscussionProfile(notification.id)
         }
     }
 
+    upadateDiscussionProfile(idUser) {
+        const discussionProfile = document.getElementById(`discussion-${idUser}`)
+        const container = document.querySelector(".discussions")
+        container.insertBefore(discussionProfile, container.firstChild)
+    }
 
-    async initConnectedUser() {
+    async initNotification() {
         this.contactStatus = document.querySelectorAll(".status")
         try {
             session_expired() ? alert_token_expire() :
@@ -78,5 +76,4 @@ export default class Notification {
         const handler = (event) => this.notificationHandler(event)
         session_expired() ? alert_token_expire() : this.apiNotification.connectToNotificationService(handler)
     }
-
 }

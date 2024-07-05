@@ -22,7 +22,7 @@ func (p *GetAllPost) SetMethods() []string {
 
 func (p *GetAllPost) GetAllPost(w http.ResponseWriter, r *http.Request) {
 	var response models.Response
-	result := database.DbPost.Storage.Scan(models.UserPosts{}, "Id", "CreatedAt", "UserId", "Title", "Image", "Content", "Like", "Dislike").([]models.UserPosts)
+	result := database.DbPost.Storage.Scan(models.UserPosts{}, "Id", "CreatedAt", "UserId", "Title", "Image", "Content", "Like", "Dislike", "Categories").([]models.UserPosts)
 	if len(result) == 0 {
 		response.Message = "Any comment found for this post."
 		fmt.Println("Any comment found for this post.")

@@ -6,6 +6,7 @@ import (
 	"real-time-forum/services/posts/database"
 	"real-time-forum/services/posts/models"
 	"real-time-forum/utils"
+	"strconv"
 )
 
 func (p *CreatedPost) HTTPServe() http.Handler {
@@ -25,6 +26,7 @@ func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
 	CustomRoute := r.Context().Value("CustomRoute").(map[string]string)
 	var post = &models.UserPosts{}
 
+	post.Categories = r.FormValue("categories")
 	post.Title = r.FormValue("title")
 	post.Content = r.FormValue("content")
 	imageFile, _, err := r.FormFile("image")
@@ -44,7 +46,8 @@ func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Insert the post into the storage
-	post.UserId = CustomRoute["userId"]
+	id, _ := strconv.Atoi(CustomRoute["userId"])
+	post.UserId = id
 	rsl, err := database.DbPost.Storage.Insert(*post)
 	if err != nil {
 		response.Message = "Failed to create post"

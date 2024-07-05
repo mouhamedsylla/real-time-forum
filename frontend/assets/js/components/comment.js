@@ -1,5 +1,5 @@
-import api from "../../index.js"
 import CommentAPI from "../api/comments.js"
+import api from "../../index.js"   
 
 export default class Comment {
     constructor() {
@@ -9,62 +9,55 @@ export default class Comment {
     }
 
     bindInput() {
-        const inputs = document.querySelectorAll(".all__input")
-        console.log("input: ",inputs)
-        inputs.forEach(input => {
-            input.addEventListener('keypress', async (event) => {
+        const container = document.getElementById("app")
+
+        container.addEventListener('keypress', async (event) => {
+            if (event.target.classList.contains('all__input')) {
                 const id = event.target.id.split('-')[2]
-                console.log(event.key)
                 if (event.key === 'Enter') {
                     await this.addComment({
-                        Comment: input.value,
-                        Post_id: parseInt(id)
-                    
+                        Comment: event.target.value,
+                        Post_id: parseInt(id),
+                        User_id: api.client.Id
                     }, id)
-                    input.value = ""
+                    event.target.value = ""
                 }
-            })
-        });
-    }
-
-    getInputComment() {
-        this.input.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                
             }
         })
     }
 
-    createCommentHTML(comment, lastId) {
+    createCommentHTML(comment, username, lastId) {
         const commentId = comment.Id ? comment.Id : lastId
         const elem  = document.createElement("div")
-        elem.classList.add("comment")
+        elem.classList.add("Comment")
         elem.setAttribute("id", commentId)
         elem.innerHTML = `
             <img src="./frontend/assets/images/profile-1.jpg" alt="" />
 			<span>
+                <b>${username}</b>
 				${comment.Comment}
-				<div class="desc">2m ago <span>Reply</span></div>
 			</span>
-			<i class="fa-regular fa-heart"></i>
         `
         return elem
     }
 
-    async render(idPost) {
-        await this.apiComment.getComments(idPost)
-        .then(() => {
-            this.targetElement = document.querySelector(`[data-comment-post-${idPost}]`)
-            this.apiComment.comments[idPost].forEach(comment => {
-            this.targetElement.appendChild(this.createCommentHTML(comment))
-        })
-        })
+    async render() {
+        try {
+            await this.apiComment.getComments()
+            this.apiComment.comments.forEach(async comment => {
+                this.targetElement = document.querySelector(`[data-comment-post-${comment.Post_id}]`)
+                const user = await this.apiComment.getUserByCommentId(comment.User_id)
+                this.targetElement.appendChild(this.createCommentHTML(comment, user.nickname))
+            })
+        } catch (error) {
+            console.error("Error in render:", error)
+        }
     }
 
     async addComment(comment, idPost) {
         const lastId = await this.apiComment.postComment(comment, idPost)
-        const elem = this.createCommentHTML(comment, lastId)
-        this.targetElement.appendChild(elem)
+        this.targetElement = document.querySelector(`[data-comment-post-${idPost}]`)
+        this.targetElement.appendChild(this.createCommentHTML(comment, api.client.nickname, lastId))
     }
 
 }

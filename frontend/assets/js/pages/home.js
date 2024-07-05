@@ -1,62 +1,112 @@
-import Page from "./pages.js"
-import api from "../../index.js"
-import Post from "../components/post.js"
-import Comment from "../components/comment.js"
-import { session_expired, alert_token_expire, parseJwt } from "../utils/utils.js"
-import Discussion from "../components/discussions.js"
-import Notification from "../components/notification.js"
+import Page from "./pages.js";
+import api from "../../index.js";
+import { alert_token_expire } from "../utils/alert.js";
+import { session_expired, parseJwt } from "../utils/other.js";
+import Notification from "../components/notification.js";
+import Message from "../components/message.js";
+import Post from "../components/post.js";
+import Comment from "../components/comment.js";
+
+
+
 export default class Home extends Page {
     constructor() {
-        super("home")
+        super();
+        this.setTitle('Home');
         this.posts = new Post()
         this.comments = new Comment()
-        this.discussionsList = new Discussion()
-        this.notification = new Notification()
+        this.notifications = new Notification()
+        this.message = new Message()
     }
 
-    async initClient() {
+    async initClients() {
         if (session_expired()) {
             alert_token_expire()
             return false
         }
+
         const token_payload = parseJwt(document.cookie)
         await api.get("/auth/getUsers", { userId: token_payload.id}).then(data => {
-            api.setClient(data)
-        })
-        await api.get("/auth/getUsers").then(data => {
-            api.otherUser = data.filter(user => user.Id != api.client.Id)
-        })
-        api.otherUser.forEach(user => user.status = "offline")
+            api.setUserClient(data)
+        })        
+
+        
+        api.otherClient.forEach(user => user.status = "offline")
         return true
     }
 
+    sittengLogout() {
+        const logout = document.getElementById("logout-pointer")
+        logout.addEventListener("click", () => {
+            document.cookie = 'forum=; Max-Age=0; path=/;'
+            window.location.href = "/login"
+        })
+    }
+
+    createDiscussionProfile(user) {
+        const elem = document.createElement("div")
+        elem.classList.add("message")
+        elem.setAttribute("id", `discussion-${user.Id}`)
+        const content = `
+                <div class="profile-photo">
+                    <img src="./frontend/assets/images/profile-${user.Id}.jpg" alt="">
+                    <div class="status" id="${user.Id}"></div>
+                </div>
+                <div class="message-body">
+                    <h5>${user.firstName} ${user.lastName}</h5>
+                </div>`
+        elem.innerHTML = content
+        this.message.handleMessageDiscussion(user, elem)
+        return elem
+    }
+
+    async renderDiscussionProfile() {
+        try {
+            api.discussionsUsers = await api.get(`/auth/getGroupUser/${api.client.Id}`) || [];
+            
+            const allUsersData = await api.get("/auth/getUsers");
+            const discussionUserIds = new Set(api.discussionsUsers.map(user => user.Id));
+    
+            const otherUsers = allUsersData
+                .filter(user => !discussionUserIds.has(user.Id) && user.Id !== api.client.Id)
+    
+            api.setOtherClient(otherUsers);
+    
+            const discussions = document.querySelector(".discussions");
+            discussions.innerHTML = ''; // Clear existing content
+            api.sortUsers();
+            api.discussionsUsers.concat(api.otherClient)
+                .forEach(user => { 
+                    discussions.appendChild(this.createDiscussionProfile(user));
+                });
+    
+        } catch (error) {
+            console.error("Error in renderDiscussionProfile:", error);
+        }
+    }
+
+    
+    
+
     async renderComponents() {
-        const postsTarget = document.querySelector(".feeds")
-        this.posts.setElementTarget(postsTarget)
+        await this.renderDiscussionProfile()
+        await this.notifications.initNotification()
+
+        this.posts.setElementTarget(document.querySelector(".feeds"))
         this.posts.bindButton()
         try {
             await this.posts.render()
-            const renderComments = this.posts.apiPost.posts.map(async (post) => {
-                await this.comments.render(post.Id)
-            });
-
-            await Promise.all(renderComments)
-            console.log("Comments:", this.comments)
+            await this.comments.render()
+            this.comments.bindInput()
+            this.sittengLogout()
         } catch (error) {
             console.error("Error rendering posts or comments:", error)
         }
-
-        this.discussionsList.setTargetElement(document.querySelector(".discussions"))
-        this.discussionsList.render();
-        this.notification.initConnectedUser()
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        this.posts.handleReaction()
-        this.comments.bindInput()
     }
-    
+
 
     async getHTML() {
-        await this.initClient()
+        await this.initClients()
         return `
             <nav>
                 <div class="container">
@@ -68,9 +118,12 @@ export default class Home extends Page {
                         <input type="search" name="" id="" placeholder="search posts">
                     </div>
                     <div class="create">
+                    
                         <label class="btn btn-primary" for="create-post">Create</label>
                         
                         <i class="uil uil-sun icon" id="toggleIcon"></i>
+
+                        <i class="fas fa-comments" id=chat-icon></i>
                         
                     </div>
                 </div>
@@ -91,20 +144,12 @@ export default class Home extends Page {
                                 </p>
                             </div>
                         </a>
+                        <div class="logout">
+                            <iframe src="https://lottie.host/embed/0d3e821e-608e-4c51-9ccc-f25d052d11a5/vYSfT4mQqm.json"></iframe>
+                            <h4 id="logout-pointer">Logout</h4>
+                        </div>
                         <!-- -------------------- SIDEBAR -------------------- -->
                         <div class="sidebar">
-                            <a href="" class="menu-item active">
-                                <span><i class="uil uil-home"></i></span><h3>Home</h3> 
-                            </a>
-                            <a href="" class="menu-item">
-                                <span><i class="uil uil-envelope"><small class="notification-count">6</small></i></span><h3>Message</h3>  
-                            </a>
-                            <a href="" class="menu-item">
-                                <span><i class="uil uil-bell"></i></span><h3>Notification</h3>
-                            </a>
-                            <a href="" class="menu-item">
-                                <span><i class="uil uil-palette"></i></span><h3>Theme</h3> 
-                            </a>
                         </div>
                         <input type="checkbox" name="" id="create-post" class="btn-check">
                         <label for="create-post" class="btn btn-primary">Create Post</label>
@@ -144,6 +189,19 @@ export default class Home extends Page {
                     <input type="file" id="post-image" name="image" accept="image/*" required>
                     <label for="post-content">Content</label>
                     <textarea name="" id="post-content"></textarea>
+
+                    <label for="list">Categories</label>
+                    <div class="list">
+                        <input class="categorie__check" type="checkbox" name="role" id="opt1" />
+                        <label for="opt1"> Science </label>
+                        <input class="categorie__check" type="checkbox" name="role" id="opt2" />
+                        <label for="opt2"> Informatique </label>
+                        <input class="categorie__check" type="checkbox" name="role" id="opt3" />
+                        <label for="opt3"> Litterature </label>
+                        <input class="categorie__check" type="checkbox" name="role" id="opt4" />
+                        <label for="opt4"> Religion </label>
+                    </div>
+
                     <label class="btn btn-primary" id="post-btn">Post</label>
                 </div>
             </div>

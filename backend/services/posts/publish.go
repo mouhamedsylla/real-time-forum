@@ -33,7 +33,6 @@ func (post *Publish) InitService() (err error) {
 	database.DbPost.Storage, err = utils.InitStorage(DB_NAME, DB_PATH,
 		models.Comments{},
 		models.UserPosts{},
-		models.Categories{},
 		models.ReactionPost{},
 		models.ReactionComment{},
 	)
@@ -42,9 +41,12 @@ func (post *Publish) InitService() (err error) {
 		&controllers.GetAllPost{},
 		&controllers.PostComment{},
 		&controllers.GetAllPost{},
+		&controllers.GetAllcomment{},
 		&controllers.CreatedPost{},
 		&controllers.GetComment{},
 		&controllers.GetPost{},
+		&controllers.ReactionPosts{},
+		&controllers.GetUserPostReactions{},
 	}
 
 	post.Post = microservices.NewMicroservice("Publish&Comments", ":8181")

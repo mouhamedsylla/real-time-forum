@@ -1,6 +1,7 @@
 package chat
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -11,6 +12,8 @@ import (
 	"real-time-forum/services/chat/models"
 	"real-time-forum/utils"
 	"sync"
+
+	"github.com/gorilla/websocket"
 )
 
 const (
@@ -42,6 +45,7 @@ func (chat *Chat) InitService() (err error) {
 	chat.Chat = microservices.NewMicroservice("Realtime Chat", ":9090")
 	chat.Chat.Controllers = append(chat.Chat.Controllers, controllers...)
 	go chat.HandleNotification()
+	go chat.HandleTyping()
 	return
 }
 
@@ -70,5 +74,51 @@ func (chat *Chat) HandleNotification() {
 		if err != nil {
 			log.Println(err)
 		}
+	}
+}
+
+func (chat *Chat) HandleTyping() {
+	var mutex sync.Mutex
+	// typing := models.Typing{
+	// 	Infos: "not typing",
+	// }
+	for {
+		mutex.Lock()
+		typing := <-controllers.TypingProgress
+		// select {
+		// case newTyping := <-controllers.TypingProgress:
+		// 	typing = newTyping
+		// default:
+		// 	fmt.Println("here")
+		// 	data, err := json.Marshal(typing)
+		// 	if err != nil {
+		// 		log.Println("Error marshalling data: ", err)
+		// 		break
+		// 	}
+
+		// 	for _, client := range controllers.Clients {
+		// 		if err := client.WriteMessage(websocket.TextMessage, data); err != nil {
+		// 			log.Println("Error writing message: ", err)
+		// 		}
+		// 	}
+		// }
+		mutex.Unlock()
+
+		conn, ok := controllers.Clients[typing.Id]
+
+		if !ok {
+			log.Println("Client not found")
+			break
+		}
+
+		data, err := json.Marshal(typing)
+		if err != nil {
+			log.Println("Error marshalling data: ", err)
+			break
+		}
+		if err := conn.WriteMessage(websocket.TextMessage, data); err != nil {
+			log.Println("Error writing message: ", err)
+		}
+
 	}
 }

@@ -9,9 +9,10 @@ export default class MessageAPI {
         this.socket = new WebSocket(`ws://localhost:9090/chat/message/private/send/${idContact}?user_id=${api.client.Id}`)
         
         callbackSend(this.socket)
-        this.socket.onmessage = (event) => {
-            callbackReceive(event)
-        }
+        callbackReceive(this.socket)
+        // this.socket.onmessage = (event) => {
+        //     callbackReceive(event)
+        // }
         
     }
 
@@ -28,12 +29,4 @@ export default class MessageAPI {
        }
         
     }
-
-    // async getOtherUser() {
-    //     await api.get("/auth/getUsers").then(data => {
-    //         api.otherUser = data.filter(user => user.Id != api.client.Id)
-    //     })
-    //     api.otherUser.forEach(user => user.status = "offline")
-    //     api.sortUsers()
-    // }
 }

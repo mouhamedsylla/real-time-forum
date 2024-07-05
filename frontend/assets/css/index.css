@@ -214,6 +214,15 @@ img{
     width: 348px;
     justify-self: center;
   }
+
+  #chat-icon {
+    display: inline-block;
+  }
+
+  .right {
+    display: none;
+  }
+
 }
 
 @media screen and (min-width: 1024px){
@@ -254,6 +263,15 @@ img{
   .login__create{
     bottom: -5.5rem;
   }
+
+  #chat-icon {
+    display: none;
+  }
+
+  .right {
+    display: block;
+  }
+
 }
 
 
@@ -521,6 +539,10 @@ nav .create {
   gap: 2rem;
 }
 
+nav .chat-icon {
+  display: none;
+}
+
 
 /*======================== MAIN ========================*/
 
@@ -560,6 +582,30 @@ main .container .left .profile {
   margin-top: 1rem;
   background: var(--color-white);
   border-radius: var(--card-border-radius);
+}
+
+.left .logout {
+  margin-top: 1rem;
+  background: var(--color-white);
+  border-radius: var(--card-border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: baseline ;
+  flex-direction: column;
+  padding: var(--card-padding);
+}
+
+.left .logout iframe {
+  border: none;
+  height: 30px;
+  cursor: pointer;
+}
+
+.left .logout h4 {
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
 }
 
 .left .sidebar .menu-item {
@@ -902,11 +948,11 @@ input[type=file]::file-selector-button:hover {
   content: "\f004";
 }
 
-.like-check:checked ~ .action-buttons .interaction-buttons .like-btn::before {
+/* .like-check:checked ~ .action-buttons .interaction-buttons .like-btn::before {
   font: var(--fa-font-solid);
   content: "\f004";
   color: rgb(237, 30, 34);
-}
+} */
 
 #comment-btn::before {
   font: var(--fa-font-regular);
@@ -962,7 +1008,9 @@ input[type=file]::file-selector-button:hover {
   width: 0;
 }
 
-.comment {
+
+
+.Comment {
   width: 100%;
   display: flex;
   align-items: flex-start;
@@ -972,7 +1020,7 @@ input[type=file]::file-selector-button:hover {
   margin: 5px 0;
 }
 
-.comment img,
+.Comment img,
 .new-comment img {
   width: 40px;
   height: 40px;
@@ -980,7 +1028,7 @@ input[type=file]::file-selector-button:hover {
   margin-right: 10px;
 }
 
-.comment .desc {
+.Comment .desc {
   width: 150px;
   display: flex;
   align-items: center;
@@ -988,19 +1036,22 @@ input[type=file]::file-selector-button:hover {
   margin-top: 5px;
 }
 
-.comment span {
+.Comment span {
   margin-left: 5px;
+  margin-top: 10px;
 }
 
-.comment .desc span {
+.Comment .desc span {
   font-weight: 400;
   color: rgb(100, 100, 100);
 }
 
-.comment i {
+/* .comment i {
   margin-left: 30%;
   font-size: 18px;
-}
+} */
+
+
 
 .new-comment {
   width: 100%;
@@ -1039,7 +1090,7 @@ input[type=file]::file-selector-button:hover {
   }
 
   main .container {
-      grid-template-columns: 5rem auto 30vw;
+      grid-template-columns: 6rem auto 30vw;
       gap: 0;
   }
 
@@ -1106,6 +1157,13 @@ input[type=file]::file-selector-button:hover {
   background-size: cover;
   background-position: center;
   border-radius: 50%;
+}
+
+.discussion-close {
+  position: absolute;
+  right: 0;
+  left: 5;
+  cursor: pointer;
 }
 
 .contact {
@@ -1269,6 +1327,12 @@ input[type=file]::file-selector-button:hover {
   align-items: center;
 }
 
+.message-time span {
+  font-size: 0.7rem;
+  color: #999;
+
+}
+
 
 
 @keyframes typing {
@@ -1364,4 +1428,57 @@ input[type=file]::file-selector-button:hover {
   line-height: 0;
   color: #656565;
   cursor: pointer;
+}
+
+
+.list {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 35px;
+}
+.list label {
+  padding: 8px 20px;
+  font-family: poppins;
+  font-size: 16px;
+  font-weight: 600;
+  border: 0.6mm solid black;
+  border-radius: 7mm;
+  margin: 5px;
+  cursor: pointer;
+}
+.list input {
+  display: none;
+}
+.list input:checked + label {
+  color: rgb(0, 120, 230);
+  border-color: rgb(15, 150, 255);
+  background: rgb(230, 245, 255);
+}
+.btn-heavy {
+  width: 75%;
+  background: black;
+  outline: none;
+  border: none;
+  font-family: poppins;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 2mm;
+  padding: 14px 0;
+  display: block;
+  margin: auto;
+  margin-bottom: 20px;
+}
+.btn-light {
+  background: none;
+  outline: none;
+  border: none;
+  display: block;
+  margin: auto;
+  font-family: poppins;
+  font-size: 15px;
+  color: rgb(120, 120, 120);
 }

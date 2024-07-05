@@ -1,25 +1,26 @@
-import Page from "./pages.js";
-import {alert, alert_icons_iframes} from "../utils/utils.js"
+import Page from './pages.js'
 
 export default class Register extends Page {
     constructor() {
-        super("Register")
+        super();
+        this.setTitle('Register');
         this.UserInfos = {}
-        this.FormContainer = null
+        this.formContainer = null
     }
 
     bindInputs() {
-        this.FormContainer = document.getElementById("login-up")
-        const inputs = document.querySelectorAll(".login__input")
-        inputs.forEach(input => {
-            input.addEventListener("input", (e) => {
-                this.UserInfos[e.target.name] = e.target.name == "age" ? parseInt(input.value) : input.value 
-            })
+        this.formContainer = document.getElementById('login-up')
+
+        this.formContainer.addEventListener('input', (e) => {
+            if (e.target.classList.contains('login__input')) {
+                this.UserInfos[e.target.name] = e.target.value
+            }
         })
-        
-        const signUp = document.getElementById("sign-up")
-        signUp.addEventListener("click", () => {
-            this.register()
+
+        this.formContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'sign-up') {
+                this.register()
+            }
         })
     }
 

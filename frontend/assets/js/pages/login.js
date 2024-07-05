@@ -1,26 +1,27 @@
-import Page from "./pages.js";
-import api from "../../index.js";
-import { alert, alert_icons_iframes } from "../utils/utils.js";
+import Page from './pages.js'
+import {alert_infos, alert_icons_iframes} from '../utils/alert.js'
 
 export default class Login extends Page {
     constructor() {
-        super("Login")
+        super();
+        this.setTitle('Login');
         this.credentials = {}
         this.formContainer = null
     }
 
     bindInputs() {
-        this.formContainer = document.getElementById("login-in")
-        const inputs = document.querySelectorAll(".login__input")
-        inputs.forEach(input => {
-            input.addEventListener("input", (e) => {
-                this.credentials[e.target.name] = input.value
-            })
+        this.formContainer = document.getElementById('login-in')
+
+        this.formContainer.addEventListener('input', (e) => {
+            if (e.target.classList.contains('login__input')) {
+                this.credentials[e.target.name] = e.target.value
+            }
         })
 
-        const signInBtn = document.getElementById("sign-in")
-        signInBtn.addEventListener("click", () => {
-            this.login()
+        this.formContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'sign-in') {
+                this.login()   
+            }
         })
     }
 
@@ -35,8 +36,8 @@ export default class Login extends Page {
         .then(response => response.json())
         .then(data => {
             return data.message == "login successfull" ?
-                alert(data.message, alert_icons_iframes.success, this.formContainer) :
-                alert(data.message, alert_icons_iframes.failed, this.formContainer)
+                alert_infos(data.message, alert_icons_iframes.success, this.formContainer) :
+                alert_infos(data.message, alert_icons_iframes.failed, this.formContainer)
         })
         .then(result => {
             if (result) {
@@ -83,4 +84,5 @@ export default class Login extends Page {
         </div>
         `
     }
+
 }

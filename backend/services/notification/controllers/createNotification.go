@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"real-time-forum/services/notification/database"
 	"real-time-forum/services/notification/models"
@@ -29,12 +28,18 @@ func (cn *CreateNotification) CreateNotification(w http.ResponseWriter, rq *http
 		return
 	}
 	notification := data.(*models.UserNotification)
-	_, err = database.DbNotification.Storage.Insert(*notification); 
+	rslt, err := database.DbNotification.Storage.Insert(*notification)
 	if err != nil {
 		utils.ResponseWithJSON(w, "Service Notification.CreateNotification: Bad Request", http.StatusBadRequest)
 		return
 	}
-	fmt.Println("OK: ", notification)
+	id, err := rslt[0].LastInsertId()
+	if err != nil {
+		utils.ResponseWithJSON(w, "Service Notification.CreateNotification: Bad Request", http.StatusBadRequest)
+		return
+
+	}
+	notification.Id = int(id)
 	userNotif <- *notification
 	message := models.Response{
 		Message: "Notification Created",

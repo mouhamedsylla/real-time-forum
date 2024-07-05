@@ -2,7 +2,8 @@ import Page from "./pages.js";
 
 export default class Error extends Page {
     constructor() {
-        super("Error")
+        super()
+        this.setTitle('Error')
     }
 
     getHTML() {

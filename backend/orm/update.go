@@ -2,6 +2,7 @@ package orm
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"reflect"
 )
@@ -31,8 +32,11 @@ func NewModifier(params map[string]interface{}, m *Table, f string) *Modifier {
 // Update applies the modification to the database. It constructs an SQL update query
 // using the Modifier's details and executes it using the provided database connection.
 func (m *Modifier) Update(db *sql.DB) {
+	fmt.Println("Modifier", m)
 	builder := NewSQLBuilder()
 	query, parameters := builder.Update(m).Where(m.field1, m.Parameters[m.field1]).Build()
+	fmt.Println("query", query)
+	fmt.Println("parameters", parameters)
 	_, err := db.Exec(query, parameters...)
 	if err != nil {
 		log.Fatal(err)
@@ -42,6 +46,7 @@ func (m *Modifier) Update(db *sql.DB) {
 // UpdateField sets the new value for the field that will be updated in the database.
 // This method facilitates method chaining by returning a pointer to the Modifier.
 func (m *Modifier) UpdateField(value interface{}, field string) *Modifier {
+	fmt.Println("UpdateField", m)
 	m.field2 = field
 	m.value = value
 	return m
@@ -52,6 +57,7 @@ func (m *Modifier) UpdateField(value interface{}, field string) *Modifier {
 // identified by 'nameField' and 'data', and then creates a Modifier with this
 // current state, ready for updates.
 func (o *ORM) SetModel(nameField string, data interface{}, table interface{}) *Modifier {
+	fmt.Println("SetModel", nameField, data, table)
 	_, _table := InitTable(table)
 	__params := make(map[string]interface{})
 
