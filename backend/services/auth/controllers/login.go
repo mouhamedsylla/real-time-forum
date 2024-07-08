@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"real-time-forum/services/auth/database"
@@ -39,8 +38,6 @@ func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
 	rslt := database.Db.Storage.Scan(models.UserRegister{}, "Password", "Id", "Nickname", "FirstName", "LastName", "Email").([]models.UserRegister)
 	database.Db.Storage.Custom.Clear()
 
-	fmt.Println("OK")
-
 	if len(rslt) == 0 {
 		response.Message = "this user does't exist"
 		utils.ResponseWithJSON(w, response, http.StatusNotFound)
@@ -50,7 +47,6 @@ func (l *Login) Login(w http.ResponseWriter, r *http.Request) {
 	user := rslt[0]
 	if err = models.Authenticate(user.Password, &toAuthenticate); err != nil {
 		response.Message = err.Error()
-		fmt.Println(response)
 		utils.ResponseWithJSON(w, response, http.StatusUnauthorized)
 		return
 	}

@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"real-time-forum/services/posts/database"
 	"real-time-forum/services/posts/models"
@@ -42,6 +41,5 @@ func (p *GetUserPostReactions) GetUserPostReactions(w http.ResponseWriter, r *ht
 	}
 
 	result := data.([]models.ReactionPost)
-	fmt.Println("result: ", result)
 	utils.ResponseWithJSON(w, result, http.StatusOK)
 }

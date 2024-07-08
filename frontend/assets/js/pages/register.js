@@ -1,4 +1,5 @@
 import Page from './pages.js'
+import { alert_icons_iframes, alert_infos } from '../utils/alert.js'
 
 export default class Register extends Page {
     constructor() {
@@ -25,6 +26,8 @@ export default class Register extends Page {
     }
 
     register() {
+        this.FormContainer = document.getElementById('login-up')
+        this.UserInfos.age = parseInt(this.UserInfos.age)
         fetch("http://localhost:3000/auth/public/register", {
             method: "POST",
             headers: {
@@ -35,13 +38,13 @@ export default class Register extends Page {
         .then(response => response.json())
         .then(data => { 
             if (data.message == "Registering Successfuly") {
-                if (alert(data.message, alert_icons_iframes.success, this.FormContainer)) {
+                if (alert_infos(data.message, alert_icons_iframes.success, this.FormContainer)) {
                     setTimeout(() => {
                         window.location.href = "/login"
                     }, 3000);
                 }
             } else {
-                alert(data.message, alert_icons_iframes.failed, this.FormContainer)
+                alert_infos(data.message, alert_icons_iframes.failed, this.FormContainer)
             }
         })
     }

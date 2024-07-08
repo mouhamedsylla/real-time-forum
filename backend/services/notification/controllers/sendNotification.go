@@ -19,7 +19,7 @@ var (
 		},
 	}
 
-	Clients = make(map[int]*websocket.Conn, 0)
+	Clients            = make(map[int]*websocket.Conn, 0)
 	Disconnect_channel = make(chan int)
 	Connection_channel = make(chan int)
 )
@@ -55,18 +55,17 @@ func (sn *SendNotification) SendNotification(w http.ResponseWriter, r *http.Requ
 func HandleNotification() {
 	for {
 		notif := <-userNotif
-		fmt.Println("Notification received: ", notif)
 		for id, client := range Clients {
 			if id == notif.ReceiverId {
 				user_infos := models.UserInfos{
-					Type: "notification",
-					Id: notif.SenderId,
+					Type:   "notification",
+					Id:     notif.SenderId,
 					Status: "",
 				}
 				err := client.WriteJSON(user_infos)
 				if err == nil {
 					database.DbNotification.Storage.SetModel("Id", notif.Id, models.UserNotification{}).
-					UpdateField("true", "Read").Update(database.DbNotification.Storage.Db)
+						UpdateField("true", "Read").Update(database.DbNotification.Storage.Db)
 				}
 			}
 		}
@@ -89,7 +88,6 @@ func CheckDisconnect(conn *websocket.Conn) {
 }
 
 func disconnectUser(conn *websocket.Conn) {
-	fmt.Println("Disconnecting user")
 	for key, value := range Clients {
 		if value == conn {
 			delete(Clients, key)

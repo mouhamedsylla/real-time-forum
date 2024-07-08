@@ -59,5 +59,4 @@ func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
 	var postResponse models.LastCreated
 	postResponse.LastId, _ = rsl[0].LastInsertId()
 	utils.ResponseWithJSON(w, postResponse, http.StatusOK)
-
 }

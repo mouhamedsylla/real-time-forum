@@ -1,5 +1,7 @@
 import CommentAPI from "../api/comments.js"
-import api from "../../index.js"   
+import api from "../../index.js" 
+import { session_expired } from "../utils/other.js"
+import { alert_token_expire } from "../utils/alert.js"
 
 export default class Comment {
     constructor() {
@@ -13,11 +15,14 @@ export default class Comment {
 
         container.addEventListener('keypress', async (event) => {
             if (event.target.classList.contains('all__input')) {
-                const id = event.target.id.split('-')[2]
-                if (event.key === 'Enter') {
+                if (session_expired()) {
+                    alert_token_expire()
+                    return
+                } else if (event.key === 'Enter' && event.target.value.trim() !== ""){
+                     const id = event.target.id.split('-')[2]
                     await this.addComment({
                         Comment: event.target.value,
-                        Post_id: parseInt(id),
+                        Post_id: +id,
                         User_id: api.client.Id
                     }, id)
                     event.target.value = ""

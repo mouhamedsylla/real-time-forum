@@ -2,7 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
 /*===== VARIABLES CSS =====*/
-:root{
+:root {
   /*===== Colores =====*/
   --first-color: #9D4BFF;
   --first-color-dark: #23004D;
@@ -10,14 +10,14 @@
   --first-color-lighten: #F2F2F2;
 
   /*===== Font and typography =====*/
-  --body-font:  "Poppins", sans-serif;
+  --body-font: "Poppins", sans-serif;
   --h1-font-size: 1.5rem;
   --normal-font-size: .938rem;
   --small-font-size: .813rem;
 }
 
-@media screen and (min-width: 768px){
-  :root{
+@media screen and (min-width: 768px) {
+  :root {
     --normal-font-size: 1rem;
     --small-font-size: .875rem;
   }
@@ -48,22 +48,22 @@ body {
   cursor: pointer;
 }
 
-h1{
+h1 {
   margin: 0;
 }
 
-a{
+a {
   text-decoration: none;
 }
 
-img{
+img {
   max-width: 100%;
   height: auto;
   display: block;
 }
 
 /*===== LOGIN =====*/
-.login{
+.login {
   display: grid;
   grid-template-columns: 100%;
   height: 100vh;
@@ -71,25 +71,26 @@ img{
   margin-right: 1.5rem;
 }
 
-.login__content{
+.login__content {
   display: grid;
 }
 
-.login__img{
+.login__img {
   justify-self: center;
 }
 
-.login__img img{
+.login__img img {
   width: 310px;
   margin-top: 1.5rem;
 }
 
-.login__forms{
+.login__forms {
   position: relative;
   height: 368px;
 }
 
-.login__registre, .login__create{
+.login__registre,
+.login__create {
   position: absolute;
   bottom: 1rem;
   width: 100%;
@@ -97,29 +98,31 @@ img{
   padding: 2rem 1rem;
   border-radius: 1rem;
   text-align: center;
-  box-shadow: 0 8px 20px rgba(35,0,77,.2);
+  box-shadow: 0 8px 20px rgba(35, 0, 77, .2);
   animation-duration: .4s;
   animation-name: animate-login;
 }
 
-@keyframes animate-login{
-  0%{
-    transform: scale(1,1);
+@keyframes animate-login {
+  0% {
+    transform: scale(1, 1);
   }
-  50%{
-    transform: scale(1.1,1.1);
+
+  50% {
+    transform: scale(1.1, 1.1);
   }
-  100%{
-    transform: scale(1,1);
+
+  100% {
+    transform: scale(1, 1);
   }
 }
 
-.login__title{
+.login__title {
   font-size: var(--h1-font-size);
   margin-bottom: 2rem;
 }
 
-.login__box{
+.login__box {
   display: grid;
   grid-template-columns: max-content 1fr;
   column-gap: .5rem;
@@ -129,12 +132,12 @@ img{
   border-radius: .5rem;
 }
 
-.login__icon{
+.login__icon {
   font-size: 1.5rem;
   color: var(--first-color);
 }
 
-.login__input{
+.login__input {
   border: none;
   outline: none;
   font-size: var(--normal-font-size);
@@ -142,13 +145,13 @@ img{
   color: var(--first-color-dark);
 }
 
-.login__input::placeholder{
+.login__input::placeholder {
   font-size: var(--normal-font-size);
   font-family: var(--body-font);
   color: var(--first-color-light);
 }
 
-.login__forgot{
+.login__forgot {
   display: block;
   width: max-content;
   margin-left: auto;
@@ -158,7 +161,7 @@ img{
   color: var(--first-color-light);
 }
 
-.login__button{
+.login__button {
   display: block;
   padding: 1rem;
   margin: 2rem 0;
@@ -170,75 +173,78 @@ img{
   transition: .3s;
 }
 
-.login__button:hover{
+.login__button:hover {
   background-color: var(--first-color-dark);
 }
 
-.login__account, .login__signin, .login__signup{
+.login__account,
+.login__signin,
+.login__signup {
   font-weight: 600;
   font-size: var(--small-font-size);
 }
 
-.login__account{
+.login__account {
   color: var(--first-color-dark);
 }
 
-.login__signin, .login__signup{
+.login__signin,
+.login__signup {
   color: var(--first-color);
   cursor: pointer;
 }
 
-.login__social{
+.login__social {
   margin-top: 2rem;
 }
 
-.login__social-icon{
+.login__social-icon {
   font-size: 1.5rem;
   color: var(--first-color-dark);
   margin: 0 1.5rem;
 }
 
 /*Show login*/
-.block{
+.block {
   display: block;
 }
 
 /*Hidden login*/
-.none{
+.none {
   display: none;
 }
 
 /* ===== MEDIA QUERIES =====*/
-@media screen and (min-width: 576px){
-  .login__forms{
+@media screen and (min-width: 576px) {
+  .login__forms {
     width: 348px;
     justify-self: center;
   }
 
-  #chat-icon {
+  /* #chat-icon {
     display: inline-block;
-  }
+  } */
 
-  .right {
+  /* .right {
     display: none;
-  }
+  } */
 
 }
 
-@media screen and (min-width: 1024px){
-  .login{
+@media screen and (min-width: 1024px) {
+  .login {
     height: 100vh;
     overflow: hidden;
   }
 
-  .login__content{
+  .login__content {
     grid-template-columns: repeat(2, max-content);
     justify-content: center;
     align-items: center;
     margin-left: 10rem;
   }
 
-  .login__img{
+  .login__img {
     display: flex;
     width: 600px;
     height: 588px;
@@ -247,20 +253,21 @@ img{
     padding-left: 1rem;
   }
 
-  .login__img img{
+  .login__img img {
     width: 390px;
     margin-top: 0;
   }
 
-  .login__registre, .login__create{
+  .login__registre,
+  .login__create {
     left: -11rem;
   }
 
-  .login__registre{
+  .login__registre {
     bottom: -2rem;
   }
 
-  .login__create{
+  .login__create {
     bottom: -5.5rem;
   }
 
@@ -278,6 +285,7 @@ img{
 /* ==================== Error css =================== */
 
 @import url("https://fonts.googleapis.com/css?family=Merriweather+Sans");
+
 .error {
   padding-top: 0;
   height: 100vh;
@@ -289,10 +297,12 @@ img{
   align-items: center;
   font-family: "Merriweather Sans", sans-serif;
 }
+
 .error #errorText {
   font-size: 22px;
   margin: 14px 0;
 }
+
 .error #errorLink {
   font-size: 20px;
   padding: 12px;
@@ -302,50 +312,64 @@ img{
   text-decoration: none;
   transition: all 0.5s ease-in-out;
 }
-.error #errorLink:hover, main #errorLink:active {
+
+.error #errorLink:hover,
+main #errorLink:active {
   color: #fff;
-  background: 	#6b4ce6;
+  background: #6b4ce6;
 }
+
 .error #g6219 {
   transform-origin: 85px 4px;
   -webkit-animation: an1 12s 0.5s infinite ease-out;
-          animation: an1 12s 0.5s infinite ease-out;
+  animation: an1 12s 0.5s infinite ease-out;
 }
 
 @-webkit-keyframes an1 {
   0% {
     transform: rotate(0);
   }
+
   5% {
     transform: rotate(3deg);
   }
+
   15% {
     transform: rotate(-2.5deg);
   }
+
   25% {
     transform: rotate(2deg);
   }
+
   35% {
     transform: rotate(-1.5deg);
   }
+
   45% {
     transform: rotate(1deg);
   }
+
   55% {
     transform: rotate(-1.5deg);
   }
+
   65% {
     transform: rotate(2deg);
   }
+
   75% {
     transform: rotate(-2deg);
   }
+
   85% {
     transform: rotate(2.5deg);
   }
+
   95% {
     transform: rotate(-3deg);
   }
+
   100% {
     transform: rotate(0);
   }
@@ -355,36 +379,47 @@ img{
   0% {
     transform: rotate(0);
   }
+
   5% {
     transform: rotate(3deg);
   }
+
   15% {
     transform: rotate(-2.5deg);
   }
+
   25% {
     transform: rotate(2deg);
   }
+
   35% {
     transform: rotate(-1.5deg);
   }
+
   45% {
     transform: rotate(1deg);
   }
+
   55% {
     transform: rotate(-1.5deg);
   }
+
   65% {
     transform: rotate(2deg);
   }
+
   75% {
     transform: rotate(-2deg);
   }
+
   85% {
     transform: rotate(2.5deg);
   }
+
   95% {
     transform: rotate(-3deg);
   }
+
   100% {
     transform: rotate(0);
   }
@@ -590,7 +625,7 @@ main .container .left .profile {
   border-radius: var(--card-border-radius);
   display: flex;
   align-items: center;
-  justify-content: baseline ;
+  justify-content: baseline;
   flex-direction: column;
   padding: var(--card-padding);
 }
@@ -754,7 +789,7 @@ main .container .right {
 
 .right .messages::-webkit-scrollbar-track {
   background-color: var(--color-light);
-  border-radius: var(--border-radius);  
+  border-radius: var(--border-radius);
 }
 
 .right .messages::-webkit-scrollbar-thumb {
@@ -1078,13 +1113,95 @@ input[type=file]::file-selector-button:hover {
   margin-left: 40px;
 }
 
-.comment-check:checked ~ .post-comment {
+.comment-check:checked~.post-comment {
   max-height: 650px;
+}
+
+.right .right-profile {
+  display: none;
 }
 
 /*======================== Media Query ========================*/
 
 @media screen and (max-width: 1200px) {
+  .container {
+    width: 96%;
+  }
+
+  main .container {
+    grid-template-columns: 4rem auto 30vw;
+    gap: 1rem;
+  }
+
+  .left {
+    width: 5rem;
+    z-index: 5;
+
+  }
+
+  main .container .left .profile {
+    display: none;
+  }
+
+  .sidebar h3 {
+    display: none;
+  }
+
+  .left .logout {
+    display: none;
+  }
+
+  .left .btn {
+    display: none;
+  }
+
+  .right .right-profile {
+    display: flex;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    background: var(--color-white);
+    border-radius: var(--card-border-radius);
+    padding: var(--card-padding);
+    flex-direction: row;
+  }
+}
+
+
+@media (max-width: 768px) {
+  main .container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap-reverse;
+  }
+
+  main .container .left {
+    display: none;
+  }
+
+  main .container .middle {
+    width: 100%;
+  }
+
+  main .container .right {
+    order: -1;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 0.8rem;
+  }
+
+  main .container .middle {
+    width: 100%;
+  }
+
+  nav .search-bar {
+    display: none;
+  }
+}
+
+/* @media screen and (max-width: 1200px) {
   .container {
       width: 96%;
   }
@@ -1132,7 +1249,7 @@ input[type=file]::file-selector-button:hover {
   main .container .middle {
       grid-column: 1/3;
   }
-}
+} */
 
 .close {
   display: none;
@@ -1187,6 +1304,7 @@ input[type=file]::file-selector-button:hover {
   position: absolute;
   left: 0;
 }
+
 .contact .name {
   font-weight: 500;
   font-size: 1rem;
@@ -1215,7 +1333,7 @@ input[type=file]::file-selector-button:hover {
 
 .chat .chat-messages::-webkit-scrollbar-track {
   background-color: var(--color-light);
-  border-radius: var(--border-radius);  
+  border-radius: var(--border-radius);
 }
 
 .chat .chat-messages::-webkit-scrollbar-thumb {
@@ -1273,15 +1391,17 @@ input[type=file]::file-selector-button:hover {
 
 .chat .chat-messages .message .typing.typing-1 {
   -webkit-animation: typing 3s infinite;
-          animation: typing 3s infinite;
+  animation: typing 3s infinite;
 }
+
 .chat .chat-messages .message .typing.typing-2 {
   -webkit-animation: typing 3s 250ms infinite;
-          animation: typing 3s 250ms infinite;
+  animation: typing 3s 250ms infinite;
 }
+
 .chat .chat-messages .message .typing.typing-3 {
   -webkit-animation: typing 3s 500ms infinite;
-          animation: typing 3s 500ms infinite;
+  animation: typing 3s 500ms infinite;
 }
 
 .chat .input {
@@ -1293,6 +1413,7 @@ input[type=file]::file-selector-button:hover {
   padding: 0.5rem 0 1.5rem;
   padding-top: 1rem;
 }
+
 .chat .input i {
   font-size: 1.5rem;
   margin-left: 1rem;
@@ -1301,10 +1422,12 @@ input[type=file]::file-selector-button:hover {
   cursor: pointer;
   transition: color 200ms;
 }
+
 .chat .input i:hover {
   color: #333;
 }
-.chat .input > input {
+
+.chat .input>input {
   border: none;
   background-image: none;
   background-color: white;
@@ -1317,6 +1440,7 @@ input[type=file]::file-selector-button:hover {
   font-weight: 400;
   letter-spacing: 0.025em;
 }
+
 .chat .input input:placeholder {
   color: #999;
 }
@@ -1336,10 +1460,14 @@ input[type=file]::file-selector-button:hover {
 
 
 @keyframes typing {
-  0%, 75%, 100% {
+
+  0%,
+  75%,
+  100% {
     transform: translate(0, 0.25rem) scale(0.9);
     opacity: 0.5;
   }
+
   25% {
     transform: translate(0, -0.25rem) scale(1);
     opacity: 1;
@@ -1372,17 +1500,18 @@ input[type=file]::file-selector-button:hover {
 
 /* ============= Notif toast ================ */
 
-.wrapper{
+.wrapper {
   width: 420px;
   padding: 30px 20px;
   position: absolute;
-  bottom: 50px;
+  top: 50px;
   right: 0;
   overflow: hidden;
 }
-#show-toast{
+
+#show-toast {
   position: absolute;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
   background-color: #101020;
@@ -1391,7 +1520,8 @@ input[type=file]::file-selector-button:hover {
   border-radius: 5px;
   cursor: pointer;
 }
-#toast{
+
+#toast {
   width: 380px;
   height: 80px;
   padding: 20px;
@@ -1404,24 +1534,30 @@ input[type=file]::file-selector-button:hover {
   transform: translate(400px);
   transition: 1s;
 }
-.container-1,.container-2{
+
+.container-1,
+.container-2 {
   align-self: center;
 }
-.container-1 i{
+
+.container-1 i {
   font-size: 40px;
   color: #47d764;
 }
-.container-2 p:first-child{
+
+.container-2 p:first-child {
   color: #101020;
   font-weight: 600;
   font-size: 16px;
 }
-.container-2 p:last-child{
+
+.container-2 p:last-child {
   font-size: 12px;
   color: #656565;
   font-weight: 400;
 }
-#toast button{
+
+#toast button {
   align-self: flex-start;
   background-color: transparent;
   font-size: 25px;
@@ -1439,6 +1575,7 @@ input[type=file]::file-selector-button:hover {
   flex-wrap: wrap;
   margin-bottom: 35px;
 }
+
 .list label {
   padding: 8px 20px;
   font-family: poppins;
@@ -1449,14 +1586,17 @@ input[type=file]::file-selector-button:hover {
   margin: 5px;
   cursor: pointer;
 }
+
 .list input {
   display: none;
 }
-.list input:checked + label {
+
+.list input:checked+label {
   color: rgb(0, 120, 230);
   border-color: rgb(15, 150, 255);
   background: rgb(230, 245, 255);
 }
+
 .btn-heavy {
   width: 75%;
   background: black;
@@ -1472,6 +1612,7 @@ input[type=file]::file-selector-button:hover {
   margin: auto;
   margin-bottom: 20px;
 }
+
 .btn-light {
   background: none;
   outline: none;

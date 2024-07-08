@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"real-time-forum/services/posts/database"
 	"real-time-forum/services/posts/models"
@@ -25,7 +24,6 @@ func (p *GetAllPost) GetAllPost(w http.ResponseWriter, r *http.Request) {
 	result := database.DbPost.Storage.Scan(models.UserPosts{}, "Id", "CreatedAt", "UserId", "Title", "Image", "Content", "Like", "Dislike", "Categories").([]models.UserPosts)
 	if len(result) == 0 {
 		response.Message = "Any comment found for this post."
-		fmt.Println("Any comment found for this post.")
 		utils.ResponseWithJSON(w, response, http.StatusNoContent)
 		return
 	}

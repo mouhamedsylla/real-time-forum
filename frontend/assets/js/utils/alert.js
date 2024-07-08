@@ -63,21 +63,21 @@ async function alert_loading(target, bool) {
     }
 }
 
-function alert_typing() {
-    const container = document.querySelector(".chat-messages")
-    const div = document.createElement("div")
-    div.classList.add("message", "typing")
-    div.innerHTML = `
-                    <div class="typing typing-1"></div>
-                    <div class="typing typing-2"></div>
-                    <div class="typing typing-3"></div>
-    `
-    if (container.querySelector(".typing")) {
-        container.removeChild(container.querySelector(".typing"))
-    }
-    container.appendChild(div)
-    container.scrollTop = container.scrollHeight
-}
+// function alert_typing() {
+//     const container = document.querySelector(".chat-messages")
+//     const div = document.createElement("div")
+//     div.classList.add("message", "typing")
+//     div.innerHTML = `
+//                     <div class="typing typing-1"></div>
+//                     <div class="typing typing-2"></div>
+//                     <div class="typing typing-3"></div>
+//     `
+//     if (container.querySelector(".typing")) {
+//         container.removeChild(container.querySelector(".typing"))
+//     }
+//     container.appendChild(div)
+//     container.scrollTop = container.scrollHeight
+// }
 
 function prependChild(parent, newChild) {
     if (parent.firstChild) {
@@ -85,4 +85,36 @@ function prependChild(parent, newChild) {
     } else {
       parent.appendChild(newChild);
     }
+}
+
+let typingTimeout;
+
+function alert_typing() {
+    const container = document.querySelector(".chat-messages");
+    const div = document.createElement("div");
+    div.classList.add("message", "typing");
+    div.innerHTML = `
+        <div class="typing typing-1"></div>
+        <div class="typing typing-2"></div>
+        <div class="typing typing-3"></div>
+    `;
+    
+    // Remove existing typing indicator if it exists
+    if (container.querySelector(".typing")) {
+        container.removeChild(container.querySelector(".typing"));
+    }
+
+    // Append new typing indicator
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+
+    // Clear previous timeout
+    clearTimeout(typingTimeout);
+
+    // Set a new timeout to remove the typing indicator after 3 seconds
+    typingTimeout = setTimeout(() => {
+        if (container.querySelector(".typing")) {
+            container.removeChild(container.querySelector(".typing"));
+        }
+    }, 3000);
 }

@@ -35,8 +35,6 @@ func (m *Modifier) Update(db *sql.DB) {
 	fmt.Println("Modifier", m)
 	builder := NewSQLBuilder()
 	query, parameters := builder.Update(m).Where(m.field1, m.Parameters[m.field1]).Build()
-	fmt.Println("query", query)
-	fmt.Println("parameters", parameters)
 	_, err := db.Exec(query, parameters...)
 	if err != nil {
 		log.Fatal(err)

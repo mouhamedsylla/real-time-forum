@@ -21,7 +21,9 @@ export default class Post {
         const postAdd = document.getElementById("post-btn");
 
         postAdd.addEventListener("click", async () => {
-            session_expired() ? alert_token_expire() : await this.addPost(this.getPostInput())
+            const newPost = this.getPostInput()
+            if (!newPost) return
+            session_expired() ? alert_token_expire() : await this.addPost(newPost)
             postAdd_popup.classList.add("close")
         })
 
@@ -37,26 +39,49 @@ export default class Post {
     }
 
     getPostInput() {
-        const Image = document.getElementById("post-image").files[0]
-        const Title = document.getElementById("post-title").value
-        const Content = document.getElementById("post-content").value
-        let Categories = []
-
+        const ImageInput = document.getElementById("post-image");
+        const Image = ImageInput.files[0];
+        const Title = document.getElementById("post-title").value.trim();
+        const Content = document.getElementById("post-content").value.trim();
+        let Categories = [];
+        
+        // Check that the title is not empty
+        if (!Title) {
+            alert("Please enter a title.");
+            return null;
+        }
+    
+        // Check that the content is not empty
+        if (!Content) {
+            alert("Please enter content.");
+            return null;
+        }
+    
+        // Check that at least one category is selected
         document.querySelectorAll(".categorie__check").forEach(checkBox => {
             if (checkBox.checked) {
-                const label = document.querySelector(`label[for="${checkBox.id}"]`)
-                Categories.push(label.textContent)
+                const label = document.querySelector(`label[for="${checkBox.id}"]`);
+                Categories.push(label.textContent);
             }
-        })
-        Categories = Categories.map(item => `#${item.trim()}`).join(' ')
-        const reader = new FileReader()
-        reader.onload = () => {
-            const Image = reader.result.replace(/^data:image\/[a-z]+;base64,/, "")
-            this.currentPost = { Title, Image, Content, Categories }
+        });
+    
+        if (Categories.length === 0) {
+            alert("Please select at least one category.");
+            return null;
         }
-        reader.readAsDataURL(Image)
-        return { Title, Image, Content, Categories }
+    
+        Categories = Categories.map(item => `#${item.trim()}`).join(' ');
+    
+        const reader = new FileReader();
+        reader.onload = () => {
+            const Image = reader.result.replace(/^data:image\/[a-z]+;base64,/, "");
+            this.currentPost = { Title, Image, Content, Categories };
+        };
+        reader.readAsDataURL(Image);
+    
+        return { Title, Image, Content, Categories };
     }
+    
 
     handleReaction() {
         const likeBtn = document.querySelectorAll("[reaction]")
@@ -69,10 +94,10 @@ export default class Post {
                         const nbView = document.getElementById(`likePost-${element.id}`)
                         if (newStyle === like) {
                             this.apiPost.reactionPost(element.id, { Value: "like" })
-                            nbView.textContent = parseInt(nbView.textContent) + 1
+                            nbView.textContent = +nbView.textContent + 1
                         } else if (newStyle === dislike) {
                             this.apiPost.reactionPost(element.id, { Value: "dislike" })
-                            nbView.textContent = parseInt(nbView.textContent) - 1
+                            nbView.textContent = +nbView.textContent - 1
                         }
                     }
                 }
@@ -119,7 +144,7 @@ export default class Post {
                     <span><img src="./frontend/assets/images/profile-10.jpg"></span>
                     <span><img src="./frontend/assets/images/profile-4.jpg"></span>
                     <span><img src="./frontend/assets/images/profile-15.jpg"></span>
-                    <p>Liked by <b id="likePost-${postId}">${post.nbLike}</b> persons</p>
+                    <p>Liked by <b id="likePost-${postId}">${post.nbLike || 0 }</b> persons</p>
                 </div>
                 <div class="caption">
                     <p><b>Daenerys</b> ${post.Content} <span class="hash-tag">${post.Categories}</span></p>

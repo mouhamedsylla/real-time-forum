@@ -26,7 +26,7 @@ export default class Home extends Page {
         }
 
         const token_payload = parseJwt(document.cookie)
-        await api.get("/auth/getUsers", { userId: token_payload.id}).then(data => {
+        await api.get("/auth/getUsers", { userId: token_payload.id }).then(data => {
             api.setUserClient(data)
         })        
 
@@ -62,32 +62,30 @@ export default class Home extends Page {
 
     async renderDiscussionProfile() {
         try {
-            api.discussionsUsers = await api.get(`/auth/getGroupUser/${api.client.Id}`) || [];
+            api.discussionsUsers = await api.get(`/auth/getGroupUser/${api.client.Id}`) || []
             
             const allUsersData = await api.get("/auth/getUsers");
-            const discussionUserIds = new Set(api.discussionsUsers.map(user => user.Id));
+            const discussionUserIds = new Set(api.discussionsUsers.map(user => user.Id))
     
             const otherUsers = allUsersData
                 .filter(user => !discussionUserIds.has(user.Id) && user.Id !== api.client.Id)
     
-            api.setOtherClient(otherUsers);
+            api.setOtherClient(otherUsers)
     
-            const discussions = document.querySelector(".discussions");
-            discussions.innerHTML = ''; // Clear existing content
-            api.sortUsers();
+            const discussions = document.querySelector(".discussions")
+            discussions.innerHTML = ''
+            api.sortUsers()
             api.discussionsUsers.concat(api.otherClient)
                 .forEach(user => { 
-                    discussions.appendChild(this.createDiscussionProfile(user));
-                });
+                    discussions.appendChild(this.createDiscussionProfile(user))
+                })
     
         } catch (error) {
-            console.error("Error in renderDiscussionProfile:", error);
+            console.error("Error in renderDiscussionProfile:", error)
         }
     }
 
     
-    
-
     async renderComponents() {
         await this.renderDiscussionProfile()
         await this.notifications.initNotification()
@@ -162,6 +160,16 @@ export default class Home extends Page {
                     </div>
                     <!-- -------------------- RIGHT -------------------- -->
                     <div class="right">
+                        <div class="right-profile">
+                            <a href="" class="profile">
+                                <div class="handle">
+                                    <h4>${api.client.firstName} ${api.client.lastName}</h4>
+                                    <p class="text-muted">
+                                        @${api.client.nickname}
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
                         <div class="heading">
                                 <h4>Discussions</h4><i class="uil uil-edit"></i>
                         </div>
@@ -186,7 +194,7 @@ export default class Home extends Page {
                     <label for="post-title">Title</label>
                     <input type="text" name="" id="post-title">
                     <label for="imageInput">Image</label>
-                    <input type="file" id="post-image" name="image" accept="image/*" required>
+                    <input type="file" id="post-image" name="image" accept="image/jpeg" required>
                     <label for="post-content">Content</label>
                     <textarea name="" id="post-content"></textarea>
 

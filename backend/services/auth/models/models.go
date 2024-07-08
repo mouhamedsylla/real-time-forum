@@ -40,8 +40,8 @@ type UserRegister struct {
 	Nickname  string `orm-go:"NOT NULL UNIQUE" json:"nickname" validate:"username"`
 	Age       int    `orm-go:"NOT NULL" json:"age" validate:"min(18)"`
 	Gender    string `orm-go:"NOT NULL" json:"gender" validate:"required"`
-	FirstName string `orm-go:"NOT NULL" json:"firstName" validate:"required"`
-	LastName  string `orm-go:"NOT NULL" json:"lastName" validate:"required"`
+	FirstName string `orm-go:"NOT NULL" json:"firstName" validate:"minLength(3) maxLength(15) required"`
+	LastName  string `orm-go:"NOT NULL" json:"lastName" validate:"minLength(3) maxLength(15) required"`
 	Email     string `orm-go:"NOT NULL UNIQUE" json:"email" validate:"email"`
 	Password  string `orm-go:"NOT NULL" json:"password" validate:"required"`
 }

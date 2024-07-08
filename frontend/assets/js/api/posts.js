@@ -28,6 +28,7 @@ export default class PostAPI {
         formData.append("image", payload.Image)
         formData.append("title", payload.Title)
         formData.append("content", payload.Content)
+        formData.append("categories", payload.Categories)
         this.lastPostId = await api.post(`posts/createdpost/${api.client.Id}`, formData)
     }
 

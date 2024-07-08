@@ -10,25 +10,31 @@ export default class Message {
         this.messages = []
         this.pointer = 1
         this.amount = 10
-        this.actualContact = null
+        this.actualContact = {}
         this.typingProgress = {
-            id: this.actualContact,
+            id: this.actualContact.id,
             username: "",
             infos: "is typing..."
         }
+        this.typingTimeout
+        this.typingFlag = false
     }
 
     newMessage(content, type, username, date) {
         const message = document.createElement("div")
         message.classList.add("message", type)
-        message.innerHTML = `
-            <div class="message-body">
-                ${content}
-            </div>
-            <div class="message-time">
-                <span>${username}  ${formatDate(date)}</span>
-            </div>
+
+        const div2 = document.createElement("div")
+        div2.classList.add("message-body")
+        div2.innerText = content
+
+        const div3 = document.createElement("div")
+        div3.classList.add("message-time")
+        div3.innerHTML = `
+            <span>${username}  ${formatDate(date)}</span>
         `
+        message.appendChild(div2)
+        message.appendChild(div3)
         return message
     }
 
@@ -38,13 +44,6 @@ export default class Message {
             const user = api.discussionsUsers.filter(user => user.Id == message.SenderId)[0]
             const username = user ? user.nickname : api.client.nickname
             prependChild(target, this.newMessage(message.Content, message.SenderId === api.client.Id ? "user" : "other", username, message.CreatedAt))
-        })
-    }
-
-    addMessages() {
-        this.messages.forEach(message => {
-            const target = document.querySelector(".chat-messages")
-            target.appendChild(this.newMessage(message.Content, message.SenderId === api.client.Id ? "user" : "other", api.client.nickname))
         })
     }
 
@@ -72,16 +71,56 @@ export default class Message {
     async onloadDiscussion(contactId) {
         const target = document.querySelector(".chat-messages")        
         try {
-            session_expired() ? alert_token_expire() :
-            this.pointer = 1
-            this.messages = await this.apiMessage.getMessagesPage(contactId, this.pointer, this.amount)
-            this.addMessagesInTop()
-            target.scrollTop = target.scrollHeight
-            this.doLoad = true
-            this.handleScroll(contactId)
+            if (session_expired()) { 
+                alert_token_expire()
+            } else {
+                this.pointer = 1
+                this.messages = await this.apiMessage.getMessagesPage(contactId, this.pointer, this.amount)
+                this.addMessagesInTop()
+                target.scrollTop = target.scrollHeight
+                this.doLoad = true
+                this.handleScroll(contactId)
+            }
+            
         } catch (error) {
             console.error("Error while loading messages: ", error)
         }
+    }
+
+    receiveMessage(socket) {
+        socket.addEventListener("message", (event) => {
+            const target = document.querySelector(".chat-messages");
+            let data;
+    
+            try {
+                data = JSON.parse(event.data);
+
+                if (!this.typingFlag) {
+                    alert_typing();
+                    this.typingFlag = true;
+                    setTimeout(() => {
+                        this.typingFlag = false;
+                    }, 2500); // Délai de 2 secondes avant de permettre un autre appel
+                }
+    
+                // Réinitialiser le timeout pour enlever l'animation après 3 secondes d'inactivité
+                clearTimeout(this.typingTimeout);
+                this.typingTimeout = setTimeout(() => {
+                    if (target.querySelector(".typing")) {
+                        target.querySelector(".typing").remove();
+                    }
+                }, 3000);
+    
+            } catch (error) {
+                data = event.data;
+                if (session_expired()) { 
+                    alert_token_expire() 
+                } else {
+                    target.appendChild(this.newMessage(data, "other", this.actualContact.username));
+                    target.scrollTop = target.scrollHeight
+                }
+            }
+        });
     }
 
     sendMessage(socket) {
@@ -93,9 +132,12 @@ export default class Message {
                 if (session_expired()) { 
                     alert_token_expire()
                 } else {
-                    target.appendChild(this.newMessage(input.value, "user"))
-                    socket.send(input.value)
-                    this.upadateDiscussionProfile(this.actualContact)
+                    const message = input.value
+                    if (message.trim() === "") return
+                    target.appendChild(this.newMessage(message, "user", api.client.nickname))
+                    target.scrollTop = target.scrollHeight
+                    socket.send(message)
+                    this.upadateDiscussionProfile(this.actualContact.id)
                     input.value = ""
                 }
             } else {
@@ -110,37 +152,6 @@ export default class Message {
         container.insertBefore(discussionProfile, container.firstChild)
     }
 
-    receiveMessage(socket) {
-        socket.addEventListener("message", (event) => {
-            const target = document.querySelector(".chat-messages")
-            console.log("est entrain de taper...")
-            let data
-
-            try {
-                data = JSON.parse(event.data)
-                console.log(data)
-                alert_typing()
-                //setInterval(() => { target.querySelector(".typing").remove() }, 3000)
-            } catch (error) {
-                data = event.data
-                session_expired() ? alert_token_expire() :
-                target.appendChild(this.newMessage(data, "other"))
-            }
-        })
-        // const infos = JSON.parse(event.data)
-        // const target = document.querySelector(".chat-messages")
-
-        // if (infos && infos.infos === "is typing...") {
-        //     console.log("typing...")
-        //     alert_typing()
-        //     //setTimeout(() => { target.querySelector(".typing").remove() }, 1000)
-        //     setInterval(() => { target.querySelector(".typing").remove() }, 3000)
-        //     return
-        // }
-
-        // session_expired() ? alert_token_expire() :
-        // target.appendChild(this.newMessage(event.data, "other"))
-    }
 
     createMessageHTML(contact) {
         const elem = document.createElement("div")
@@ -158,7 +169,7 @@ export default class Message {
                     Today at 12:56
                 </div>
                 <div class="discussion-close">
-                    <i class="fa-solid fa-xmark"></i>
+                    <i class="fa-solid fa-xmark" id="close-discussion"></i>
                 </div>
             </div>
             <div class="chat-messages">
@@ -175,7 +186,8 @@ export default class Message {
         targetElem.addEventListener("click", async (e) => {
             this.targetElement = document.querySelector(".right")
             this.render(user.Id)
-            this.actualContact = user.Id
+            this.actualContact.id = user.Id
+            this.actualContact.username = user.nickname
 
             const sendMessageCallback = (socket) => this.sendMessage(socket)
             const receiveMessageCallback = (event) => this.receiveMessage(event)
@@ -192,6 +204,11 @@ export default class Message {
                 this.targetElement.children[i].remove()
             }
         }
-        this.targetElement.appendChild(this.createMessageHTML(contact))
+        const box_discussion = this.createMessageHTML(contact)
+        this.targetElement.appendChild(box_discussion)
+        const discussionClose = document.querySelector("#close-discussion")
+            discussionClose.addEventListener("click", () => {
+                box_discussion.remove()
+            })
     }
 }

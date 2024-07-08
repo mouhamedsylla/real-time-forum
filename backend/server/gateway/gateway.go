@@ -47,6 +47,8 @@ func NewGateway() *Gateway {
 	}
 }
 
+
+
 func (gtw *Gateway) Proxy(path, target string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		targetURL := target + r.URL.Path
@@ -85,10 +87,6 @@ func (gtw *Gateway) Proxy(path, target string) http.Handler {
 			return
 		}
 	})
-}
-
-func (gtw *Gateway) Authenticate() {
-
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
