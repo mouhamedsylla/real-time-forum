@@ -44,6 +44,11 @@ export default class Post {
         const Title = document.getElementById("post-title").value.trim();
         const Content = document.getElementById("post-content").value.trim();
         let Categories = [];
+
+        if (!Image) {
+            alert("Please select an image.");
+            return null;
+        }
         
         // Check that the title is not empty
         if (!Title) {
@@ -77,7 +82,9 @@ export default class Post {
             const Image = reader.result.replace(/^data:image\/[a-z]+;base64,/, "");
             this.currentPost = { Title, Image, Content, Categories };
         };
+        
         reader.readAsDataURL(Image);
+
     
         return { Title, Image, Content, Categories };
     }

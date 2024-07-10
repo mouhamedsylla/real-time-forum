@@ -24,7 +24,7 @@ export default class Comment {
                         Comment: event.target.value,
                         Post_id: +id,
                         User_id: api.client.Id
-                    }, id)
+                    }, +id)
                     event.target.value = ""
                 }
             }
@@ -39,7 +39,7 @@ export default class Comment {
         elem.innerHTML = `
             <img src="./frontend/assets/images/profile-1.jpg" alt="" />
 			<span>
-                <b>${username}</b>
+                <strong>${username}</strong>
 				${comment.Comment}
 			</span>
         `
@@ -49,11 +49,11 @@ export default class Comment {
     async render() {
         try {
             await this.apiComment.getComments()
-            this.apiComment.comments.forEach(async comment => {
-                this.targetElement = document.querySelector(`[data-comment-post-${comment.Post_id}]`)
+            for (const comment of this.apiComment.comments) {
                 const user = await this.apiComment.getUserByCommentId(comment.User_id)
+                this.targetElement = document.querySelector(`[data-comment-post-${comment.Post_id}]`)
                 this.targetElement.appendChild(this.createCommentHTML(comment, user.nickname))
-            })
+            }
         } catch (error) {
             console.error("Error in render:", error)
         }

@@ -29,6 +29,7 @@ func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
 	post.Categories = r.FormValue("categories")
 	post.Title = r.FormValue("title")
 	post.Content = r.FormValue("content")
+
 	imageFile, _, err := r.FormFile("image")
 	if err != nil {
 		response.Message = "Unable to get image file"
@@ -60,3 +61,4 @@ func (p *CreatedPost) CreatedPost(w http.ResponseWriter, r *http.Request) {
 	postResponse.LastId, _ = rsl[0].LastInsertId()
 	utils.ResponseWithJSON(w, postResponse, http.StatusOK)
 }
+

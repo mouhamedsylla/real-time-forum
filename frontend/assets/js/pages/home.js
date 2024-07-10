@@ -94,11 +94,16 @@ export default class Home extends Page {
         this.posts.bindButton()
         try {
             await this.posts.render()
-            await this.comments.render()
             this.comments.bindInput()
             this.sittengLogout()
         } catch (error) {
             console.error("Error rendering posts or comments:", error)
+        }
+
+        try {
+            await this.comments.render()
+        } catch (error) {
+            console.error("Error rendering comments:", error)
         }
     }
 
