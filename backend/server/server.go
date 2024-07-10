@@ -11,18 +11,7 @@ import (
 	"sync"
 	"syscall"
 	"time"
-
-	"github.com/mouhamedsylla/term-color/color"
 )
-
-const welcome = 
-`
-_|_|_|   _|_|_|_|   _|_|   _|                  _|_|_|_|_| _|_|_| _|      _| _|_|_|_|            _|_|_|_|   _|_|   _|_|_|   _|    _| _|      _| 
-_|    _| _|       _|    _| _|                      _|       _|   _|_|  _|_| _|                  _|       _|    _| _|    _| _|    _| _|_|  _|_| 
-_|_|_|   _|_|_|   _|_|_|_| _|       _|_|_|_|_|     _|       _|   _|  _|  _| _|_|_|   _|_|_|_|_| _|_|_|   _|    _| _|_|_|   _|    _| _|  _|  _| 
-_|    _| _|       _|    _| _|                      _|       _|   _|      _| _|                  _|       _|    _| _|    _| _|    _| _|      _| 
-_|    _| _|_|_|_| _|    _| _|_|_|_|                _|     _|_|_| _|      _| _|_|_|_|            _|         _|_|   _|    _|   _|_|   _|      _|
-`
 
 type Server struct {
 	Services *microservices.AppServices
@@ -36,23 +25,18 @@ func NewServer(services ...microservices.Service) *Server {
 
 func (s *Server) StartServices() {
 	s.Services.InitServices()
-	clr := color.Color()
 	var wg sync.WaitGroup
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
 
-	fmt.Println(clr.SetText(welcome).SetBold().Colorize(clr.Blue))
-	fmt.Println(clr.SetText("🔁 Starting services...").Colorize(clr.Purple))
+	fmt.Println("🔁 Starting services...")
 
 	for _, service := range s.Services.Microservices {
 		service := service.GetService()
 		wg.Add(1)
 		go func(svc *microservices.Microservice) {
 			defer wg.Done()
-			clr.SetText(fmt.Sprintf("[RUNNING SERVICE] ✅ %s", svc.ServiceName))
-			clr.ColorTextPattern("[RUNNING SERVICE]", clr.Yellow)
-			clr.ColorTextPattern(svc.ServiceName, clr.Green)
-			fmt.Println(clr.ToString())
+			fmt.Printf("[RUNNING SERVICE] ✅ %s\n", svc.ServiceName)
 
 			server := http.Server{
 				Addr:    svc.Port,
@@ -67,7 +51,7 @@ func (s *Server) StartServices() {
 		
 			<-stop
 			
-			fmt.Println(clr.SetText(fmt.Sprintf("[SHUTTING DOWN SERVICE] 🛑 %s", svc.ServiceName)).Colorize(clr.Red))
+			fmt.Printf("[SHUTTING DOWN SERVICE] 🛑 %s\n", svc.ServiceName)
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
 
@@ -76,6 +60,5 @@ func (s *Server) StartServices() {
 			}
 		}(service)
 	}
-	fmt.Print(".\n.\n.\n")
 	wg.Wait()
 }

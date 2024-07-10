@@ -1,7 +1,7 @@
 import api from "../../index.js";
 import PostAPI from "../api/posts.js";
 import { alert_token_expire } from "../utils/alert.js";
-import { session_expired, formatTimeAgo, like, dislike } from "../utils/other.js";
+import { session_expired, formatTimeAgo, like, dislike, escapeHtml } from "../utils/other.js";
 export default class Post {
     constructor() {
         this.apiPost = new PostAPI()
@@ -112,6 +112,9 @@ export default class Post {
     createPostHTML(post, userPosted, lastId) {
         const postId = post.Id ? post.Id : lastId
         const elem = document.createElement("div")
+
+        const escapedContent = escapeHtml(post.Content)
+        const escapedCategories = escapeHtml(post.Categories)
         elem.classList.add("feed")
         let post_component = `
                 <div class="head">
@@ -147,7 +150,7 @@ export default class Post {
                     <p>Liked by <b id="likePost-${postId}">${post.nbLike || 0 }</b> persons</p>
                 </div>
                 <div class="caption">
-                    <p><b>Daenerys</b> ${post.Content} <span class="hash-tag">${post.Categories}</span></p>
+                    <p><b>Daenerys</b> ${escapedContent} <span class="hash-tag">${escapedCategories}</span></p>
                 </div>
                 <div class="post-comment">
                     <div class="head-comment">
@@ -193,6 +196,8 @@ export default class Post {
             console.error("Error while rendering posts: ", error);
         }
     }
+
+
 
     async addPost(post) {
         if (!post) return;

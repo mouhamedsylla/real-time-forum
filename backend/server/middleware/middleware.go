@@ -7,17 +7,15 @@ import (
 	"real-time-forum/utils"
 	"real-time-forum/utils/jwt"
 
-	"github.com/mouhamedsylla/term-color/color"
 )
 
 var (
 	infosLog *log.Logger
-	clr = color.Color().SetText("[INFO] ")
  	Jwt = jwt.JWT{}
 )
 
 func init() {
-	infosLog = log.New(os.Stdout, clr.Colorize(clr.Green), log.Ldate|log.Ltime|log.Lshortfile)
+	infosLog = log.New(os.Stdout, "[INFO] ", log.Ldate|log.Ltime|log.Lshortfile)
 }
 
 func CORSMiddleware(next http.Handler) http.Handler {

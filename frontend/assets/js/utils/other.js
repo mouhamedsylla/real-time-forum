@@ -8,7 +8,8 @@ export {
     like,
     dislike,
     formatDate,
-    modeSelect
+    modeSelect,
+    escapeHtml
 }
 
 const like = "rgb(255, 87, 51)"
@@ -165,3 +166,11 @@ function modeSelect() {
             isLightMode = !isLightMode;
         });
 }
+
+function escapeHtml(str) {
+    return str.replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
+  }
